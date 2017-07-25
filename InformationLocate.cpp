@@ -250,7 +250,7 @@ int InformationLocate::locateInfor(Mat srcImage)
 
 	Mat thresholdImage;
 	threshold(gradImage, thresholdImage, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
-//	imshow("threshold image", thresholdImage);
+	imshow("threshold image", thresholdImage);
 
 	// closed operation
 	Mat closedImage;
@@ -329,7 +329,6 @@ int InformationLocate::locateInfor(Mat srcImage)
 	return 1;
 }
 
-
 bool InformationLocate::isValidInfor(RotatedRect mr)
 {
 	int width = mr.size.width;
@@ -386,6 +385,7 @@ void InformationLocate::setImageWidth(int imageWidth)
 {
 	InformationLocate::imageWidth = imageWidth;
 }
+
 void InformationLocate::setImageHeight(int imageHeight)
 {
 	InformationLocate::imageHeight = imageHeight;

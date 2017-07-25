@@ -82,6 +82,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.cpp">
+			<Option target="DriverLicenseIdentify"/>
+		</Unit>
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.h">
+			<Option target="DriverLicenseIdentify"/>
+		</Unit>
 		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationLocate.cpp">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>

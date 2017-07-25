@@ -6,6 +6,16 @@
 
 #IncludeRegexTransform: 
 
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.cpp
+InforDetect.h
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.h
+
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.h
+iostream
+-
+opencv2/opencv.hpp
+-
+
 /Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationLocate.cpp
 InformationLocate.h
 /Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationLocate.h
@@ -23,6 +33,8 @@ opencv2/opencv.hpp
 -
 InformationLocate.h
 /Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationLocate.h
+InforDetect.h
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.h
 
 /usr/local/include/opencv/cxcore.h
 opencv2/core/core_c.h

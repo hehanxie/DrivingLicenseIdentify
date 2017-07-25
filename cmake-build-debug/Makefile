@@ -123,6 +123,33 @@ DriverLicenseIdentify/fast:
 	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/build
 .PHONY : DriverLicenseIdentify/fast
 
+InforDetect.o: InforDetect.cpp.o
+
+.PHONY : InforDetect.o
+
+# target to build an object file
+InforDetect.cpp.o:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InforDetect.cpp.o
+.PHONY : InforDetect.cpp.o
+
+InforDetect.i: InforDetect.cpp.i
+
+.PHONY : InforDetect.i
+
+# target to preprocess a source file
+InforDetect.cpp.i:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InforDetect.cpp.i
+.PHONY : InforDetect.cpp.i
+
+InforDetect.s: InforDetect.cpp.s
+
+.PHONY : InforDetect.s
+
+# target to generate assembly for a file
+InforDetect.cpp.s:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InforDetect.cpp.s
+.PHONY : InforDetect.cpp.s
+
 InformationLocate.o: InformationLocate.cpp.o
 
 .PHONY : InformationLocate.o
@@ -186,6 +213,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... DriverLicenseIdentify"
+	@echo "... InforDetect.o"
+	@echo "... InforDetect.i"
+	@echo "... InforDetect.s"
 	@echo "... InformationLocate.o"
 	@echo "... InformationLocate.i"
 	@echo "... InformationLocate.s"

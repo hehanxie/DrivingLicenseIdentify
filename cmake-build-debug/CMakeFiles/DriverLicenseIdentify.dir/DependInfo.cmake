@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.cpp" "/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/CMakeFiles/DriverLicenseIdentify.dir/InforDetect.cpp.o"
   "/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationLocate.cpp" "/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/CMakeFiles/DriverLicenseIdentify.dir/InformationLocate.cpp.o"
   "/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/main.cpp" "/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/CMakeFiles/DriverLicenseIdentify.dir/main.cpp.o"
   )

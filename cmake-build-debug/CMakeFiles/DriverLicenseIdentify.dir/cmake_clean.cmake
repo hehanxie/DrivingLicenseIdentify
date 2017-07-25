@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/DriverLicenseIdentify.dir/main.cpp.o"
   "CMakeFiles/DriverLicenseIdentify.dir/InformationLocate.cpp.o"
+  "CMakeFiles/DriverLicenseIdentify.dir/InforDetect.cpp.o"
   "DriverLicenseIdentify.pdb"
   "DriverLicenseIdentify"
 )
