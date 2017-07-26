@@ -8,127 +8,8 @@ InformationLocate::InformationLocate()
 {
 	borderWidth = 0;
 	borderHeight = 0;
-
-	errorAngle = 60;
 }
 
-Mat InformationLocate::OstuBeresenThreshold(Mat image)
-{
-	if (image.empty())
-	{
-		cout << "error" << endl;
-	}
-
-	int width = image.cols;
-	int height = image.rows;
-	int x = 0, y = 0;
-	int pixelCount[256] = {0};
-	float pixelPro[256] = {0};
-	int pixelSum = width * height, worsethreshold = 0, threshold = 0;
-
-	uchar* data = (uchar*)image.data;
-
-	//统计灰度级中每个像素在整幅图像中的个数
-	for (int i = y; i < height; i++)
-	{
-		for (int j = x; j <width; j++)
-		{
-			pixelCount[data[i * image.cols + j]]++;
-		}
-	}
-
-	//计算每个像素在整幅图像中的比例
-	for (int i = 0; i < 256; i++)
-	{
-		pixelPro[i] = (float)(pixelCount[i]) / (float)(pixelSum);
-	}
-
-	//经典ostu算法,得到前景和背景的分割
-	//遍历灰度级[0,255],计算出方差最大的灰度值,为最佳阈值
-	float w0, w1, u0tmp, u1tmp, u0, u1, u, deltaTmp, deltaMin = -10, deltaMax = 0;
-	for (int i = 0; i < 256; i++)
-	{
-		w0 = w1 = u0tmp = u1tmp = u0 = u1 = u = deltaTmp = 0;
-
-		for (int j = 0; j < 256; j++)
-		{
-			if (j <= i) //背景部分
-			{
-				//以i为阈值分类，第一类总的概率
-				w0 += pixelPro[j];
-				u0tmp += j * pixelPro[j];
-			}
-			else       //前景部分
-			{
-				//以i为阈值分类，第二类总的概率
-				w1 += pixelPro[j];
-				u1tmp += j * pixelPro[j];
-			}
-		}
-
-		u0 = u0tmp / w0;        //第一类的平均灰度
-		u1 = u1tmp / w1;        //第二类的平均灰度
-		u = u0tmp + u1tmp;        //整幅图像的平均灰度
-		//计算类间方差
-		deltaTmp = w0 * (u0 - u)*(u0 - u) + w1 * (u1 - u)*(u1 - u);
-		//找出最大类间方差以及对应的阈值
-		if (deltaTmp > deltaMax)
-		{
-			deltaMax = deltaTmp;
-			threshold = i;
-		}
-		if (deltaTmp < deltaMin)
-		{
-			deltaMin = deltaTmp;
-			worsethreshold = i;
-		}
-	}
-
-//	cout << "ostu, beresen" << endl;
-//	cout << "最佳阈值: " << threshold << endl;
-//	cout << "最差阈值: " << worsethreshold << endl;
-	const float C = 0.12;
-	float beta = C * (threshold - worsethreshold + 1) / 128;
-//	cout << "矫正因子: " << beta << endl;
-
-	float rectAveThreshold;
-	//IplImage to Mat
-	double lowT = (1 - beta) * threshold;
-	double highT = (1 + beta) * threshold;
-	Mat targetImage = image.clone();
-	for (int i = 0; i < height; i++)
-	{
-		uchar * p = image.ptr<uchar>(i);
-		uchar *outPtr = targetImage.ptr<uchar>(i);
-		for (int j = 0; j < width; j++)
-		{
-			if(i < 2 ||  i > height - 2 || j < 2 || j > height - 2)
-			{
-				if( p[j] <= lowT )
-				{
-					outPtr[j] = 0;
-				}
-				else
-				{
-					outPtr[j] = 255;
-				}
-			}
-			else
-			{
-				rectAveThreshold = sum(image(Rect(i-2,j-2,2,2)))[0]/4;
-				if( p[j] < lowT || (p[j] < rectAveThreshold &&  (lowT <= p[j] && p[j] >= highT)))
-				{
-					outPtr[j] = 0;
-				}
-				if( p[j] > highT || (p[j] >= rectAveThreshold &&  (lowT <= p[j] && p[j] >= highT)))
-				{
-					outPtr[j] = 255;
-				}
-			}
-		}
-	}
-	return targetImage;
-}
 
 bool InformationLocate::isBorder(RotatedRect candidate)
 {
@@ -148,7 +29,7 @@ bool InformationLocate::isBorder(RotatedRect candidate)
 
 }
 
-int InformationLocate::locateBorder(Mat image)
+void InformationLocate::locateBorder(Mat image)
 {
 	setImageWidth(image.cols);
 	setImageHeight(image.rows);
@@ -158,18 +39,18 @@ int InformationLocate::locateBorder(Mat image)
 	if (srcImage.empty())
 	{
 		cout << "error";
-		return 0;
+		return ;
 	}
 
-	// ostu 和 beresen算法，重新生成图像
-	Mat ostuBeresenImage = OstuBeresenThreshold(srcImage);
+	Mat dst;
+	adaptiveThreshold(srcImage, dst, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 7, 7);
 //	imshow("ostu beresen image", ostuBeresenImage);
 
-	// closed处理
+	// closed 处理
 	Mat element = getStructuringElement(MORPH_RECT ,Size(DEFAULT_MORPH_SIZE_WIDTH ,DEFAULT_MORPH_SIZE_WIDTH));
 	Mat closedImage;
 	//进行形态学操作
-	morphologyEx(ostuBeresenImage, closedImage, MORPH_CLOSE, element);
+	morphologyEx(dst, closedImage, MORPH_CLOSE, element);
 //	morphologyEx(binaryImage, openImage, MORPH_OPEN, element);
 //	imshow("closed image", closedImage);
 
@@ -196,26 +77,20 @@ int InformationLocate::locateBorder(Mat image)
 			{
 				line(image, P[j], P[(j + 1) % 4], Scalar(0, 0, 255), 2);
 			}
-
-//			vector<Point> cnt = contours[index];
-//			float epsilon = 0.1 * arcLength(cnt, true);
-//			approxPolyDP(cnt, contours[index], epsilon, true);
-//			// 对画出的边重新矫正
-//			drawContours(image, contours, index, Scalar(0, 0, 255), 2);
-
+			// set border value
 			setBorderWidth(mr.size.width);
 			setBorderHeight(mr.size.height);
+			cout << "border width: " << mr.size.width << endl;
+			cout << "border height: " << mr.size.height << endl;
 			break;
 		}
 		itc++;
 		index++;
 	}
-	imshow("draw contours", image);
-	//waitKey(0);
-	return 1;
+//	imshow("draw border", image);
 }
 
-int InformationLocate::locateInfor(Mat srcImage)
+void InformationLocate::locateInfor(Mat srcImage)
 {
 	/*
 	 * 图像前期处理：高斯 -> 灰度 -> Sobel -> Binary -> Closed -> findContours
@@ -248,25 +123,24 @@ int InformationLocate::locateInfor(Mat srcImage)
 	addWeighted(absSobelImage, SOBEL_X_WEIGHT, absSobelYImage, SOBEL_Y_WEIGHT, 0, gradImage);
 //	imshow("grad image", gradImage);
 
+	// OSTU 二值化
 	Mat thresholdImage;
 	threshold(gradImage, thresholdImage, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
 	imshow("threshold image", thresholdImage);
 
-	// closed operation
+	// 闭操作
 	Mat closedImage;
 	Mat element = getStructuringElement(MORPH_RECT, Size(DEFAULT_MORPH_SIZE_WIDTH, DEFAULT_MORPH_SIZE_HEIGHT));
 	morphologyEx(thresholdImage, closedImage, MORPH_CLOSE, element);
 	imshow("closed image", closedImage);
 
-	// get contours
+	// 找轮廓
 	vector<vector<Point>> contours;
 	findContours(closedImage, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-//	drawContours(image, contours, -1, Scalar(0, 0, 255), 2);
-
 	vector<vector<Point> >::iterator itc = contours.begin();
 	vector<RotatedRect> rects;
 
-	// push possible rects to vector
+	// 将所有可能的轮廓存储
 	while (itc != contours.end())
 	{
 		// 获取每个轮廓的最小有界矩形区域
@@ -281,7 +155,7 @@ int InformationLocate::locateInfor(Mat srcImage)
 			itc++;
 		}
 	}
-	cout << "total rects: " << contours.size() << endl;
+//	cout << "total rects: " << contours.size() << endl;
 //	drawContours(image, contours, -1, Scalar(0, 0, 255), 2);
 
 	vector<Mat> resultVec;
@@ -289,20 +163,8 @@ int InformationLocate::locateInfor(Mat srcImage)
 	//  再次筛选符合初步
 	for (int i = 0; i < rects.size(); i++)
 	{
-		RotatedRect minRect = rects[i];
-		Size2f rectSize = minRect.size;
-		int width = rectSize.width;
-		int height = rectSize.height;
-		float r = width / height;
-		float angle = minRect.angle;
-		if (r < 1)
-		{
-			angle = 90 + angle;
-			swap(width, height);
-		}
-
 		// 如果矩形的旋转角度不在范围内，则抛弃
-		if (angle - errorAngle < 0 && angle + errorAngle > 0)
+		if (isRedAreaAngle(rects[i]))
 		{
 			Point2f P[4];
 			rects[i].points(P);
@@ -312,13 +174,11 @@ int InformationLocate::locateInfor(Mat srcImage)
 			}
 			//drawContours(image, contours, i, Scalar(0, 0, 255), 2);
 
-			//Create and rotate image
-			Mat rotmat = getRotationMatrix2D(minRect.center, angle, 1);
+			// 创建并旋转图像
+			Mat rotmat = getRotationMatrix2D(rects[i].center, rects[i].angle, 1);
 			Mat rotatedImage;
 			warpAffine(srcImage, rotatedImage, rotmat, srcImage.size(), CV_INTER_CUBIC);
-
-//			Mat resultMat;
-//			resultMat = showResultMat(rotatedImage, rectSize, minRect.center, k++);
+			// 将所有关键部分矩阵保存
 			resultVec.push_back(rotatedImage);
 		}
 	}
@@ -326,7 +186,6 @@ int InformationLocate::locateInfor(Mat srcImage)
 
 	imshow("draw contours", srcImage);
 	//waitKey(0);
-	return 1;
 }
 
 bool InformationLocate::isValidInfor(RotatedRect mr)
@@ -389,4 +248,115 @@ void InformationLocate::setImageWidth(int imageWidth)
 void InformationLocate::setImageHeight(int imageHeight)
 {
 	InformationLocate::imageHeight = imageHeight;
+}
+
+
+// 7.26
+void InformationLocate::colorMatch(Mat src)
+{
+	// 设置 红色的 HSV范围
+	int minRedH = 100;
+	int maxRedH = 180;
+
+	int minS = 40;
+	int maxS = 255;
+	int minV = 40;
+	int maxV = 255;
+
+	// 将BGR 转换为 HSV
+	Mat srcHSV;
+	cvtColor(src, srcHSV, CV_BGR2HSV);
+	vector<Mat> hsvSplit;
+	split(srcHSV, hsvSplit);
+	equalizeHist(hsvSplit[2], hsvSplit[2]);
+	merge(hsvSplit, srcHSV);
+	Mat thresholdImage;
+//	inRange(srcHSV, Scalar(0, minS, minV), Scalar(15, maxS, maxV), thresholdImage);
+	inRange(srcHSV, Scalar(minRedH, minS, minV), Scalar(maxRedH, maxS, maxV), thresholdImage);
+
+
+	Mat dst;
+	thresholdImage.convertTo(dst, CV_8UC1);
+	adaptiveThreshold(dst, thresholdImage, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 7, 5);
+
+	// 开操作 (去除一些噪点)
+	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
+	morphologyEx(thresholdImage, thresholdImage, MORPH_OPEN, element);
+
+	// 闭操作 (连接一些连通域)
+	element = getStructuringElement(MORPH_RECT, Size(3, 3));
+	morphologyEx(thresholdImage, thresholdImage, MORPH_CLOSE, element);
+
+	// 显示经过处理吼的图像
+	imshow("threshold image", thresholdImage);
+
+	vector<vector<Point>> contours;
+	findContours(thresholdImage, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+
+	vector<vector<Point> >::iterator itc = contours.begin();
+	vector<Mat> redAreaVec;
+	while (itc != contours.end())
+	{
+		RotatedRect mr = minAreaRect(Mat(*itc));
+		// 如果区域大小符合，且角度正常
+		if (isRedArea(mr) && isRedAreaAngle(mr))
+		{
+			Point2f P[4];
+			mr.points(P);
+			for(int j = 0; j <= 3; j++)
+			{
+				// 画出红色区域（矩形）
+				line(src, P[j], P[(j + 1) % 4], Scalar(0, 0, 255), 2);
+			}
+
+			// 将红色水印区域保存
+			Mat rotmat = getRotationMatrix2D(mr.center, mr.angle, 1);
+			Mat rotatedImage;
+			warpAffine(src, rotatedImage, rotmat, src.size(), CV_INTER_CUBIC);
+
+			redAreaVec.push_back(rotatedImage);
+		}
+		itc++;
+	}
+
+	imshow("red area", src);
+
+	waitKey(0);
+}
+
+bool InformationLocate::isRedArea(RotatedRect mr)
+{
+	int width = mr.size.width;
+	int height = mr.size.height;
+
+//	cout << "width: " << width;
+//	cout << " height: " << height << endl;
+	int area = width * height;
+
+	int borderArea = getBorderWidth() * getBorderHeight();
+	int rMinArea = borderArea * (RED_AREA_RATIO - RED_AREA_ERROR);
+	int rMaxArea = borderArea * (RED_AREA_RATIO + RED_AREA_ERROR);
+
+	if (area > rMinArea && area < rMaxArea)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool InformationLocate::isRedAreaAngle(RotatedRect mr)
+{
+	Size2f rectSize = mr.size;
+	int width = rectSize.width;
+	int height = rectSize.height;
+	float angle = mr.angle;
+	// 如果矩形的旋转角度不在范围内，则抛弃
+	if (angle > - ANGLE_ERROR)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

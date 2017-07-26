@@ -15,6 +15,7 @@ class InforDetect
 {
 public:
 	void colorMatch(Mat src);
+	void setROI(Mat src);
 };
 
 
