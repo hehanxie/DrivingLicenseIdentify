@@ -82,16 +82,25 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.cpp">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/DriverLicense.cpp">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.h">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/DriverLicense.h">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationLocate.cpp">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationDetect.cpp">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationLocate.h">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationDetect.h">
+			<Option target="DriverLicenseIdentify"/>
+		</Unit>
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.cpp">
+			<Option target="DriverLicenseIdentify"/>
+		</Unit>
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.h">
+			<Option target="DriverLicenseIdentify"/>
+		</Unit>
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/include.h">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
 		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/main.cpp">

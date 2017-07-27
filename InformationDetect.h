@@ -7,10 +7,12 @@
 
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include "RedMarkArea.h"
+
 using namespace std;
 using namespace cv;
 
-class InformationLocate
+class InformationDetect
 {
 protected:
 	// 原始图像宽高
@@ -21,14 +23,7 @@ protected:
 	int borderHeight;
 
 public:
-	void setBorderWidth(int borderWidth);
-	int getBorderWidth();
-	void setBorderHeight(int borderHeight);
-	int getBorderHeight();
-	int getImageWidth();
-	void setImageWidth(int imageWidth);
-	int getImageHeight();
-	void setImageHeight(int imageHeight);
+	InformationDetect();
 
 	// 高斯模糊内核大小
 	static const int DEFAULT_GAUSSIANBLUR_SIZE = 7;
@@ -58,22 +53,12 @@ public:
 	const float RED_AREA_ERROR = 0.02;
 
 
-	InformationLocate();
-	// 判断是否为边界
-	bool isBorder(RotatedRect candidate);
-	// 定位边界
-	void locateBorder(Mat image);
 	// 定位关键信息位置
 	void locateInfor(Mat image);
 	// 位置是否有效
 	bool isValidInfor(RotatedRect mr);
 
-	// 颜色匹配（查找红色区域）
-	void colorMatch(Mat src);
-	// 判断红色区域矩阵面积是否合理
-	bool isRedArea(RotatedRect mr);
-	// 判断红色区域矩阵角度是否合理
-	bool isRedAreaAngle(RotatedRect mr);
+
 };
 
 

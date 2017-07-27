@@ -6,24 +6,38 @@
 
 #IncludeRegexTransform: 
 
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.cpp
-InforDetect.h
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.h
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/DriverLicense.cpp
+DriverLicense.h
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/DriverLicense.h
 
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.h
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/DriverLicense.h
+iostream
+-
+RedMarkArea.h
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.h
+
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationDetect.cpp
+InformationDetect.h
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationDetect.h
+
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationDetect.h
 iostream
 -
 opencv2/opencv.hpp
 -
+RedMarkArea.h
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.h
 
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationLocate.cpp
-InformationLocate.h
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationLocate.h
-
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationLocate.h
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.cpp
+RedMarkArea.h
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.h
 iostream
 -
+
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.h
 opencv2/opencv.hpp
+-
+iostream
 -
 
 /Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/main.cpp
@@ -31,10 +45,8 @@ iostream
 -
 opencv2/opencv.hpp
 -
-InformationLocate.h
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationLocate.h
-InforDetect.h
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InforDetect.h
+DriverLicense.h
+/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/DriverLicense.h
 
 /usr/local/include/opencv/cxcore.h
 opencv2/core/core_c.h

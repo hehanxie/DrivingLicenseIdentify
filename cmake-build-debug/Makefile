@@ -123,59 +123,86 @@ DriverLicenseIdentify/fast:
 	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/build
 .PHONY : DriverLicenseIdentify/fast
 
-InforDetect.o: InforDetect.cpp.o
+DriverLicense.o: DriverLicense.cpp.o
 
-.PHONY : InforDetect.o
-
-# target to build an object file
-InforDetect.cpp.o:
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InforDetect.cpp.o
-.PHONY : InforDetect.cpp.o
-
-InforDetect.i: InforDetect.cpp.i
-
-.PHONY : InforDetect.i
-
-# target to preprocess a source file
-InforDetect.cpp.i:
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InforDetect.cpp.i
-.PHONY : InforDetect.cpp.i
-
-InforDetect.s: InforDetect.cpp.s
-
-.PHONY : InforDetect.s
-
-# target to generate assembly for a file
-InforDetect.cpp.s:
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InforDetect.cpp.s
-.PHONY : InforDetect.cpp.s
-
-InformationLocate.o: InformationLocate.cpp.o
-
-.PHONY : InformationLocate.o
+.PHONY : DriverLicense.o
 
 # target to build an object file
-InformationLocate.cpp.o:
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InformationLocate.cpp.o
-.PHONY : InformationLocate.cpp.o
+DriverLicense.cpp.o:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/DriverLicense.cpp.o
+.PHONY : DriverLicense.cpp.o
 
-InformationLocate.i: InformationLocate.cpp.i
+DriverLicense.i: DriverLicense.cpp.i
 
-.PHONY : InformationLocate.i
+.PHONY : DriverLicense.i
 
 # target to preprocess a source file
-InformationLocate.cpp.i:
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InformationLocate.cpp.i
-.PHONY : InformationLocate.cpp.i
+DriverLicense.cpp.i:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/DriverLicense.cpp.i
+.PHONY : DriverLicense.cpp.i
 
-InformationLocate.s: InformationLocate.cpp.s
+DriverLicense.s: DriverLicense.cpp.s
 
-.PHONY : InformationLocate.s
+.PHONY : DriverLicense.s
 
 # target to generate assembly for a file
-InformationLocate.cpp.s:
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InformationLocate.cpp.s
-.PHONY : InformationLocate.cpp.s
+DriverLicense.cpp.s:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/DriverLicense.cpp.s
+.PHONY : DriverLicense.cpp.s
+
+InformationDetect.o: InformationDetect.cpp.o
+
+.PHONY : InformationDetect.o
+
+# target to build an object file
+InformationDetect.cpp.o:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o
+.PHONY : InformationDetect.cpp.o
+
+InformationDetect.i: InformationDetect.cpp.i
+
+.PHONY : InformationDetect.i
+
+# target to preprocess a source file
+InformationDetect.cpp.i:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.i
+.PHONY : InformationDetect.cpp.i
+
+InformationDetect.s: InformationDetect.cpp.s
+
+.PHONY : InformationDetect.s
+
+# target to generate assembly for a file
+InformationDetect.cpp.s:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.s
+.PHONY : InformationDetect.cpp.s
+
+RedMarkArea.o: RedMarkArea.cpp.o
+
+.PHONY : RedMarkArea.o
+
+# target to build an object file
+RedMarkArea.cpp.o:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.o
+.PHONY : RedMarkArea.cpp.o
+
+RedMarkArea.i: RedMarkArea.cpp.i
+
+.PHONY : RedMarkArea.i
+
+# target to preprocess a source file
+RedMarkArea.cpp.i:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.i
+.PHONY : RedMarkArea.cpp.i
+
+RedMarkArea.s: RedMarkArea.cpp.s
+
+.PHONY : RedMarkArea.s
+
+# target to generate assembly for a file
+RedMarkArea.cpp.s:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.s
+.PHONY : RedMarkArea.cpp.s
 
 main.o: main.cpp.o
 
@@ -213,12 +240,15 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... DriverLicenseIdentify"
-	@echo "... InforDetect.o"
-	@echo "... InforDetect.i"
-	@echo "... InforDetect.s"
-	@echo "... InformationLocate.o"
-	@echo "... InformationLocate.i"
-	@echo "... InformationLocate.s"
+	@echo "... DriverLicense.o"
+	@echo "... DriverLicense.i"
+	@echo "... DriverLicense.s"
+	@echo "... InformationDetect.o"
+	@echo "... InformationDetect.i"
+	@echo "... InformationDetect.s"
+	@echo "... RedMarkArea.o"
+	@echo "... RedMarkArea.i"
+	@echo "... RedMarkArea.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
