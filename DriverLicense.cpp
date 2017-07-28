@@ -11,8 +11,87 @@ DriverLicense::DriverLicense(Mat srcImage)
 	borderDetect();
 	redMarkArea = new RedMarkArea(srcImage, borderImage);
 
+	redArea = redMarkArea->getRedArea();
+	rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
+	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
+	upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
+//	upperSideArea = getUpperSideArea(redArea, UPPER_WIDH_RATIO, UPPER_HEIGHT_RATIO);
+
+	imshow("draw area", borderImage);
 };
 
+Rect DriverLicense::getRightSideArea(Rect redArea, float ratio)
+{
+	int redWidth = redArea.width;
+	int redHeight = redArea.height;
+	Point p1;
+	p1.x = redArea.x + redWidth;
+	p1.y = redArea.y;
+
+	Point p2;
+	p2.x = p1.x + redWidth * ratio;
+	p2.y = p1.y + redHeight;
+
+	Rect rect = Rect(p1, p2);
+	rectangle(borderImage, rect, Scalar(255, 0, 0));
+//	imshow("right area", borderImage);
+	return rect;
+}
+
+// 未完成
+Rect DriverLicense::getUpperSideArea(Rect redArea, float widthRatio, float heightRatio)
+{
+	int redWidth = redArea.width;
+	int redHeight = redArea.height;
+	Point p1;
+	p1.x = redArea.x;
+	p1.y = redArea.y;
+
+	Point p2;
+	p2.x = p1.x + redWidth * widthRatio;
+	p2.y = p1.y - redHeight * heightRatio;
+
+	Rect rect = Rect(p1, p2);
+	rectangle(borderImage, rect, Scalar(0, 255, 0));
+//	imshow("upper area", borderImage);
+	return rect;
+}
+
+Rect DriverLicense::getUpSideArea(Rect redArea, float widthRatio, float heightRatio)
+{
+	int redWidth = redArea.width;
+	int redHeight = redArea.height;
+	Point p1;
+	p1.x = redArea.x;
+	p1.y = redArea.y;
+
+	Point p2;
+	p2.x = p1.x + redWidth * widthRatio;
+	p2.y = p1.y - redHeight * heightRatio;
+
+	Rect rect = Rect(p1, p2);
+	rectangle(borderImage, rect, Scalar(0, 255, 0));
+//	imshow("up area", borderImage);
+	return rect;
+}
+
+Rect DriverLicense::getDownSideArea(Rect redArea, float widthRatio, float heightRatio)
+{
+	int redWidth = redArea.width;
+	int redHeight = redArea.height;
+	Point p1;
+	p1.x = redArea.x;
+	p1.y = redArea.y + redHeight;
+
+	Point p2;
+	p2.x = p1.x + redWidth * widthRatio;
+	p2.y = p1.y + redHeight * heightRatio;
+
+	Rect rect = Rect(p1, p2);
+	rectangle(borderImage, rect, Scalar(255, 0, 255));
+//	imshow("down area", borderImage);
+	return rect;
+}
 
 void DriverLicense::borderDetect()
 {

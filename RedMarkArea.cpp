@@ -16,31 +16,36 @@ RedMarkArea::RedMarkArea(Mat srcImage, Mat borderImage)
 {
 	this->srcImage = srcImage.clone();
 
+	startRow = 0;
+	endRow = 0;
+	startCol = 0;
+	endCol = 0;
 	srcHeight = srcImage.rows;
 	srcWidth = srcImage.cols;
 	borderHeight = borderImage.rows;
 	borderWidth = borderImage.cols;
 
-	horizontalArray = new int[borderWidth];
-	verticalArray = new int[borderHeight];
+	horizontalArray = new int[borderHeight];
+	verticalArray = new int[borderWidth];
 
 	this->srcImage = srcImage;
 	this->borderImage = borderImage;
 
 	colorMatch();
+	setRedSize();
 //	imshow("src image", srcImage);
 }
 
 void RedMarkArea::colorMatch()
 {
 	// 设置 红色的 HSV范围
-	int minRedH = 150; // 150
+	int minRedH = 140; // 140
 	int maxRedH = 180;
 
-	int minS = 80; // 80 ~ 90
+	int minS = 75; // 80
 	int maxS = 255;
-	int minV = 80; // 80 ~ 90
-	int maxV = 255;
+	int minV = 75; // 80
+	int maxV = 220;
 
 	// 将BGR 转换为 HSV
 	Mat srcHSV;
@@ -52,7 +57,8 @@ void RedMarkArea::colorMatch()
 	merge(hsvSplit, srcHSV);
 
 	Mat thresholdImage;
-	inRange(srcHSV, Scalar(0, minS, minV), Scalar(15, maxS, maxV), thresholdImage);
+//	inRange(srcHSV, Scalar(0, minS, minV), Scalar(15, maxS, maxV), thresholdImage);
+//	inRange(srcHSV, Scalar(0, 60, 60), Scalar(10, maxS, maxV), thresholdImage);
 	inRange(srcHSV, Scalar(minRedH, minS, minV), Scalar(maxRedH, maxS, maxV), thresholdImage);
 
 	Mat dst;
@@ -69,10 +75,14 @@ void RedMarkArea::colorMatch()
 	morphologyEx(thresholdImage, thresholdImage, MORPH_CLOSE, element);
 
 	// 显示经过处理后的图像
-	imshow("horizontal", getHorizontalProjection(thresholdImage));
-	imshow("vertical", getVerticalProjection(thresholdImage));
-	imshow("morphplogy image", thresholdImage);
-	imshow("src image", srcImage);
+	getHorizontalProjection(thresholdImage);
+//	imshow("horizontal", getHorizontalProjection(thresholdImage));
+
+	getVerticalProjection(thresholdImage);
+//	imshow("vertical", getVerticalProjection(thresholdImage));
+
+//	imshow("morphplogy image", thresholdImage);
+//	imshow("src image", srcImage);
 	// 描绘轮廓
 //	vector<vector<Point>> contours;
 //	findContours(thresholdImage, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
@@ -112,12 +122,9 @@ void RedMarkArea::colorMatch()
 
 bool RedMarkArea::isRedArea(RotatedRect mr)
 {
-	int width = mr.size.width;
-	int height = mr.size.height;
-
 //	cout << "width: " << width;
 //	cout << " height: " << height << endl;
-	int area = width * height;
+	int area = mr.size.width * mr.size.height;
 
 	int borderArea = borderImage.cols * borderImage.rows;
 	int rMinArea = borderArea * (RED_AREA_RATIO - RED_AREA_ERROR);
@@ -147,6 +154,62 @@ bool RedMarkArea::isRedAreaAngle(RotatedRect mr)
 	}
 }
 
+Mat RedMarkArea::getVerticalProjection(Mat image)
+{
+	// 黑点最大数目和最大行
+	int maxCol = 0;
+	int maxNum = 0;
+	// 黑点最小数目和最小行
+	int minCol = 0;
+	int minNum = borderHeight;
+
+	//图像的高和宽
+	int height = borderHeight;
+	int width = borderWidth;
+	// 保存当前行的黑点数目
+	int tmp = 0;
+	// 保存每一行黑点数目的数组
+	int *blackArray = new int[width];
+
+	//循环访问图像数据，查找每一行的255点的数目
+	for (int col = 0; col < width; col++)
+	{
+		tmp = 0;
+		for (int row = 0; row < height; row++)
+		{
+			if (image.at<uchar>(row, col) == 0)
+			{
+				tmp++;
+			}
+		}
+		blackArray[col] = tmp;
+		if (tmp > maxNum)
+		{
+			maxNum = tmp;
+			maxCol = col;
+		}
+		if (tmp < minNum)
+		{
+			minNum = tmp;
+			minCol = col;
+		}
+//		if (tmp != 0)
+//		{
+//			cout << col << " x: " << tmp << endl;
+//		}
+	}
+	//创建并绘制垂直投影图像
+	Mat projImg(height, width, CV_8U, cv::Scalar(255));
+
+	for (int col = 0; col < width; ++col)
+	{
+		line(projImg, Point(col, blackArray[col]), Point(col, height - 1), Scalar::all(0));
+	}
+
+	verticalArray = blackArray;
+	return projImg;
+}
+
 Mat RedMarkArea::getHorizontalProjection (Mat image)
 {
 	// 黑点最大数目和最大行
@@ -168,7 +231,7 @@ Mat RedMarkArea::getHorizontalProjection (Mat image)
 	for (int i = 0; i < height; i++)
 	{
 		tmp = 0;
-		for (int j = 0; j < width; j++)
+		for (int j = 0; j < width/2; j++)
 		{
 			// 白点
 			if (image.at<uchar>(i, j) == 0)
@@ -187,7 +250,10 @@ Mat RedMarkArea::getHorizontalProjection (Mat image)
 			minNum = tmp;
 			minLine = i;
 		}
-//		cout << i << " rows " << blackArray[i] << endl;
+//		if (tmp != 0)
+//		{
+//			cout << i << " y: " << tmp << endl;
+//		}
 	}
 
 	//创建并绘制水平投影图像
@@ -200,59 +266,64 @@ Mat RedMarkArea::getHorizontalProjection (Mat image)
 	}
 
 	horizontalArray = blackArray;
-	//delete[] blackArray;
 	return  projImg;
 }
 
-Mat RedMarkArea::getVerticalProjection(Mat image)
+void RedMarkArea::setRedSize()
 {
-	// 黑点最大数目和最大行
-	int maxCol = 0;
-	int maxNum = 0;
-	// 黑点最小数目和最小行
-	int minCol = 0;
-	int minNum = borderHeight;
-
-	//图像的高和宽
-	int height = borderHeight;
-	int width = borderWidth;
-	// 保存当前行的黑点数目
-	int tmp = 0;
-	// 保存每一行黑点数目的数组
-	int *blackArray = new int[height];
-
-	//循环访问图像数据，查找每一行的255点的数目
-	for (int col = 0; col < width; col++)
+	// x position
+	for (int i = 0; i < borderWidth/2; i++)
 	{
-		tmp = 0;
-		for (int row = 0; row < height; row++)
+		if (abs(verticalArray[i + 1] - verticalArray[i]) >= 10)
 		{
-			if (image.at<uchar>(row, col) == 255)
-			{
-				tmp++;
-			}
-		}
-		blackArray[col] = tmp;
-		if (tmp > maxNum)
-		{
-			maxNum = tmp;
-			maxCol = col;
-		}
-		if (tmp < minNum)
-		{
-			minNum = tmp;
-			minCol = col;
+			startCol = i + 5;
+			break;
 		}
 	}
-	//创建并绘制垂直投影图像
-	Mat projImg(height, width, CV_8U, cv::Scalar(255));
-
-	for (int col = 0; col < width; ++col)
+	for (int i = borderWidth/2; i > 1; i--)
 	{
-		line(projImg, Point(col, blackArray[col]), Point(col, height - 1), Scalar::all(0));
+		if (abs(verticalArray[i] - verticalArray[i - 1]) >= 10)
+		{
+			endCol = i - 5;
+			break;
+		}
 	}
 
-	verticalArray = blackArray;
-	//delete[] blackArray;
-	return projImg;
+	// y position
+	for (int i = borderHeight/2; i < borderHeight - 1; i++)
+	{
+		if (abs(horizontalArray[i + 1] - horizontalArray[i]) >= 10)
+		{
+			startRow = i + 5;
+			break;
+		}
+	}
+	for (int i = borderHeight - 1; i > 1; i--)
+	{
+		if (abs(horizontalArray[i] - horizontalArray[i - 1]) >= 10)
+		{
+			endRow = i - 5;
+			break;
+		}
+	}
+
+	Point p1 = Point(startCol, startRow);
+	Point p2 = Point(endCol, endRow);
+	cout << "start point: " << p1 << endl;
+	cout << "end point: " << p2 << endl;
+
+	Rect rect = Rect(p1, p2);
+	setRedArea(rect);
+	rectangle(borderImage, rect, Scalar(0, 0, 255));
+//	imshow("red area", borderImage);
+}
+
+void RedMarkArea::setRedArea(Rect redArea)
+{
+	this->redArea = redArea;
+}
+
+Rect RedMarkArea::getRedArea()
+{
+	return redArea;
 }

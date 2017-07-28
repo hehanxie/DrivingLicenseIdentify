@@ -6,7 +6,7 @@ using namespace cv;
 
 int main()
 {
-	// problem: 1.1, 1.3
+	// problem: 1.1
 	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/testImg/1.3.jpg");// 1.0 ~ 1.3
 //	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/testImg/2.0.jpg");// 2.0 ~ 2.2
 	if (srcImage.empty())

@@ -13,6 +13,7 @@ using namespace cv;
 class RedMarkArea
 {
 protected:
+	Rect redArea;
 	Mat srcImage;
 	int srcHeight;
 	int srcWidth;
@@ -23,12 +24,10 @@ protected:
 	int *horizontalArray;
 	int startRow;
 	int endRow;
-	int height;
 
 	int *verticalArray;
 	int startCol;
 	int endCol;
-	int width;
 
 	// 构成矩形的角度偏差
 	static const int ANGLE_ERROR = 40;
@@ -56,6 +55,11 @@ public:
 	// 垂直投影
 	Mat getVerticalProjection(Mat image);
 
+	// 计算红色区域位置
+	void setRedSize();
+
+	void setRedArea(Rect redArea);
+	Rect getRedArea();
 };
 
 
