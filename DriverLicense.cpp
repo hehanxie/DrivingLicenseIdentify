@@ -15,7 +15,7 @@ DriverLicense::DriverLicense(Mat srcImage)
 	rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
 	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
 	upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
-//	upperSideArea = getUpperSideArea(redArea, UPPER_WIDH_RATIO, UPPER_HEIGHT_RATIO);
+	upperSideArea = getUpperSideArea(upSideArea, UPPER_RATIO);
 
 	imshow("draw area", borderImage);
 };
@@ -38,18 +38,18 @@ Rect DriverLicense::getRightSideArea(Rect redArea, float ratio)
 	return rect;
 }
 
-// 未完成
-Rect DriverLicense::getUpperSideArea(Rect redArea, float widthRatio, float heightRatio)
+
+Rect DriverLicense::getUpperSideArea(Rect upSideArea, float ratio)
 {
-	int redWidth = redArea.width;
-	int redHeight = redArea.height;
+	int redWidth = upSideArea.width;
+	int redHeight = upSideArea.height;
 	Point p1;
-	p1.x = redArea.x;
-	p1.y = redArea.y;
+	p1.x = upSideArea.x;
+	p1.y = upSideArea.y;
 
 	Point p2;
-	p2.x = p1.x + redWidth * widthRatio;
-	p2.y = p1.y - redHeight * heightRatio;
+	p2.x = p1.x + redWidth;
+	p2.y = p1.y - redHeight * 0.5;
 
 	Rect rect = Rect(p1, p2);
 	rectangle(borderImage, rect, Scalar(0, 255, 0));
