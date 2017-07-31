@@ -56,6 +56,8 @@ void RedMarkArea::colorMatch()
 	equalizeHist(hsvSplit[2], hsvSplit[2]);
 	merge(hsvSplit, srcHSV);
 
+	// 通过hsv空间，定位红色区域
+	// 尝试用rgb空间，定位（针对图像1.1存在的问题
 	Mat thresholdImage;
 //	inRange(srcHSV, Scalar(0, minS, minV), Scalar(15, maxS, maxV), thresholdImage);
 //	inRange(srcHSV, Scalar(0, 60, 60), Scalar(10, maxS, maxV), thresholdImage);
@@ -64,7 +66,7 @@ void RedMarkArea::colorMatch()
 	Mat dst;
 	thresholdImage.convertTo(dst, CV_8UC1);
 	adaptiveThreshold(dst, thresholdImage, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 7, 3);
-//	imshow("adaptive", thresholdImage);
+	imshow("adaptive", thresholdImage);
 
 	// 开操作 (去除一些噪点)
 	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
