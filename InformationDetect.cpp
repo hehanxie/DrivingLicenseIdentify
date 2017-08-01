@@ -19,42 +19,6 @@ void InformationDetect::locateInfor(Mat srcImage)
 	*/
 
 	/*
-	// 高斯
-	Mat blurImage;
-	GaussianBlur(srcImage, blurImage, Size(DEFAULT_GAUSSIANBLUR_SIZE, DEFAULT_GAUSSIANBLUR_SIZE), 0, 0, BORDER_DEFAULT);
-
-	// 灰度
-	Mat grayImage;
-	cvtColor(blurImage, grayImage, CV_RGB2GRAY);
-//	imshow("gray image", grayImage);
-
-	// Sobel Gradient X
-	Mat sobelImage, absSobelImage;
-	Sobel(grayImage, sobelImage, SOBEL_DDEPTH, 1, 0, 3, SOBEL_SCALE, SOBEL_DELTA, BORDER_DEFAULT);
-	convertScaleAbs(sobelImage, absSobelImage);
-//	imshow("sobel x image", absSobelImage);
-
-	// Sobel Gradient Y
-	Mat sobelYImage, absSobelYImage;
-	Sobel(grayImage, sobelYImage, SOBEL_DDEPTH, 0, 1, 3, SOBEL_SCALE, SOBEL_DELTA, BORDER_DEFAULT);
-	convertScaleAbs(sobelYImage, absSobelYImage);
-//	imshow("sobelY image", absSobelYImage);
-
-	// Total Gradient
-	Mat gradImage;
-	addWeighted(absSobelImage, SOBEL_X_WEIGHT, absSobelYImage, SOBEL_Y_WEIGHT, 0, gradImage);
-//	imshow("grad image", gradImage);
-
-	// OSTU 二值化
-	Mat thresholdImage;
-	threshold(gradImage, thresholdImage, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
-	imshow("threshold image", thresholdImage);
-
-	// 闭操作
-	Mat closedImage;
-	Mat element = getStructuringElement(MORPH_RECT, Size(DEFAULT_MORPH_SIZE_WIDTH, DEFAULT_MORPH_SIZE_HEIGHT));
-	morphologyEx(thresholdImage, closedImage, MORPH_CLOSE, element);
-	imshow("closed image", closedImage);
 
 	// 找轮廓
 	vector<vector<Point>> contours;
@@ -104,11 +68,6 @@ void InformationDetect::locateInfor(Mat srcImage)
 			resultVec.push_back(rotatedImage);
 		}
 	}
-//	imshow("1", resultVec[1]);
-
-	imshow("draw contours", srcImage);
-	//waitKey(0);
-
 	*/
 }
 

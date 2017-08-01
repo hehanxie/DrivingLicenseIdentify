@@ -8,38 +8,38 @@
 		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\..\usr\local\;CMake Files\..\..\..\..\..\..\usr\local\share\;CMake Files\..\..\..\..\..\..\usr\local\share\OpenCV\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug"/>
+				<Option working_dir="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug"/>
+				<Option working_dir="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug"/>
+				<Option working_dir="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="DriverLicenseIdentify">
-				<Option output="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/DriverLicenseIdentify" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug"/>
+				<Option output="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/DriverLicenseIdentify" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -53,15 +53,15 @@
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 DriverLicenseIdentify"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 DriverLicenseIdentify"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="DriverLicenseIdentify/fast">
-				<Option output="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/DriverLicenseIdentify" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug"/>
+				<Option output="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/DriverLicenseIdentify" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -75,56 +75,56 @@
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 DriverLicenseIdentify/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 DriverLicenseIdentify/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/DriverLicense.cpp">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/DrivingLicense.cpp">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/DriverLicense.h">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/DrivingLicense.h">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationDetect.cpp">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.cpp">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationDetect.h">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.h">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.cpp">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.cpp">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.h">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.h">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/include.h">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/include.h">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/main.cpp">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/main.cpp">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/CMakeLists.txt">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/../../../../../../usr/local/share/OpenCV/OpenCVConfig-version.cmake">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/../../../../../../usr/local/share/OpenCV/OpenCVConfig-version.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\share\OpenCV\"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/../../../../../../usr/local/share/OpenCV/OpenCVConfig.cmake">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/../../../../../../usr/local/share/OpenCV/OpenCVConfig.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\share\OpenCV\"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/../../../../../../usr/local/share/OpenCV/OpenCVModules.cmake">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/../../../../../../usr/local/share/OpenCV/OpenCVModules.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\share\OpenCV\"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/../../../../../../usr/local/share/OpenCV/OpenCVModules-release.cmake">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/../../../../../../usr/local/share/OpenCV/OpenCVModules-release.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\share\OpenCV\"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/../../../../../../usr/local/share/OpenCV/OpenCVConfig-version.cmake">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/../../../../../../usr/local/share/OpenCV/OpenCVConfig-version.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\share\OpenCV\"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/../../../../../../usr/local/share/OpenCV/OpenCVConfig.cmake">
+		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/../../../../../../usr/local/share/OpenCV/OpenCVConfig.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\share\OpenCV\"/>
 		</Unit>
 	</Project>

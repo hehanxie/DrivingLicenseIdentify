@@ -8,7 +8,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES main.cpp InformationDetect.cpp InformationDetect.h RedMarkArea.cpp RedMarkArea.h DriverLicense.cpp DriverLicense.h include.h)
+set(SOURCE_FILES main.cpp InformationDetect.cpp InformationDetect.h RedMarkArea.cpp RedMarkArea.h DrivingLicense.cpp DrivingLicense.h include.h)
 add_executable(DriverLicenseIdentify ${SOURCE_FILES})
 target_link_libraries(DriverLicenseIdentify ${OpenCV_LIBS})
 

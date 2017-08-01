@@ -12,7 +12,7 @@ using namespace std;
 using namespace cv;
 
 
-class DriverLicense
+class DrivingLicense
 {
 protected:
 	Mat srcImage;
@@ -45,7 +45,7 @@ protected:
 
 
 public:
-	DriverLicense(Mat srcImage);
+	DrivingLicense(Mat srcImage);
 
 	Rect getTopSideArea(Rect upperSideArea, float ratio);
 	Rect getUpperSideArea(Rect upSideArea, float ratio);
@@ -60,6 +60,8 @@ public:
 
 	// 判断是否为边界
 	bool isBorder(RotatedRect candidate);
+
+	void test();
 };
 
 

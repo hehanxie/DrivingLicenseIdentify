@@ -48,10 +48,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify
+CMAKE_SOURCE_DIR = /Users/whstarlit/Documents/Projects/Git/DrivingLicense
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/CMakeFiles /Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles /Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -123,32 +123,32 @@ DriverLicenseIdentify/fast:
 	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/build
 .PHONY : DriverLicenseIdentify/fast
 
-DriverLicense.o: DriverLicense.cpp.o
+DrivingLicense.o: DrivingLicense.cpp.o
 
-.PHONY : DriverLicense.o
+.PHONY : DrivingLicense.o
 
 # target to build an object file
-DriverLicense.cpp.o:
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/DriverLicense.cpp.o
-.PHONY : DriverLicense.cpp.o
+DrivingLicense.cpp.o:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.o
+.PHONY : DrivingLicense.cpp.o
 
-DriverLicense.i: DriverLicense.cpp.i
+DrivingLicense.i: DrivingLicense.cpp.i
 
-.PHONY : DriverLicense.i
+.PHONY : DrivingLicense.i
 
 # target to preprocess a source file
-DriverLicense.cpp.i:
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/DriverLicense.cpp.i
-.PHONY : DriverLicense.cpp.i
+DrivingLicense.cpp.i:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.i
+.PHONY : DrivingLicense.cpp.i
 
-DriverLicense.s: DriverLicense.cpp.s
+DrivingLicense.s: DrivingLicense.cpp.s
 
-.PHONY : DriverLicense.s
+.PHONY : DrivingLicense.s
 
 # target to generate assembly for a file
-DriverLicense.cpp.s:
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/DriverLicense.cpp.s
-.PHONY : DriverLicense.cpp.s
+DrivingLicense.cpp.s:
+	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.s
+.PHONY : DrivingLicense.cpp.s
 
 InformationDetect.o: InformationDetect.cpp.o
 
@@ -240,9 +240,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... DriverLicenseIdentify"
-	@echo "... DriverLicense.o"
-	@echo "... DriverLicense.i"
-	@echo "... DriverLicense.s"
+	@echo "... DrivingLicense.o"
+	@echo "... DrivingLicense.i"
+	@echo "... DrivingLicense.s"
 	@echo "... InformationDetect.o"
 	@echo "... InformationDetect.i"
 	@echo "... InformationDetect.s"

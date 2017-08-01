@@ -6,47 +6,47 @@
 
 #IncludeRegexTransform: 
 
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/DriverLicense.cpp
-DriverLicense.h
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/DriverLicense.h
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/DrivingLicense.cpp
+DrivingLicense.h
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/DrivingLicense.h
 
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/DriverLicense.h
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/DrivingLicense.h
 iostream
 -
 RedMarkArea.h
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.h
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.h
 
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationDetect.cpp
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.cpp
 InformationDetect.h
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationDetect.h
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.h
 
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/InformationDetect.h
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.h
 iostream
 -
 opencv2/opencv.hpp
 -
 RedMarkArea.h
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.h
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.h
 
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.cpp
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.cpp
 RedMarkArea.h
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.h
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.h
 iostream
 -
 
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/RedMarkArea.h
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.h
 opencv2/opencv.hpp
 -
 iostream
 -
 
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/main.cpp
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/main.cpp
 iostream
 -
 opencv2/opencv.hpp
 -
-DriverLicense.h
-/Users/whstarlit/Documents/Projects/Git/DriverLicenseIdentify/DriverLicense.h
+DrivingLicense.h
+/Users/whstarlit/Documents/Projects/Git/DrivingLicense/DrivingLicense.h
 
 /usr/local/include/opencv/cxcore.h
 opencv2/core/core_c.h
