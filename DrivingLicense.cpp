@@ -137,24 +137,40 @@ void DrivingLicense::borderDetect()
 		cout << "error";
 		return;
 	}
-	Mat dst;
-	pyrMeanShiftFiltering(image, dst, 10, 10);
-	// convert to gray
-	cvtColor(dst, image, COLOR_BGR2GRAY);
+	Mat dst = image.clone();
+	// meanshift to improve contrast ratio, but inefficient
+//	pyrMeanShiftFiltering(image, dst, 10, 10);
+
 	blur(image, image, Size(3, 3));
-	threshold(image, image, 0, 255, CV_THRESH_OTSU+CV_THRESH_BINARY);
-	imshow("blur", image);
+//	imshow("blur", image);
 
 	Mat cannyImage;
-	float minThreshold = 40;
+	float minThreshold = 80;
 	Canny(image, cannyImage, minThreshold, 3 * minThreshold);
 	threshold(cannyImage, dst, 0, 255, CV_THRESH_BINARY);
+	imshow("canny", dst);
 
-//	pyrMeanShiftFiltering(image, dst, 10, 10);
-	imshow("filter", dst);
+	// 闭操作 (连接一些连通域)
+	Mat element = getStructuringElement(MORPH_RECT, Size(5, 5));
+	morphologyEx(dst, dst, MORPH_CLOSE, element);
+	imshow("close", dst);
+
+	// draw line and corner and calculate angle
+	vector<Vec4i> lines;
+	double theta = CV_PI / 180;
+	int lineThreshold = 80;
+	double minLineLength = srcImage.rows > srcImage.cols ? srcImage.cols : srcImage.rows * 0.5;
+	double maxLineGap = 10;
+	HoughLinesP(dst, lines, 1, theta, lineThreshold, minLineLength * 0.4, maxLineGap);
+	for (size_t i = 0; i < lines.size(); i++)
+	{
+		Vec4i l = lines[i];
+		line(srcImage, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0, 0, 255), 1, CV_AA);
+	}
+	imshow("src", srcImage);
 
 
-//	// 画边缘
+//	// dras contours
 //	vector<vector<Point> > contours;
 //	findContours(dst, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 //	vector<vector<Point> >::iterator itc = contours.begin();
@@ -164,6 +180,7 @@ void DrivingLicense::borderDetect()
 
 
 //	int index = 0;
+//	bool isFindBorder = false;
 //	while (itc != contours.end())
 //	{
 //		// 获取每个轮廓的最小有界矩形区域
@@ -182,10 +199,15 @@ void DrivingLicense::borderDetect()
 //			cout << "border width: " << mr.size.width << endl;
 //			cout << "border height: " << mr.size.height << endl;
 //			imshow("border image", borderImage);
+//			isFindBorder = true;
 //			break;
 //		}
 //		itc++;
 //		index++;
+//	}
+//	if (!isFindBorder)
+//	{
+//		this->borderImage = srcImage.clone();
 //	}
 
 }
