@@ -21,11 +21,13 @@ protected:
 	RedMarkArea *redMarkArea;
 	Rect redArea;
 
-	Rect topSideArea;
-	Rect upperSideArea;
-	Rect upSideArea;
-	Rect rightSideArea;
-	Rect downSideArea;
+	Mat topSideArea;
+	Mat upperSideArea;
+	Rect upperSideRect;
+	Mat upSideArea;
+	Rect upSideRect;
+	Mat rightSideArea;
+	Mat downSideArea;
 
 	// 图像处理参数
 	static const int DEFAULT_MORPH_SIZE_WIDTH = 15;  // 11
@@ -47,13 +49,13 @@ protected:
 public:
 	DrivingLicense(Mat srcImage);
 
-	Rect getTopSideArea(Rect upperSideArea, float ratio);
-	Rect getUpperSideArea(Rect upSideArea, float ratio);
-	Rect getUpSideArea(Rect redArea, float widthRatio, float heightRatio);
-	Rect getRightSideArea(Rect redArea, float ratio);
-	Rect getDownSideArea(Rect redArea, float widthRatio, float heightRatio);
+	Mat getRightSideArea(Rect redArea, float ratio);
+	Mat getDownSideArea(Rect redArea, float widthRatio, float heightRatio);
+	Mat getUpSideArea(Rect redArea, float widthRatio, float heightRatio);
+	Mat getUpperSideArea(Rect upSideArea, float ratio);
+	Mat getTopSideArea(Rect upperSideArea, float ratio);
 
-	Mat locateKeyword(Rect rect, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
+	Mat locateKeyword(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
 
 	// 定位边界
 	void borderDetect();

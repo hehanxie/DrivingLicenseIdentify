@@ -66,7 +66,7 @@ void RedMarkArea::colorMatch()
 	Mat dst;
 	thresholdImage.convertTo(dst, CV_8UC1);
 	adaptiveThreshold(dst, thresholdImage, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 7, 3);
-	imshow("adaptive", thresholdImage);
+//	imshow("adaptive", thresholdImage);
 
 	// 开操作 (去除一些噪点)
 	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
@@ -75,7 +75,8 @@ void RedMarkArea::colorMatch()
 	// 闭操作 (连接一些连通域)
 	element = getStructuringElement(MORPH_RECT, Size(3, 3));
 	morphologyEx(thresholdImage, thresholdImage, MORPH_CLOSE, element);
-
+	this->redImage = thresholdImage.clone();
+//	imshow("red", redImage);
 	// 显示经过处理后的图像
 	getHorizontalProjection(thresholdImage);
 //	imshow("horizontal", getHorizontalProjection(thresholdImage));
@@ -315,17 +316,17 @@ void RedMarkArea::setRedSize()
 	cout << "end point: " << p2 << endl;
 
 	Rect rect = Rect(p1, p2);
-	setRedArea(rect);
-	rectangle(borderImage, rect, Scalar(0, 0, 255));
+	setRedRect(rect);
+	rectangle(borderImage, rect, Scalar(255, 0, 0));
 //	imshow("red area", borderImage);
 }
 
-void RedMarkArea::setRedArea(Rect redArea)
+void RedMarkArea::setRedRect(Rect rect)
 {
-	this->redArea = redArea;
+	this->redRect = rect;
 }
 
-Rect RedMarkArea::getRedArea()
+Rect RedMarkArea::getRedRect()
 {
-	return redArea;
+	return redRect;
 }

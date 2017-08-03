@@ -13,10 +13,13 @@ using namespace cv;
 class RedMarkArea
 {
 protected:
-	Rect redArea;
+	Rect redRect;
+	Mat redImage;
+
 	Mat srcImage;
 	int srcHeight;
 	int srcWidth;
+
 	Mat borderImage;
 	int borderHeight;
 	int borderWidth;
@@ -58,8 +61,8 @@ public:
 	// 计算红色区域位置
 	void setRedSize();
 
-	void setRedArea(Rect redArea);
-	Rect getRedArea();
+	void setRedRect(Rect rect);
+	Rect getRedRect();
 };
 
 

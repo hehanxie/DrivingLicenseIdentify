@@ -8,21 +8,29 @@
 DrivingLicense::DrivingLicense(Mat srcImage)
 {
 	this->srcImage = srcImage.clone();
-	borderDetect();
+//	borderDetect();
 
-	// redMarkArea = new RedMarkArea(srcImage, borderImage);
+	this->borderImage = srcImage.clone();
+	redMarkArea = new RedMarkArea(srcImage, borderImage);
 
-	// redArea = redMarkArea->getRedArea();
-	// rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
-	// downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
-	// upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
-	// upperSideArea = getUpperSideArea(upSideArea, UPPER_RATIO);
-	// topSideArea = getTopSideArea(upperSideArea, TOP_RATIO);
+	redArea = redMarkArea->getRedRect();
 
-//	imshow("draw area", borderImage);
+//	rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
+//	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
+//	upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
+//	upperSideArea = getUpperSideArea(upSideRect, UPPER_RATIO);
+//	topSideArea = getTopSideArea(upperSideRect, TOP_RATIO);
+//
+//	imshow("right area", rightSideArea);
+//	imshow("down area", downSideArea);
+//	imshow("up area", upSideArea);
+//	imshow("upper area", upperSideArea);
+//	imshow("top area", topSideArea);
+//	imshow("area", locateKeyword(downSideArea, 0, 0, 0.63, 1));
+//	imshow("all area", borderImage);
 }
 
-Rect DrivingLicense::getRightSideArea(Rect redArea, float ratio)
+Mat DrivingLicense::getRightSideArea(Rect redArea, float ratio)
 {
 	int redWidth = redArea.width;
 	int redHeight = redArea.height;
@@ -34,67 +42,18 @@ Rect DrivingLicense::getRightSideArea(Rect redArea, float ratio)
 	p2.x = p1.x + redWidth * ratio;
 	p2.y = p1.y + redHeight;
 
+	// rectangle need to be corrected
 	Rect rect = Rect(p1, p2);
-	rectangle(borderImage, rect, Scalar(255, 0, 0));
-//	imshow("right area", borderImage);
-	return rect;
-}
-
-Rect DrivingLicense::getTopSideArea(Rect upperSideArea, float ratio)
-{
-	int width = upperSideArea.width;
-	int height = upperSideArea.height;
-	Point p1;
-	p1.x = upperSideArea.x;
-	p1.y = upperSideArea.y;
-
-	Point p2;
-	p2.x = p1.x + width;
-	p2.y = p1.y - height * ratio;
-
-	Rect rect = Rect(p1, p2);
-	rectangle(borderImage, rect, Scalar(0, 0, 255));
-//	imshow("top area", borderImage);
-	return rect;
-}
-
-Rect DrivingLicense::getUpperSideArea(Rect upSideArea, float ratio)
-{
-	int width = upSideArea.width;
-	int height = upSideArea.height;
-	Point p1;
-	p1.x = upSideArea.x;
-	p1.y = upSideArea.y;
-
-	Point p2;
-	p2.x = p1.x + width;
-	p2.y = p1.y - height * ratio;
-
-	Rect rect = Rect(p1, p2);
+	// set roi image
+	Mat roi;
+	roi = srcImage(rect);
+	// draw area
 	rectangle(borderImage, rect, Scalar(0, 255, 0));
-//	imshow("upper area", borderImage);
-	return rect;
+//	imshow("right area", borderImage);
+	return roi;
 }
 
-Rect DrivingLicense::getUpSideArea(Rect redArea, float widthRatio, float heightRatio)
-{
-	int redWidth = redArea.width;
-	int redHeight = redArea.height;
-	Point p1;
-	p1.x = redArea.x;
-	p1.y = redArea.y;
-
-	Point p2;
-	p2.x = p1.x + redWidth * widthRatio;
-	p2.y = p1.y - redHeight * heightRatio;
-
-	Rect rect = Rect(p1, p2);
-	rectangle(borderImage, rect, Scalar(255, 0, 0));
-//	imshow("up area", borderImage);
-	return rect;
-}
-
-Rect DrivingLicense::getDownSideArea(Rect redArea, float widthRatio, float heightRatio)
+Mat DrivingLicense::getDownSideArea(Rect redArea, float widthRatio, float heightRatio)
 {
 	int redWidth = redArea.width;
 	int redHeight = redArea.height;
@@ -107,23 +66,88 @@ Rect DrivingLicense::getDownSideArea(Rect redArea, float widthRatio, float heigh
 	p2.y = p1.y + redHeight * heightRatio;
 
 	Rect rect = Rect(p1, p2);
+	Mat roi;
+	roi = srcImage(rect);
 	rectangle(borderImage, rect, Scalar(255, 0, 255));
 //	imshow("down area", borderImage);
-	return rect;
+	return roi;
+}
+
+Mat DrivingLicense::getUpSideArea(Rect redArea, float widthRatio, float heightRatio)
+{
+	int redWidth = redArea.width;
+	int redHeight = redArea.height;
+	Point p1;
+	p1.x = redArea.x;
+	p1.y = redArea.y;
+
+	Point p2;
+	p2.x = p1.x + redWidth * widthRatio;
+	p2.y = p1.y - redHeight * heightRatio;
+
+	Rect rect = Rect(p1, p2);
+	this->upSideRect = rect;
+	Mat roi;
+	roi = srcImage(rect);
+	rectangle(borderImage, rect, Scalar(255, 0, 0));
+//	imshow("up area", borderImage);
+	return roi;
+}
+
+Mat DrivingLicense::getUpperSideArea(Rect upSideArea, float ratio)
+{
+	int width = upSideArea.width;
+	int height = upSideArea.height;
+	Point p1;
+	p1.x = upSideArea.x;
+	p1.y = upSideArea.y;
+
+	Point p2;
+	p2.x = p1.x + width;
+	p2.y = p1.y - height * ratio;
+
+	Rect rect = Rect(p1, p2);
+	this->upperSideRect = rect;
+	Mat roi;
+	roi = srcImage(rect);
+	rectangle(borderImage, rect, Scalar(0, 255, 0));
+//	imshow("upper area", borderImage);
+	return roi;
+}
+
+Mat DrivingLicense::getTopSideArea(Rect upperSideArea, float ratio)
+{
+	int width = upperSideArea.width;
+	int height = upperSideArea.height;
+	Point p1;
+	p1.x = upperSideArea.x;
+	p1.y = upperSideArea.y;
+
+	Point p2;
+	p2.x = p1.x + width;
+	p2.y = p1.y - height * ratio;
+
+	Rect rect = Rect(p1, p2);
+	Mat roi;
+	roi = srcImage(rect);
+	rectangle(borderImage, rect, Scalar(0, 0, 255));
+//	imshow("top area", borderImage);
+	return roi;
 }
 
 // 通过定位红色区域，确定信息位置。比例按照与红色区域的长宽比例进行偏移，裁剪
-Mat DrivingLicense::locateKeyword(Rect rect, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio)
+Mat DrivingLicense::locateKeyword(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio)
 {
-	int width = rect.x;
-	int height = rect.y;
+	Mat keywordArea;
+	int width = roi.cols;
+	int height = roi.rows;
 	Point p1;
 	p1.x = width + width * widthOffsetRatio;
 	p1.y = height + height * heightOffsetRatio;
 	Point p2;
 	p2.x = p1.x + width * widthRatio;
 	p2.y = p1.y + height * heightRatio;
-
+	return keywordArea;
 }
 
 void DrivingLicense::borderDetect()
@@ -145,15 +169,15 @@ void DrivingLicense::borderDetect()
 //	imshow("blur", image);
 
 	Mat cannyImage;
-	float minThreshold = 80;
+	float minThreshold = 70;
 	Canny(image, cannyImage, minThreshold, 3 * minThreshold);
 	threshold(cannyImage, dst, 0, 255, CV_THRESH_BINARY);
-	imshow("canny", dst);
+//	imshow("canny", dst);
 
 	// 闭操作 (连接一些连通域)
 	Mat element = getStructuringElement(MORPH_RECT, Size(5, 5));
 	morphologyEx(dst, dst, MORPH_CLOSE, element);
-	imshow("close", dst);
+//	imshow("close", dst);
 
 	// draw line and corner and calculate angle
 	vector<Vec4i> lines;
@@ -161,11 +185,11 @@ void DrivingLicense::borderDetect()
 	int lineThreshold = 80;
 	double minLineLength = srcImage.rows > srcImage.cols ? srcImage.cols : srcImage.rows * 0.5;
 	double maxLineGap = 10;
-	HoughLinesP(dst, lines, 1, theta, lineThreshold, minLineLength * 0.4, maxLineGap);
+	HoughLinesP(dst, lines, 1, theta, lineThreshold, minLineLength * 0.5, maxLineGap);
 	for (size_t i = 0; i < lines.size(); i++)
 	{
 		Vec4i l = lines[i];
-		line(srcImage, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0, 0, 255), 1, CV_AA);
+		line(srcImage, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(255, 0, 0), 2, CV_AA);
 	}
 	imshow("src", srcImage);
 
