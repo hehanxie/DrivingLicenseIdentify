@@ -8,15 +8,18 @@
 DrivingLicense::DrivingLicense(Mat srcImage)
 {
 	this->srcImage = srcImage.clone();
-//	borderDetect();
+	showImage = srcImage.clone();
 
-	this->borderImage = srcImage.clone();
-	redMarkArea = new RedMarkArea(srcImage, borderImage);
+	redMarkArea = new RedMarkArea(srcImage);
 
+	// get rotated angle
+	ANGLE = redMarkArea->getAngle();
+	rotateImage(srcImage, this->srcImage, ANGLE);
+	rotateImage(srcImage, showImage, ANGLE);
 	redArea = redMarkArea->getRedRect();
 
-//	rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
-//	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
+	rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
+	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
 //	upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
 //	upperSideArea = getUpperSideArea(upSideRect, UPPER_RATIO);
 //	topSideArea = getTopSideArea(upperSideRect, TOP_RATIO);
@@ -27,7 +30,7 @@ DrivingLicense::DrivingLicense(Mat srcImage)
 //	imshow("upper area", upperSideArea);
 //	imshow("top area", topSideArea);
 //	imshow("area", locateKeyword(downSideArea, 0, 0, 0.63, 1));
-//	imshow("all area", borderImage);
+	imshow("all area", showImage);
 }
 
 Mat DrivingLicense::getRightSideArea(Rect redArea, float ratio)
@@ -48,8 +51,8 @@ Mat DrivingLicense::getRightSideArea(Rect redArea, float ratio)
 	Mat roi;
 	roi = srcImage(rect);
 	// draw area
-	rectangle(borderImage, rect, Scalar(0, 255, 0));
-//	imshow("right area", borderImage);
+	rectangle(showImage, rect, Scalar(0, 255, 0));
+//	imshow("right area", showImage);
 	return roi;
 }
 
@@ -68,8 +71,9 @@ Mat DrivingLicense::getDownSideArea(Rect redArea, float widthRatio, float height
 	Rect rect = Rect(p1, p2);
 	Mat roi;
 	roi = srcImage(rect);
-	rectangle(borderImage, rect, Scalar(255, 0, 255));
-//	imshow("down area", borderImage);
+
+	rectangle(showImage, rect, Scalar(255, 0, 255));
+//	imshow("down area", showImage);
 	return roi;
 }
 
@@ -89,8 +93,8 @@ Mat DrivingLicense::getUpSideArea(Rect redArea, float widthRatio, float heightRa
 	this->upSideRect = rect;
 	Mat roi;
 	roi = srcImage(rect);
-	rectangle(borderImage, rect, Scalar(255, 0, 0));
-//	imshow("up area", borderImage);
+	rectangle(showImage, rect, Scalar(255, 0, 0));
+//	imshow("up area", showImage);
 	return roi;
 }
 
@@ -110,8 +114,8 @@ Mat DrivingLicense::getUpperSideArea(Rect upSideArea, float ratio)
 	this->upperSideRect = rect;
 	Mat roi;
 	roi = srcImage(rect);
-	rectangle(borderImage, rect, Scalar(0, 255, 0));
-//	imshow("upper area", borderImage);
+	rectangle(showImage, rect, Scalar(0, 255, 0));
+//	imshow("upper area", showImage);
 	return roi;
 }
 
@@ -130,9 +134,23 @@ Mat DrivingLicense::getTopSideArea(Rect upperSideArea, float ratio)
 	Rect rect = Rect(p1, p2);
 	Mat roi;
 	roi = srcImage(rect);
-	rectangle(borderImage, rect, Scalar(0, 0, 255));
-//	imshow("top area", borderImage);
+	rectangle(showImage, rect, Scalar(0, 0, 255));
+//	imshow("top area", showImage);
 	return roi;
+}
+
+void DrivingLicense::rotateImage(Mat src, Mat &img_rotate, float degree)
+{
+	//旋转中心为图像中心
+	Point2f center;
+	center.x = float(src.cols / 2.0);
+	center.y = float(src.rows / 2.0);
+//	int length = 0;
+//	length = sqrt(src.cols * src.cols + src.rows * src.rows);
+	//计算二维旋转的仿射变换矩阵
+	Mat M = getRotationMatrix2D(center, degree, 1);
+	warpAffine(src, img_rotate, M, Size(src.cols, src.rows), 1, 0, Scalar(255, 255, 255));//仿射变换，背景色填充为白色
+//	imshow("rotate", img_rotate);
 }
 
 // 通过定位红色区域，确定信息位置。比例按照与红色区域的长宽比例进行偏移，裁剪
@@ -148,108 +166,6 @@ Mat DrivingLicense::locateKeyword(Mat roi, float widthOffsetRatio, float heightO
 	p2.x = p1.x + width * widthRatio;
 	p2.y = p1.y + height * heightRatio;
 	return keywordArea;
-}
-
-void DrivingLicense::borderDetect()
-{
-	/*
-	 * canny, find border 
-	*/
-	Mat image = srcImage.clone();
-	if (image.empty())
-	{
-		cout << "error";
-		return;
-	}
-	Mat dst = image.clone();
-	// meanshift to improve contrast ratio, but inefficient
-//	pyrMeanShiftFiltering(image, dst, 10, 10);
-
-	blur(image, image, Size(3, 3));
-//	imshow("blur", image);
-
-	Mat cannyImage;
-	float minThreshold = 70;
-	Canny(image, cannyImage, minThreshold, 3 * minThreshold);
-	threshold(cannyImage, dst, 0, 255, CV_THRESH_BINARY);
-//	imshow("canny", dst);
-
-	// 闭操作 (连接一些连通域)
-	Mat element = getStructuringElement(MORPH_RECT, Size(5, 5));
-	morphologyEx(dst, dst, MORPH_CLOSE, element);
-//	imshow("close", dst);
-
-	// draw line and corner and calculate angle
-	vector<Vec4i> lines;
-	double theta = CV_PI / 180;
-	int lineThreshold = 80;
-	double minLineLength = srcImage.rows > srcImage.cols ? srcImage.cols : srcImage.rows * 0.5;
-	double maxLineGap = 10;
-	HoughLinesP(dst, lines, 1, theta, lineThreshold, minLineLength * 0.5, maxLineGap);
-	for (size_t i = 0; i < lines.size(); i++)
-	{
-		Vec4i l = lines[i];
-		line(srcImage, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(255, 0, 0), 2, CV_AA);
-	}
-	imshow("src", srcImage);
-
-
-//	// dras contours
-//	vector<vector<Point> > contours;
-//	findContours(dst, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-//	vector<vector<Point> >::iterator itc = contours.begin();
-//	drawContours(srcImage, contours, -1, Scalar(0, 0, 255));
-//	imshow("draw", srcImage);
-
-
-
-//	int index = 0;
-//	bool isFindBorder = false;
-//	while (itc != contours.end())
-//	{
-//		// 获取每个轮廓的最小有界矩形区域
-//		RotatedRect mr = minAreaRect(Mat(*itc));
-//		if (isBorder(mr))
-//		{
-//			Point2f P[4];
-//			mr.points(P);
-//			for (int j = 0; j <= 3; j++)
-//			{
-//				line(srcImage, P[j], P[(j + 1) % 4], Scalar(0, 0, 255), 2);
-//			}
-//
-//			// set border roi region
-//			this->borderImage = srcImage(Rect(P[2], P[0]));
-//			cout << "border width: " << mr.size.width << endl;
-//			cout << "border height: " << mr.size.height << endl;
-//			imshow("border image", borderImage);
-//			isFindBorder = true;
-//			break;
-//		}
-//		itc++;
-//		index++;
-//	}
-//	if (!isFindBorder)
-//	{
-//		this->borderImage = srcImage.clone();
-//	}
-
-}
-
-bool DrivingLicense::isBorder(RotatedRect candidate)
-{
-	// get area
-	int area = candidate.size.height * candidate.size.width;
-	int rArea = srcImage.rows * srcImage.cols * 0.5;
-
-	if (area > rArea)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
 }
 
 void DrivingLicense::test()

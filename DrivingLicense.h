@@ -16,10 +16,11 @@ class DrivingLicense
 {
 protected:
 	Mat srcImage;
-	Mat borderImage;
+	Mat showImage;
 
 	RedMarkArea *redMarkArea;
 	Rect redArea;
+	float ANGLE;
 
 	Mat topSideArea;
 	Mat upperSideArea;
@@ -55,13 +56,10 @@ public:
 	Mat getUpperSideArea(Rect upSideArea, float ratio);
 	Mat getTopSideArea(Rect upperSideArea, float ratio);
 
+	// rotete image
+	void rotateImage(Mat src, Mat &img_rotate, float degree);
 	Mat locateKeyword(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
 
-	// 定位边界
-	void borderDetect();
-
-	// 判断是否为边界
-	bool isBorder(RotatedRect candidate);
 
 	void test();
 };

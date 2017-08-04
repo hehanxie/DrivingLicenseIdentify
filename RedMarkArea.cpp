@@ -12,7 +12,7 @@ RedMarkArea::RedMarkArea()
 
 }
 
-RedMarkArea::RedMarkArea(Mat srcImage, Mat borderImage)
+RedMarkArea::RedMarkArea(Mat srcImage)
 {
 	this->srcImage = srcImage.clone();
 
@@ -20,19 +20,17 @@ RedMarkArea::RedMarkArea(Mat srcImage, Mat borderImage)
 	endRow = 0;
 	startCol = 0;
 	endCol = 0;
-	srcHeight = srcImage.rows;
-	srcWidth = srcImage.cols;
-	borderHeight = borderImage.rows;
-	borderWidth = borderImage.cols;
+	HEIGHT = srcImage.rows;
+	WIDTH = srcImage.cols;
 
-	horizontalArray = new int[borderHeight];
-	verticalArray = new int[borderWidth];
+	horizontalArray = new int[HEIGHT];
+	verticalArray = new int[WIDTH];
 
-	this->srcImage = srcImage;
-	this->borderImage = borderImage;
+	showImage = srcImage.clone();
 
 	colorMatch();
 	setRedSize();
+	lineDetect();
 //	imshow("src image", srcImage);
 }
 
@@ -42,14 +40,14 @@ void RedMarkArea::colorMatch()
 	int minRedH = 140; // 140
 	int maxRedH = 180;
 
-	int minS = 75; // 80
+	int minS = 75; // 75
 	int maxS = 255;
-	int minV = 75; // 80
+	int minV = 75; // 75
 	int maxV = 220;
 
 	// 将BGR 转换为 HSV
 	Mat srcHSV;
-	cvtColor(borderImage, srcHSV, CV_BGR2HSV);
+	cvtColor(showImage, srcHSV, CV_BGR2HSV);
 	// 直方图均衡化
 	vector<Mat> hsvSplit;
 	split(srcHSV, hsvSplit);
@@ -57,11 +55,9 @@ void RedMarkArea::colorMatch()
 	merge(hsvSplit, srcHSV);
 
 	// 通过hsv空间，定位红色区域
-	// 尝试用rgb空间，定位（针对图像1.1存在的问题
 	Mat thresholdImage;
-//	inRange(srcHSV, Scalar(0, minS, minV), Scalar(15, maxS, maxV), thresholdImage);
-//	inRange(srcHSV, Scalar(0, 60, 60), Scalar(10, maxS, maxV), thresholdImage);
 	inRange(srcHSV, Scalar(minRedH, minS, minV), Scalar(maxRedH, maxS, maxV), thresholdImage);
+//	imshow("thre", thresholdImage);
 
 	Mat dst;
 	thresholdImage.convertTo(dst, CV_8UC1);
@@ -75,52 +71,17 @@ void RedMarkArea::colorMatch()
 	// 闭操作 (连接一些连通域)
 	element = getStructuringElement(MORPH_RECT, Size(3, 3));
 	morphologyEx(thresholdImage, thresholdImage, MORPH_CLOSE, element);
+
+	// get red image
 	this->redImage = thresholdImage.clone();
 //	imshow("red", redImage);
+
 	// 显示经过处理后的图像
 	getHorizontalProjection(thresholdImage);
 //	imshow("horizontal", getHorizontalProjection(thresholdImage));
 
 	getVerticalProjection(thresholdImage);
 //	imshow("vertical", getVerticalProjection(thresholdImage));
-
-//	imshow("morphplogy image", thresholdImage);
-//	imshow("src image", srcImage);
-	// 描绘轮廓
-//	vector<vector<Point>> contours;
-//	findContours(thresholdImage, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-//	drawContours(src, contours, -1, Scalar(0, 0, 255), 2);
-//	cout << "contours: " << contours.size() << endl;
-//	imshow("all contours", src);
-
-//	vector<vector<Point> >::iterator itc = contours.begin();
-//	vector<Mat> redAreaVec;
-//	while (itc != contours.end())
-//	{
-//		RotatedRect mr = minAreaRect(Mat(*itc));
-//		// 如果区域大小符合，且角度正常
-//		if (isRedArea(mr) && isRedAreaAngle(mr))
-//		{
-//			Point2f P[4];
-//			mr.points(P);
-//			for(int j = 0; j <= 3; j++)
-//			{
-//				// 画出红色区域（矩形）
-//				line(src, P[j], P[(j + 1) % 4], Scalar(0, 0, 255), 2);
-//			}
-//
-//			// 将红色水印区域保存
-//			Mat rotmat = getRotationMatrix2D(mr.center, mr.angle, 1);
-//			Mat rotatedImage;
-//			warpAffine(src, rotatedImage, rotmat, src.size(), CV_INTER_CUBIC);
-//
-//			redAreaVec.push_back(rotatedImage);
-//		}
-//		itc++;
-//	}
-
-//	imshow("red area", src);
-//	waitKey(0);
 }
 
 bool RedMarkArea::isRedArea(RotatedRect mr)
@@ -129,7 +90,7 @@ bool RedMarkArea::isRedArea(RotatedRect mr)
 //	cout << " height: " << height << endl;
 	int area = mr.size.width * mr.size.height;
 
-	int borderArea = borderImage.cols * borderImage.rows;
+	int borderArea = HEIGHT * WIDTH;
 	int rMinArea = borderArea * (RED_AREA_RATIO - RED_AREA_ERROR);
 	int rMaxArea = borderArea * (RED_AREA_RATIO + RED_AREA_ERROR);
 
@@ -164,11 +125,11 @@ Mat RedMarkArea::getVerticalProjection(Mat image)
 	int maxNum = 0;
 	// 黑点最小数目和最小行
 	int minCol = 0;
-	int minNum = borderHeight;
+	int minNum = HEIGHT;
 
 	//图像的高和宽
-	int height = borderHeight;
-	int width = borderWidth;
+	int height = HEIGHT;
+	int width = WIDTH;
 	// 保存当前行的黑点数目
 	int tmp = 0;
 	// 保存每一行黑点数目的数组
@@ -220,21 +181,18 @@ Mat RedMarkArea::getHorizontalProjection (Mat image)
 	int maxNum = 0;
 	// 黑点最小数目和最小行
 	int minLine = 0;
-	int minNum = borderWidth;
-	//图像的高和宽
-	int height = borderHeight;
-	int width = borderWidth;
+	int minNum = WIDTH;
 	// 保存当前行的黑点数目
 	int tmp = 0;
 	// 保存每一行黑点数目的数组
-	int *blackArray = new int[height];
+	int *blackArray = new int[HEIGHT];
 
 
 	//循环访问图像数据，查找每一行的白点的数目
-	for (int i = 0; i < height; i++)
+	for (int i = 0; i < HEIGHT; i++)
 	{
 		tmp = 0;
-		for (int j = 0; j < width/2; j++)
+		for (int j = 0; j < WIDTH/2; j++)
 		{
 			// 白点
 			if (image.at<uchar>(i, j) == 0)
@@ -260,12 +218,12 @@ Mat RedMarkArea::getHorizontalProjection (Mat image)
 	}
 
 	//创建并绘制水平投影图像
-	Mat projImg(height, width, CV_8U, Scalar(255));
+	Mat projImg(HEIGHT, WIDTH, CV_8U, Scalar(255));
 
-	for (int i = 0; i < height; i++)
+	for (int i = 0; i < HEIGHT; i++)
 	{
 		//  黑点个数
-		line(projImg, Point(blackArray[i], i), Point(width - 1, i), Scalar::all(0));
+		line(projImg, Point(blackArray[i], i), Point(WIDTH - 1, i), Scalar::all(0));
 	}
 
 	horizontalArray = blackArray;
@@ -274,51 +232,52 @@ Mat RedMarkArea::getHorizontalProjection (Mat image)
 
 void RedMarkArea::setRedSize()
 {
+	int N = srcImage.rows > srcImage.cols ? srcImage.cols : srcImage.rows * 0.075;
 	// x position
-	for (int i = 0; i < borderWidth/2; i++)
+	for (int i = 0; i < WIDTH/2; i++)
 	{
-		if (abs(verticalArray[i + 1] - verticalArray[i]) >= 10)
+		if (abs(verticalArray[i + 1] - verticalArray[i]) >= 10 && verticalArray[i] > N)
 		{
-			startCol = i + 5;
+			startCol = i + 3;
 			break;
 		}
 	}
-	for (int i = borderWidth/2; i > 1; i--)
+	for (int i = WIDTH/2; i > 1; i--)
 	{
-		if (abs(verticalArray[i] - verticalArray[i - 1]) >= 10)
+		if (abs(verticalArray[i] - verticalArray[i - 1]) >= 10 && verticalArray[i] > N)
 		{
-			endCol = i - 5;
+			endCol = i - 3;
 			break;
 		}
 	}
 
 	// y position
-	for (int i = borderHeight/2; i < borderHeight - 1; i++)
+	for (int i = HEIGHT/2; i < HEIGHT - 1; i++)
 	{
-		if (abs(horizontalArray[i + 1] - horizontalArray[i]) >= 10)
+		if (abs(horizontalArray[i + 1] - horizontalArray[i]) >= 10 && horizontalArray[i] > N)
 		{
-			startRow = i + 5;
+			startRow = i + 3;
 			break;
 		}
 	}
-	for (int i = borderHeight - 1; i > 1; i--)
+	for (int i = HEIGHT - 1; i > 1; i--)
 	{
-		if (abs(horizontalArray[i] - horizontalArray[i - 1]) >= 10)
+		if (abs(horizontalArray[i] - horizontalArray[i - 1]) >= 10 && horizontalArray[i] > N)
 		{
-			endRow = i - 5;
+			endRow = i - 3;
 			break;
 		}
 	}
 
 	Point p1 = Point(startCol, startRow);
 	Point p2 = Point(endCol, endRow);
-	cout << "start point: " << p1 << endl;
-	cout << "end point: " << p2 << endl;
 
 	Rect rect = Rect(p1, p2);
 	setRedRect(rect);
-	rectangle(borderImage, rect, Scalar(255, 0, 0));
-//	imshow("red area", borderImage);
+	cout << "red rect: " << rect << endl;
+
+	rectangle(showImage, rect, Scalar(255, 0, 0));
+	imshow("red area", showImage);
 }
 
 void RedMarkArea::setRedRect(Rect rect)
@@ -329,4 +288,66 @@ void RedMarkArea::setRedRect(Rect rect)
 Rect RedMarkArea::getRedRect()
 {
 	return redRect;
+}
+
+void RedMarkArea::lineDetect()
+{
+//	imshow("red image", redImage);
+	Mat lineImage;
+	cvtColor(redImage, lineImage, CV_GRAY2BGR);
+
+	Mat blurImage;
+	blur(redImage, blurImage, Size(3, 3));
+//	imshow("blur", blurImage);
+
+	Mat dst, cannyImage;
+	float minThreshold = 70;
+	Canny(blurImage, dst, minThreshold, 3 * minThreshold);
+	threshold(dst, dst, 0, 255, CV_THRESH_BINARY);
+//	imshow("canny", dst);
+
+
+	// draw line and corner and calculate angle
+	vector<Vec2f> lines;
+	int lineThreshold = 100;
+	HoughLines(dst, lines, 1, CV_PI / 180, lineThreshold, 0, 0);
+	float sum = 0;
+	for (size_t i = 0; i < lines.size(); i++)
+	{
+		float rho = lines[i][0], theta = lines[i][1];
+		sum += theta;
+		Point pt1, pt2;
+		double a = cos(theta), b = sin(theta);
+		double x0 = a * rho, y0 = b * rho;
+		pt1.x = cvRound(x0 + 1000 * (-b));
+		pt1.y = cvRound(y0 + 1000 * (a));
+		pt2.x = cvRound(x0 - 1000 * (-b));
+		pt2.y = cvRound(y0 - 1000 * (a));
+		line(lineImage, pt1, pt2, Scalar(0, 0, 255), 1, CV_AA);
+	}
+	float average = sum/lines.size();
+	imshow("line", lineImage);
+	float angle = degreeTrans(average) - 90;
+	cout << "angle: " << angle << endl;
+	setAngle(angle);
+//	Mat rotate;
+//	rotateImage(srcImage, rotate, angle);
+//	imshow("rotate", rotate);
+}
+
+//度数转换
+float RedMarkArea::degreeTrans(float theta)
+{
+	double res = theta / CV_PI * 180;
+	return res;
+}
+
+void RedMarkArea::setAngle(float angle)
+{
+	this->ANGLE = angle;
+}
+
+float RedMarkArea::getAngle()
+{
+	return this->ANGLE;
 }

@@ -14,15 +14,16 @@ class RedMarkArea
 {
 protected:
 	Rect redRect;
+	// gray image with 8UC1
 	Mat redImage;
 
 	Mat srcImage;
-	int srcHeight;
-	int srcWidth;
+	int HEIGHT;
+	int WIDTH;
+	float ANGLE;
 
-	Mat borderImage;
-	int borderHeight;
-	int borderWidth;
+	Mat showImage;
+
 
 	int *horizontalArray;
 	int startRow;
@@ -41,7 +42,7 @@ protected:
 public:
 	RedMarkArea();
 
-	RedMarkArea(Mat srcImage, Mat borderImage);
+	RedMarkArea(Mat srcImage);
 
 	// 颜色匹配（查找红色区域）
 	void colorMatch();
@@ -63,6 +64,10 @@ public:
 
 	void setRedRect(Rect rect);
 	Rect getRedRect();
+	void lineDetect();
+	void setAngle(float angle);
+	float getAngle();
+	float degreeTrans(float theta);
 };
 
 
