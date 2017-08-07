@@ -17,6 +17,8 @@ class DrivingLicense
 protected:
 	Mat srcImage;
 	Mat showImage;
+	int HEIGHT;
+	int WIDTH;
 
 	RedMarkArea *redMarkArea;
 	Rect redArea;
@@ -29,6 +31,9 @@ protected:
 	Rect upSideRect;
 	Mat rightSideArea;
 	Mat downSideArea;
+
+	vector<Mat> keyMat;
+	map<string, Mat> keyInformation;
 
 	// 图像处理参数
 	static const int DEFAULT_MORPH_SIZE_WIDTH = 15;  // 11
@@ -48,7 +53,7 @@ protected:
 
 
 public:
-	DrivingLicense(Mat srcImage);
+	DrivingLicense(Mat src);
 
 	Mat getRightSideArea(Rect redArea, float ratio);
 	Mat getDownSideArea(Rect redArea, float widthRatio, float heightRatio);
@@ -57,11 +62,14 @@ public:
 	Mat getTopSideArea(Rect upperSideArea, float ratio);
 
 	// rotete image
-	void rotateImage(Mat src, Mat &img_rotate, float degree);
+	void rotateImage(Mat src, Mat &img_rotate, float angle);
+	void correctRect(Rect &rect, float angle);
+
 	Mat locateKeyword(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
+	// save all image into vector before dividing
+	void getKeyInformation(vector &v);
 
 
-	void test();
 };
 
 

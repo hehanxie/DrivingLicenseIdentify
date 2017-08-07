@@ -12,26 +12,27 @@ RedMarkArea::RedMarkArea()
 
 }
 
-RedMarkArea::RedMarkArea(Mat srcImage)
+RedMarkArea::RedMarkArea(Mat src)
 {
-	this->srcImage = srcImage.clone();
+	this->srcImage = src.clone();
+	showImage = src.clone();
 
 	startRow = 0;
 	endRow = 0;
 	startCol = 0;
 	endCol = 0;
+	ANGLE = 0;
 	HEIGHT = srcImage.rows;
 	WIDTH = srcImage.cols;
 
 	horizontalArray = new int[HEIGHT];
 	verticalArray = new int[WIDTH];
 
-	showImage = srcImage.clone();
-
 	colorMatch();
 	setRedSize();
 	lineDetect();
-//	imshow("src image", srcImage);
+
+//	imshow("red image", showImage);
 }
 
 void RedMarkArea::colorMatch()
@@ -101,22 +102,6 @@ bool RedMarkArea::isRedArea(RotatedRect mr)
 	return false;
 }
 
-bool RedMarkArea::isRedAreaAngle(RotatedRect mr)
-{
-	Size2f rectSize = mr.size;
-	int width = rectSize.width;
-	int height = rectSize.height;
-	float angle = mr.angle;
-	// 如果矩形的旋转角度不在范围内，则抛弃
-	if (angle > - ANGLE_ERROR)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
 
 Mat RedMarkArea::getVerticalProjection(Mat image)
 {
@@ -277,7 +262,8 @@ void RedMarkArea::setRedSize()
 	cout << "red rect: " << rect << endl;
 
 	rectangle(showImage, rect, Scalar(255, 0, 0));
-	imshow("red area", showImage);
+
+//	imshow("red area", showImage);
 }
 
 void RedMarkArea::setRedRect(Rect rect)
@@ -326,9 +312,12 @@ void RedMarkArea::lineDetect()
 		line(lineImage, pt1, pt2, Scalar(0, 0, 255), 1, CV_AA);
 	}
 	float average = sum/lines.size();
-	imshow("line", lineImage);
+	if (lines.size() == 0)
+	{
+		average = 0;
+	}
+//	imshow("line", lineImage);
 	float angle = degreeTrans(average) - 90;
-	cout << "angle: " << angle << endl;
 	setAngle(angle);
 //	Mat rotate;
 //	rotateImage(srcImage, rotate, angle);
@@ -344,7 +333,12 @@ float RedMarkArea::degreeTrans(float theta)
 
 void RedMarkArea::setAngle(float angle)
 {
+	if (abs(angle) > 10)
+	{
+		angle = 0;
+	}
 	this->ANGLE = angle;
+	cout << "angle = " << angle << endl;
 }
 
 float RedMarkArea::getAngle()

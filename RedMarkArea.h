@@ -42,16 +42,13 @@ protected:
 public:
 	RedMarkArea();
 
-	RedMarkArea(Mat srcImage);
+	RedMarkArea(Mat src);
 
 	// 颜色匹配（查找红色区域）
 	void colorMatch();
 
 	// 判断红色区域矩阵面积是否合理
 	bool isRedArea(RotatedRect mr);
-
-	// 判断红色区域矩阵角度是否合理
-	bool isRedAreaAngle(RotatedRect mr);
 
 	// 水平投影
 	Mat getHorizontalProjection (Mat image);

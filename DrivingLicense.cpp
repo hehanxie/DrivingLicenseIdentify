@@ -5,32 +5,24 @@
 #include "DrivingLicense.h"
 
 
-DrivingLicense::DrivingLicense(Mat srcImage)
+DrivingLicense::DrivingLicense(Mat src)
 {
-	this->srcImage = srcImage.clone();
-	showImage = srcImage.clone();
+	this->srcImage = src.clone();
+	HEIGHT = srcImage.rows;
+	WIDTH = srcImage.cols;
 
-	redMarkArea = new RedMarkArea(srcImage);
+	redMarkArea = new RedMarkArea(src);
 
 	// get rotated angle
 	ANGLE = redMarkArea->getAngle();
-	rotateImage(srcImage, this->srcImage, ANGLE);
-	rotateImage(srcImage, showImage, ANGLE);
-	redArea = redMarkArea->getRedRect();
+	rotateImage(src, this->srcImage, ANGLE);
+	showImage = this->srcImage.clone();
 
-	rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
-	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
-//	upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
-//	upperSideArea = getUpperSideArea(upSideRect, UPPER_RATIO);
-//	topSideArea = getTopSideArea(upperSideRect, TOP_RATIO);
-//
-//	imshow("right area", rightSideArea);
-//	imshow("down area", downSideArea);
-//	imshow("up area", upSideArea);
-//	imshow("upper area", upperSideArea);
-//	imshow("top area", topSideArea);
-//	imshow("area", locateKeyword(downSideArea, 0, 0, 0.63, 1));
-	imshow("all area", showImage);
+	// correct red area location
+	redArea = redMarkArea->getRedRect();
+	correctRect(redArea, ANGLE);
+	
+//	imshow("all area", showImage);
 }
 
 Mat DrivingLicense::getRightSideArea(Rect redArea, float ratio)
@@ -139,7 +131,7 @@ Mat DrivingLicense::getTopSideArea(Rect upperSideArea, float ratio)
 	return roi;
 }
 
-void DrivingLicense::rotateImage(Mat src, Mat &img_rotate, float degree)
+void DrivingLicense::rotateImage(Mat src, Mat &img_rotate, float angle)
 {
 	//旋转中心为图像中心
 	Point2f center;
@@ -148,9 +140,19 @@ void DrivingLicense::rotateImage(Mat src, Mat &img_rotate, float degree)
 //	int length = 0;
 //	length = sqrt(src.cols * src.cols + src.rows * src.rows);
 	//计算二维旋转的仿射变换矩阵
-	Mat M = getRotationMatrix2D(center, degree, 1);
+	Mat M = getRotationMatrix2D(center, angle, 1);
+	// negative num means rotate clockwise
 	warpAffine(src, img_rotate, M, Size(src.cols, src.rows), 1, 0, Scalar(255, 255, 255));//仿射变换，背景色填充为白色
 //	imshow("rotate", img_rotate);
+	// Move image
+}
+
+void DrivingLicense::correctRect(Rect &rect, float angle)
+{
+	float radian = angle * CV_PI / 180;
+	cout << "y offset: " << sinf(radian) * 0.5 * HEIGHT << endl;
+//	cout << "cos: " << cosf(radian) << endl;
+	rect.y += 0.5 * sinf(radian) * HEIGHT;
 }
 
 // 通过定位红色区域，确定信息位置。比例按照与红色区域的长宽比例进行偏移，裁剪
@@ -168,39 +170,17 @@ Mat DrivingLicense::locateKeyword(Mat roi, float widthOffsetRatio, float heightO
 	return keywordArea;
 }
 
-void DrivingLicense::test()
+
+
+
+void DrivingLicense::getKeyInformation(vector &v)
 {
-	static const int DEFAULT_GAUSSIANBLUR_SIZE = 7;
-	// SOBEL 算子 内核大小
-	static const int SOBEL_SCALE = 1;
-	static const int SOBEL_DELTA = 0;
-	static const int SOBEL_DDEPTH = CV_16S;
-	static const int SOBEL_X_WEIGHT = 0;
-	static const int SOBEL_Y_WEIGHT = 1;
+	// get each part of key, and set as roi
+//	rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
+//	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
+//	upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
+//	upperSideArea = getUpperSideArea(upSideRect, UPPER_RATIO);
+//	topSideArea = getTopSideArea(upperSideRect, TOP_RATIO);
 
-
-	Mat grayImage;
-	cvtColor(srcImage, grayImage, COLOR_BGR2GRAY);
-
-//	// 高斯
-//	Mat blurImage;
-//	GaussianBlur(srcImage, blurImage, Size(DEFAULT_GAUSSIANBLUR_SIZE, DEFAULT_GAUSSIANBLUR_SIZE), 0, 0, BORDER_DEFAULT);
-
-
-	// Sobel Gradient X
-	Mat sobelImage, absSobelImage;
-	Sobel(grayImage, sobelImage, SOBEL_DDEPTH, 1, 0, 3, SOBEL_SCALE, SOBEL_DELTA, BORDER_DEFAULT);
-	convertScaleAbs(sobelImage, absSobelImage);
-//	imshow("sobel x image", absSobelImage);
-
-	// Sobel Gradient Y
-	Mat sobelYImage, absSobelYImage;
-	Sobel(grayImage, sobelYImage, SOBEL_DDEPTH, 0, 1, 3, SOBEL_SCALE, SOBEL_DELTA, BORDER_DEFAULT);
-	convertScaleAbs(sobelYImage, absSobelYImage);
-//	imshow("sobelY image", absSobelYImage);
-
-	// Total Gradient
-	Mat gradImage;
-	addWeighted(absSobelImage, SOBEL_X_WEIGHT, absSobelYImage, SOBEL_Y_WEIGHT, 0, gradImage);
-	imshow("grad image", gradImage);
+//	imshow("area", locateKeyword(downSideArea, 0, 0, 0.63, 1));
 }
