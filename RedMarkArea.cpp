@@ -32,7 +32,7 @@ RedMarkArea::RedMarkArea(Mat src)
 	setRedSize();
 	lineDetect();
 
-//	imshow("red image", showImage);
+	imshow("red image", showImage);
 }
 
 void RedMarkArea::colorMatch()
@@ -41,9 +41,9 @@ void RedMarkArea::colorMatch()
 	int minRedH = 140; // 140
 	int maxRedH = 180;
 
-	int minS = 75; // 75
+	int minS = 43; // 75
 	int maxS = 255;
-	int minV = 75; // 75
+	int minV = 46; // 75
 	int maxV = 220;
 
 	// 将BGR 转换为 HSV
@@ -70,7 +70,6 @@ void RedMarkArea::colorMatch()
 	morphologyEx(thresholdImage, thresholdImage, MORPH_OPEN, element);
 
 	// 闭操作 (连接一些连通域)
-	element = getStructuringElement(MORPH_RECT, Size(3, 3));
 	morphologyEx(thresholdImage, thresholdImage, MORPH_CLOSE, element);
 
 	// get red image
@@ -101,7 +100,6 @@ bool RedMarkArea::isRedArea(RotatedRect mr)
 	}
 	return false;
 }
-
 
 Mat RedMarkArea::getVerticalProjection(Mat image)
 {
@@ -258,12 +256,18 @@ void RedMarkArea::setRedSize()
 	Point p2 = Point(endCol, endRow);
 
 	Rect rect = Rect(p1, p2);
+	if (rect.width > rect.height)
+	{
+		rect.height = rect.width;
+	}
+	else
+	{
+		rect.width = rect.height;
+	}
 	setRedRect(rect);
 	cout << "red rect: " << rect << endl;
 
 	rectangle(showImage, rect, Scalar(255, 0, 0));
-
-//	imshow("red area", showImage);
 }
 
 void RedMarkArea::setRedRect(Rect rect)

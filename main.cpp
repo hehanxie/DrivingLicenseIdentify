@@ -8,14 +8,15 @@ int main()
 {
 	// red area problem: 1.1
 	// 1.3 --- 70
-	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/1.1.jpg");// 1.1 ~ 1.3
-//	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/2.0.jpg");// 2.0 ~ 2.2
+	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/1.5.jpg");// 1.1 ~ 1.3
 	if (srcImage.empty())
 	{
 		cout << "error";
 		return -1;
 	}
 
+//	resize(srcImage, srcImage, Size(srcImage.cols * 0.2, srcImage.rows * 0.2));
+//	imshow("srcImage", srcImage);
 	DrivingLicense *driverLicense = new DrivingLicense(srcImage);
 
 	waitKey(0);

@@ -40,20 +40,21 @@ protected:
 	static const int DEFAULT_MORPH_SIZE_HEIGHT = 7;  // 7
 
 	// 系数比例
-	const float TOP_RATIO = 1;
-	const float UPPER_RATIO = 0.5;
+	const float TOP_HEIGHT_RATIO = 0.85;
+	const float UPPER_HEIGHT_RATIO = 0.5;
 
-	const float UP_WIDH_RATIO = 4;
+	const float UP_WIDH_RATIO = 4.1;
 	const float UP_HEIGHT_RATIO = 0.57;  // 0.85
 
-	const float RIGHT_WIDTH_RATIO = 2.05;
+	const float RIGHT_WIDTH_RATIO = 2.1;
 
-	const float DOWN_WIDTH_RATIO = 3.05;
+	const float DOWN_WIDTH_RATIO = 3.1;
 	const float DOWN_HEIGHT_RATIO = 0.27;
 
 
 public:
 	DrivingLicense(Mat src);
+	void informationProcessing(vector<Mat> v);
 
 	Mat getRightSideArea(Rect redArea, float ratio);
 	Mat getDownSideArea(Rect redArea, float widthRatio, float heightRatio);
@@ -65,9 +66,9 @@ public:
 	void rotateImage(Mat src, Mat &img_rotate, float angle);
 	void correctRect(Rect &rect, float angle);
 
-	Mat locateKeyword(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
+	Mat areaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
 	// save all image into vector before dividing
-	void getKeyInformation(vector &v);
+	void getKeyInformation(vector<Mat> &v);
 
 
 };

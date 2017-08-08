@@ -18,11 +18,51 @@ DrivingLicense::DrivingLicense(Mat src)
 	rotateImage(src, this->srcImage, ANGLE);
 	showImage = this->srcImage.clone();
 
-	// correct red area location
+	// get red mark area
 	redArea = redMarkArea->getRedRect();
+	// draw red area to show
+	rectangle(showImage, redArea, Scalar(0, 255, 0));
+	// correct angle
 	correctRect(redArea, ANGLE);
-	
-//	imshow("all area", showImage);
+	// put all area into keyMat vector
+	getKeyInformation(keyMat);
+//	// divide each part
+//	informationProcessing(keyMat);
+
+	imshow("draw all area", showImage);
+}
+
+void DrivingLicense::informationProcessing(vector<Mat> v)
+{
+	// get each part key into map
+
+	// right area
+	Mat birthdayArea   = areaDivide(v[0], 0.3, 0,    0.7, 0.3);
+	Mat firstIssueArea = areaDivide(v[0], 0.45, 0.33, 0.5, 0.3);
+	Mat classArea      = areaDivide(v[0], 0.3, 0.67,  0.7, 0.3);
+	imshow("birthday", birthdayArea);
+	imshow("first issue", firstIssueArea);
+	imshow("class", classArea);
+
+	// down area
+	Mat validTimeArea = areaDivide(v[1], 0.28, 0, 0.72, 1);
+	imshow("valid time", validTimeArea);
+
+	// up area
+	Mat addressArea = areaDivide(v[2], 0.1, 0, 0.9, 1);
+	imshow("address", addressArea);
+
+	// upper area
+	Mat nameArea   		= areaDivide(v[3], 0.08,   0, 0.35, 1);
+	Mat sexArea 		= areaDivide(v[3], 0.56, 0, 0.1, 1);
+	Mat nationalityArea = areaDivide(v[3], 0.8, 0, 0.2, 1);
+	imshow("name", nameArea);
+	imshow("sex", sexArea);
+	imshow("nationality", nationalityArea);
+
+//	// top area
+	Mat driverID = areaDivide(v[4], 0.41, 0, 0.45, 1);
+	imshow("driver id", driverID);
 }
 
 Mat DrivingLicense::getRightSideArea(Rect redArea, float ratio)
@@ -150,37 +190,51 @@ void DrivingLicense::rotateImage(Mat src, Mat &img_rotate, float angle)
 void DrivingLicense::correctRect(Rect &rect, float angle)
 {
 	float radian = angle * CV_PI / 180;
-	cout << "y offset: " << sinf(radian) * 0.5 * HEIGHT << endl;
+	cout << "y offset: " << sinf(radian) * 0.7 * HEIGHT << endl;
 //	cout << "cos: " << cosf(radian) << endl;
-	rect.y += 0.5 * sinf(radian) * HEIGHT;
+	rect.y += 0.7 * sinf(radian) * HEIGHT;
 }
 
 // 通过定位红色区域，确定信息位置。比例按照与红色区域的长宽比例进行偏移，裁剪
-Mat DrivingLicense::locateKeyword(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio)
+Mat DrivingLicense::areaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio)
 {
+	// image deal and
+	Mat dst;
+	cvtColor(roi, dst, CV_BGR2GRAY);
+	threshold(dst, dst, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
+	Mat element = getStructuringElement(MORPH_RECT, Size(2, 2));
+	morphologyEx(dst, roi, MORPH_OPEN, element);
+
+//	imshow("valid", roi);
+
 	Mat keywordArea;
 	int width = roi.cols;
 	int height = roi.rows;
 	Point p1;
-	p1.x = width + width * widthOffsetRatio;
-	p1.y = height + height * heightOffsetRatio;
+	p1.x = width * widthOffsetRatio;
+	p1.y = height * heightOffsetRatio;
 	Point p2;
 	p2.x = p1.x + width * widthRatio;
 	p2.y = p1.y + height * heightRatio;
+
+	keywordArea = roi(Rect(p1, p2));
+//	imshow("keyword area", keywordArea);
 	return keywordArea;
 }
 
-
-
-
-void DrivingLicense::getKeyInformation(vector &v)
+void DrivingLicense::getKeyInformation(vector<Mat> &v)
 {
 	// get each part of key, and set as roi
-//	rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
-//	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
-//	upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
-//	upperSideArea = getUpperSideArea(upSideRect, UPPER_RATIO);
-//	topSideArea = getTopSideArea(upperSideRect, TOP_RATIO);
+	rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
+	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
+	upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
+	upperSideArea = getUpperSideArea(upSideRect, UPPER_HEIGHT_RATIO);
+	topSideArea = getTopSideArea(upperSideRect, TOP_HEIGHT_RATIO);
 
-//	imshow("area", locateKeyword(downSideArea, 0, 0, 0.63, 1));
+	v.push_back(rightSideArea);
+	v.push_back(downSideArea);
+	v.push_back(upSideArea);
+	v.push_back(upperSideArea);
+	v.push_back(topSideArea);
 }
+
