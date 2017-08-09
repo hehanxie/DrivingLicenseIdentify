@@ -16,6 +16,7 @@ protected:
 	Rect redRect;
 	// gray image with 8UC1
 	Mat redImage;
+	bool isFindRedArea;
 
 	Mat srcImage;
 	int HEIGHT;
@@ -38,6 +39,8 @@ protected:
 	// 面积比例，偏差比例
 	const float RED_AREA_RATIO = 0.05;
 	const float RED_AREA_ERROR = 0.02;
+	const float MIN_SCALE = 0.8;
+	const float MAX_SCALE = 1.25;
 
 public:
 	RedMarkArea();
@@ -48,7 +51,7 @@ public:
 	void colorMatch();
 
 	// 判断红色区域矩阵面积是否合理
-	bool isRedArea(RotatedRect mr);
+	bool isRedArea(Rect mr);
 
 	// 水平投影
 	Mat getHorizontalProjection (Mat image);
@@ -65,6 +68,9 @@ public:
 	void setAngle(float angle);
 	float getAngle();
 	float degreeTrans(float theta);
+
+	void getBGR();
+	bool getIsFindRedArea();
 };
 
 

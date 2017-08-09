@@ -12,24 +12,31 @@ DrivingLicense::DrivingLicense(Mat src)
 	WIDTH = srcImage.cols;
 
 	redMarkArea = new RedMarkArea(src);
+	if (redMarkArea->getIsFindRedArea())
+	{
+		// get rotated angle
+		ANGLE = redMarkArea->getAngle();
+		rotateImage(src, this->srcImage, ANGLE);
+		showImage = this->srcImage.clone();
 
-	// get rotated angle
-	ANGLE = redMarkArea->getAngle();
-	rotateImage(src, this->srcImage, ANGLE);
-	showImage = this->srcImage.clone();
+		// get red mark area
+		redArea = redMarkArea->getRedRect();
+		// correct angle
+		correctRect(redArea, ANGLE);
+		// draw red area to show
+		rectangle(showImage, redArea, Scalar(0, 255, 0));
 
-	// get red mark area
-	redArea = redMarkArea->getRedRect();
-	// draw red area to show
-	rectangle(showImage, redArea, Scalar(0, 255, 0));
-	// correct angle
-	correctRect(redArea, ANGLE);
-	// put all area into keyMat vector
-	getKeyInformation(keyMat);
-//	// divide each part
-//	informationProcessing(keyMat);
+		// put all area into keyMat vector
+		getKeyInformation(keyMat);
+//		// divide each part
+//		informationProcessing(keyMat);
 
-	imshow("draw all area", showImage);
+		imshow("draw all area", showImage);
+	}
+	else
+	{
+		cout << "identify error" << endl;
+	}
 }
 
 void DrivingLicense::informationProcessing(vector<Mat> v)

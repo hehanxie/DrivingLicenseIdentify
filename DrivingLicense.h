@@ -43,12 +43,12 @@ protected:
 	const float TOP_HEIGHT_RATIO = 0.85;
 	const float UPPER_HEIGHT_RATIO = 0.5;
 
-	const float UP_WIDH_RATIO = 4.1;
+	const float UP_WIDH_RATIO = 4;
 	const float UP_HEIGHT_RATIO = 0.57;  // 0.85
 
-	const float RIGHT_WIDTH_RATIO = 2.1;
+	const float RIGHT_WIDTH_RATIO = 2;
 
-	const float DOWN_WIDTH_RATIO = 3.1;
+	const float DOWN_WIDTH_RATIO = 3;
 	const float DOWN_HEIGHT_RATIO = 0.27;
 
 

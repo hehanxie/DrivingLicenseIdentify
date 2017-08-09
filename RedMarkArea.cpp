@@ -22,6 +22,7 @@ RedMarkArea::RedMarkArea(Mat src)
 	startCol = 0;
 	endCol = 0;
 	ANGLE = 0;
+	isFindRedArea = false;
 	HEIGHT = srcImage.rows;
 	WIDTH = srcImage.cols;
 
@@ -30,9 +31,17 @@ RedMarkArea::RedMarkArea(Mat src)
 
 	colorMatch();
 	setRedSize();
-	lineDetect();
-
-	imshow("red image", showImage);
+	isFindRedArea = isRedArea(getRedRect());
+	if (isFindRedArea)
+	{
+		lineDetect();
+	}
+	else
+	{
+		int startWidth = 0;
+		int startHeight = 0;
+		cout << "identify error" << endl;
+	}
 }
 
 void RedMarkArea::colorMatch()
@@ -41,10 +50,10 @@ void RedMarkArea::colorMatch()
 	int minRedH = 140; // 140
 	int maxRedH = 180;
 
-	int minS = 43; // 75
+	int minS = 75; // 75
 	int maxS = 255;
-	int minV = 46; // 75
-	int maxV = 220;
+	int minV = 75; // 75
+	int maxV = 255;
 
 	// 将BGR 转换为 HSV
 	Mat srcHSV;
@@ -63,7 +72,7 @@ void RedMarkArea::colorMatch()
 	Mat dst;
 	thresholdImage.convertTo(dst, CV_8UC1);
 	adaptiveThreshold(dst, thresholdImage, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 7, 3);
-//	imshow("adaptive", thresholdImage);
+	imshow("adaptive", thresholdImage);
 
 	// 开操作 (去除一些噪点)
 	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
@@ -84,17 +93,20 @@ void RedMarkArea::colorMatch()
 //	imshow("vertical", getVerticalProjection(thresholdImage));
 }
 
-bool RedMarkArea::isRedArea(RotatedRect mr)
+bool RedMarkArea::isRedArea(Rect mr)
 {
 //	cout << "width: " << width;
 //	cout << " height: " << height << endl;
-	int area = mr.size.width * mr.size.height;
+	int height = mr.height;
+	int width = mr.width;
+	float scale = width / height;
 
+	int area = width * height;
 	int borderArea = HEIGHT * WIDTH;
 	int rMinArea = borderArea * (RED_AREA_RATIO - RED_AREA_ERROR);
 	int rMaxArea = borderArea * (RED_AREA_RATIO + RED_AREA_ERROR);
 
-	if (area > rMinArea && area < rMaxArea)
+	if (area > rMinArea && area < rMaxArea && scale > MIN_SCALE && scale < MAX_SCALE)
 	{
 		return true;
 	}
@@ -348,4 +360,22 @@ void RedMarkArea::setAngle(float angle)
 float RedMarkArea::getAngle()
 {
 	return this->ANGLE;
+}
+
+void RedMarkArea::getBGR()
+{
+	CvScalar t1,t2;
+	for (int i = 0; i < HEIGHT; i++)
+	{
+		for (int j = 0; j < WIDTH; j++)
+		{
+//			t1=cvGet2D(srcImage, i, j);
+			//
+		}
+	}
+}
+
+bool RedMarkArea::getIsFindRedArea()
+{
+	return this->isFindRedArea;
 }
