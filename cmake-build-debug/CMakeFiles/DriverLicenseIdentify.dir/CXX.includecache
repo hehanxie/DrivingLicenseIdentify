@@ -16,18 +16,6 @@ iostream
 RedMarkArea.h
 /Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.h
 
-/Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.cpp
-InformationDetect.h
-/Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.h
-
-/Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.h
-iostream
--
-opencv2/opencv.hpp
--
-RedMarkArea.h
-/Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.h
-
 /Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.cpp
 RedMarkArea.h
 /Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.h

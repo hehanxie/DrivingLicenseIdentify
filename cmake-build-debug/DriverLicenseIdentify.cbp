@@ -88,19 +88,10 @@
 		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/DrivingLicense.h">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.cpp">
-			<Option target="DriverLicenseIdentify"/>
-		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.h">
-			<Option target="DriverLicenseIdentify"/>
-		</Unit>
 		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.cpp">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
 		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.h">
-			<Option target="DriverLicenseIdentify"/>
-		</Unit>
-		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/include.h">
 			<Option target="DriverLicenseIdentify"/>
 		</Unit>
 		<Unit filename="/Users/whstarlit/Documents/Projects/Git/DrivingLicense/main.cpp">

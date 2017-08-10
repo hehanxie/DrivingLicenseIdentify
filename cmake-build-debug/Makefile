@@ -150,33 +150,6 @@ DrivingLicense.cpp.s:
 	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.s
 .PHONY : DrivingLicense.cpp.s
 
-InformationDetect.o: InformationDetect.cpp.o
-
-.PHONY : InformationDetect.o
-
-# target to build an object file
-InformationDetect.cpp.o:
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o
-.PHONY : InformationDetect.cpp.o
-
-InformationDetect.i: InformationDetect.cpp.i
-
-.PHONY : InformationDetect.i
-
-# target to preprocess a source file
-InformationDetect.cpp.i:
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.i
-.PHONY : InformationDetect.cpp.i
-
-InformationDetect.s: InformationDetect.cpp.s
-
-.PHONY : InformationDetect.s
-
-# target to generate assembly for a file
-InformationDetect.cpp.s:
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.s
-.PHONY : InformationDetect.cpp.s
-
 RedMarkArea.o: RedMarkArea.cpp.o
 
 .PHONY : RedMarkArea.o
@@ -243,9 +216,6 @@ help:
 	@echo "... DrivingLicense.o"
 	@echo "... DrivingLicense.i"
 	@echo "... DrivingLicense.s"
-	@echo "... InformationDetect.o"
-	@echo "... InformationDetect.i"
-	@echo "... InformationDetect.s"
 	@echo "... RedMarkArea.o"
 	@echo "... RedMarkArea.i"
 	@echo "... RedMarkArea.s"

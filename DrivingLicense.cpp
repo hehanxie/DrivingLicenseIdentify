@@ -12,31 +12,28 @@ DrivingLicense::DrivingLicense(Mat src)
 	WIDTH = srcImage.cols;
 
 	redMarkArea = new RedMarkArea(src);
-	if (redMarkArea->getIsFindRedArea())
+	if (!redMarkArea->isFindRedArea)
 	{
-		// get rotated angle
-		ANGLE = redMarkArea->getAngle();
-		rotateImage(src, this->srcImage, ANGLE);
-		showImage = this->srcImage.clone();
-
-		// get red mark area
-		redArea = redMarkArea->getRedRect();
-		// correct angle
-		correctRect(redArea, ANGLE);
-		// draw red area to show
-		rectangle(showImage, redArea, Scalar(0, 255, 0));
-
-		// put all area into keyMat vector
-		getKeyInformation(keyMat);
-//		// divide each part
-//		informationProcessing(keyMat);
-
-		imshow("draw all area", showImage);
+		return ;
 	}
-	else
-	{
-		cout << "identify error" << endl;
-	}
+	// get rotated angle
+	ANGLE = redMarkArea->getAngle();
+	rotateImage(src, this->srcImage, ANGLE);
+	showImage = this->srcImage.clone();
+
+	// get red mark area
+	redArea = redMarkArea->getRedRect();
+	// correct angle
+	correctRect(redArea, ANGLE);
+	// draw red area to show
+	rectangle(showImage, redArea, Scalar(0, 255, 0));
+
+	// put all area into keyMat vector
+	getKeyInformation(keyMat);
+//	// divide each part
+//	informationProcessing(keyMat);
+
+	imshow("draw all area", showImage);
 }
 
 void DrivingLicense::informationProcessing(vector<Mat> v)
@@ -44,9 +41,9 @@ void DrivingLicense::informationProcessing(vector<Mat> v)
 	// get each part key into map
 
 	// right area
-	Mat birthdayArea   = areaDivide(v[0], 0.3, 0,    0.7, 0.3);
+	Mat birthdayArea   = areaDivide(v[0], 0.3,  0,    0.7, 0.3);
 	Mat firstIssueArea = areaDivide(v[0], 0.45, 0.33, 0.5, 0.3);
-	Mat classArea      = areaDivide(v[0], 0.3, 0.67,  0.7, 0.3);
+	Mat classArea      = areaDivide(v[0], 0.30, 0.67, 0.7, 0.3);
 	imshow("birthday", birthdayArea);
 	imshow("first issue", firstIssueArea);
 	imshow("class", classArea);
@@ -60,9 +57,9 @@ void DrivingLicense::informationProcessing(vector<Mat> v)
 	imshow("address", addressArea);
 
 	// upper area
-	Mat nameArea   		= areaDivide(v[3], 0.08,   0, 0.35, 1);
-	Mat sexArea 		= areaDivide(v[3], 0.56, 0, 0.1, 1);
-	Mat nationalityArea = areaDivide(v[3], 0.8, 0, 0.2, 1);
+	Mat nameArea   		= areaDivide(v[3], 0.08, 0, 0.35, 1);
+	Mat sexArea 		= areaDivide(v[3], 0.56, 0, 0.10, 1);
+	Mat nationalityArea = areaDivide(v[3], 0.80, 0, 0.20, 1);
 	imshow("name", nameArea);
 	imshow("sex", sexArea);
 	imshow("nationality", nationalityArea);
@@ -202,7 +199,6 @@ void DrivingLicense::correctRect(Rect &rect, float angle)
 	rect.y += 0.7 * sinf(radian) * HEIGHT;
 }
 
-// 通过定位红色区域，确定信息位置。比例按照与红色区域的长宽比例进行偏移，裁剪
 Mat DrivingLicense::areaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio)
 {
 	// image deal and

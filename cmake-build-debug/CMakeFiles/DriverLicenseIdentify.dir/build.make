@@ -81,33 +81,9 @@ CMakeFiles/DriverLicenseIdentify.dir/main.cpp.o.provides: CMakeFiles/DriverLicen
 CMakeFiles/DriverLicenseIdentify.dir/main.cpp.o.provides.build: CMakeFiles/DriverLicenseIdentify.dir/main.cpp.o
 
 
-CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o: CMakeFiles/DriverLicenseIdentify.dir/flags.make
-CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o: ../InformationDetect.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o -c /Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.cpp
-
-CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.cpp > CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.i
-
-CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.cpp -o CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.s
-
-CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o.requires:
-
-.PHONY : CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o.requires
-
-CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o.provides: CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o.requires
-	$(MAKE) -f CMakeFiles/DriverLicenseIdentify.dir/build.make CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o.provides.build
-.PHONY : CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o.provides
-
-CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o.provides.build: CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o
-
-
 CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.o: CMakeFiles/DriverLicenseIdentify.dir/flags.make
 CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.o: ../RedMarkArea.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.o -c /Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.cpp
 
 CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.i: cmake_force
@@ -131,7 +107,7 @@ CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.o.provides.build: CMakeFile
 
 CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.o: CMakeFiles/DriverLicenseIdentify.dir/flags.make
 CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.o: ../DrivingLicense.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.o -c /Users/whstarlit/Documents/Projects/Git/DrivingLicense/DrivingLicense.cpp
 
 CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.i: cmake_force
@@ -156,7 +132,6 @@ CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.o.provides.build: CMakeF
 # Object files for target DriverLicenseIdentify
 DriverLicenseIdentify_OBJECTS = \
 "CMakeFiles/DriverLicenseIdentify.dir/main.cpp.o" \
-"CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o" \
 "CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.o" \
 "CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.o"
 
@@ -164,7 +139,6 @@ DriverLicenseIdentify_OBJECTS = \
 DriverLicenseIdentify_EXTERNAL_OBJECTS =
 
 DriverLicenseIdentify: CMakeFiles/DriverLicenseIdentify.dir/main.cpp.o
-DriverLicenseIdentify: CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o
 DriverLicenseIdentify: CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.o
 DriverLicenseIdentify: CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.o
 DriverLicenseIdentify: CMakeFiles/DriverLicenseIdentify.dir/build.make
@@ -185,7 +159,7 @@ DriverLicenseIdentify: /usr/local/lib/libopencv_imgcodecs.3.2.0.dylib
 DriverLicenseIdentify: /usr/local/lib/libopencv_imgproc.3.2.0.dylib
 DriverLicenseIdentify: /usr/local/lib/libopencv_core.3.2.0.dylib
 DriverLicenseIdentify: CMakeFiles/DriverLicenseIdentify.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable DriverLicenseIdentify"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable DriverLicenseIdentify"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/DriverLicenseIdentify.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -194,7 +168,6 @@ CMakeFiles/DriverLicenseIdentify.dir/build: DriverLicenseIdentify
 .PHONY : CMakeFiles/DriverLicenseIdentify.dir/build
 
 CMakeFiles/DriverLicenseIdentify.dir/requires: CMakeFiles/DriverLicenseIdentify.dir/main.cpp.o.requires
-CMakeFiles/DriverLicenseIdentify.dir/requires: CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o.requires
 CMakeFiles/DriverLicenseIdentify.dir/requires: CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.o.requires
 CMakeFiles/DriverLicenseIdentify.dir/requires: CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.o.requires
 

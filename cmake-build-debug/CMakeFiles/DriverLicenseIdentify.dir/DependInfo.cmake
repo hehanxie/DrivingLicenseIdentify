@@ -5,7 +5,6 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/DrivingLicense.cpp" "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles/DriverLicenseIdentify.dir/DrivingLicense.cpp.o"
-  "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/InformationDetect.cpp" "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles/DriverLicenseIdentify.dir/InformationDetect.cpp.o"
   "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/RedMarkArea.cpp" "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles/DriverLicenseIdentify.dir/RedMarkArea.cpp.o"
   "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/main.cpp" "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/cmake-build-debug/CMakeFiles/DriverLicenseIdentify.dir/main.cpp.o"
   )

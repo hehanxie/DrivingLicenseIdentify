@@ -38,9 +38,8 @@ RedMarkArea::RedMarkArea(Mat src)
 	}
 	else
 	{
-		int startWidth = 0;
-		int startHeight = 0;
 		cout << "identify error" << endl;
+//		exit(1);
 	}
 }
 
@@ -67,7 +66,34 @@ void RedMarkArea::colorMatch()
 	// 通过hsv空间，定位红色区域
 	Mat thresholdImage;
 	inRange(srcHSV, Scalar(minRedH, minS, minV), Scalar(maxRedH, maxS, maxV), thresholdImage);
-//	imshow("thre", thresholdImage);
+	imshow("HSV", thresholdImage);
+
+	// 通过RGB定位红色区域
+	Mat bgrImage = srcImage.clone();
+	for(int i=0; i < HEIGHT; i++)
+	{
+		for (int j = 0; j < WIDTH; j++)
+		{
+			int b = (uchar) bgrImage.at<Vec3b>(i, j)[0];
+			int g = (uchar) bgrImage.at<Vec3b>(i, j)[1];
+			int r = (uchar) bgrImage.at<Vec3b>(i, j)[2];
+			if (j < WIDTH/2 && r - g >= 40 && r - b >= 40)
+			{
+				bgrImage.at<Vec3b>(i, j)[0] = 255;
+				bgrImage.at<Vec3b>(i, j)[1] = 255;
+				bgrImage.at<Vec3b>(i, j)[2] = 255;
+			}
+			else
+			{
+				bgrImage.at<Vec3b>(i, j) = 0;
+			}
+		}
+	}
+	imshow("BGR", bgrImage);
+	cvtColor(bgrImage, bgrImage, CV_BGR2GRAY);
+	// 合并定位结果
+	addWeighted(bgrImage, 0.5, thresholdImage, 0.5, 0.0, thresholdImage);
+
 
 	Mat dst;
 	thresholdImage.convertTo(dst, CV_8UC1);
@@ -99,12 +125,20 @@ bool RedMarkArea::isRedArea(Rect mr)
 //	cout << " height: " << height << endl;
 	int height = mr.height;
 	int width = mr.width;
-	float scale = width / height;
+	float scale = 1;
+	if (width > height)
+	{
+		scale = width / height;
+	}
+	else
+	{
+		scale = height / width;
+	}
 
 	int area = width * height;
-	int borderArea = HEIGHT * WIDTH;
-	int rMinArea = borderArea * (RED_AREA_RATIO - RED_AREA_ERROR);
-	int rMaxArea = borderArea * (RED_AREA_RATIO + RED_AREA_ERROR);
+	int imageArea = HEIGHT * WIDTH;
+	int rMinArea = imageArea * MIN_RED_AREA_RATIO;
+	int rMaxArea = imageArea * MAX_RED_AREA_RATIO;
 
 	if (area > rMinArea && area < rMaxArea && scale > MIN_SCALE && scale < MAX_SCALE)
 	{
@@ -233,7 +267,7 @@ void RedMarkArea::setRedSize()
 	{
 		if (abs(verticalArray[i + 1] - verticalArray[i]) >= 10 && verticalArray[i] > N)
 		{
-			startCol = i + 3;
+			startCol = i + 1;
 			break;
 		}
 	}
@@ -241,7 +275,7 @@ void RedMarkArea::setRedSize()
 	{
 		if (abs(verticalArray[i] - verticalArray[i - 1]) >= 10 && verticalArray[i] > N)
 		{
-			endCol = i - 3;
+			endCol = i - 1;
 			break;
 		}
 	}
@@ -251,7 +285,7 @@ void RedMarkArea::setRedSize()
 	{
 		if (abs(horizontalArray[i + 1] - horizontalArray[i]) >= 10 && horizontalArray[i] > N)
 		{
-			startRow = i + 3;
+			startRow = i + 1;
 			break;
 		}
 	}
@@ -259,7 +293,7 @@ void RedMarkArea::setRedSize()
 	{
 		if (abs(horizontalArray[i] - horizontalArray[i - 1]) >= 10 && horizontalArray[i] > N)
 		{
-			endRow = i - 3;
+			endRow = i - 1;
 			break;
 		}
 	}
@@ -268,28 +302,18 @@ void RedMarkArea::setRedSize()
 	Point p2 = Point(endCol, endRow);
 
 	Rect rect = Rect(p1, p2);
-	if (rect.width > rect.height)
-	{
-		rect.height = rect.width;
-	}
-	else
-	{
-		rect.width = rect.height;
-	}
+//	if (rect.width > rect.height)
+//	{
+//		rect.height = rect.width;
+//	}
+//	else
+//	{
+//		rect.width = rect.height;
+//	}
 	setRedRect(rect);
 	cout << "red rect: " << rect << endl;
 
 	rectangle(showImage, rect, Scalar(255, 0, 0));
-}
-
-void RedMarkArea::setRedRect(Rect rect)
-{
-	this->redRect = rect;
-}
-
-Rect RedMarkArea::getRedRect()
-{
-	return redRect;
 }
 
 void RedMarkArea::lineDetect()
@@ -314,25 +338,35 @@ void RedMarkArea::lineDetect()
 	int lineThreshold = 100;
 	HoughLines(dst, lines, 1, CV_PI / 180, lineThreshold, 0, 0);
 	float sum = 0;
+	int count = 0;
 	for (size_t i = 0; i < lines.size(); i++)
 	{
 		float rho = lines[i][0], theta = lines[i][1];
-		sum += theta;
-		Point pt1, pt2;
-		double a = cos(theta), b = sin(theta);
-		double x0 = a * rho, y0 = b * rho;
-		pt1.x = cvRound(x0 + 1000 * (-b));
-		pt1.y = cvRound(y0 + 1000 * (a));
-		pt2.x = cvRound(x0 - 1000 * (-b));
-		pt2.y = cvRound(y0 - 1000 * (a));
-		line(lineImage, pt1, pt2, Scalar(0, 0, 255), 1, CV_AA);
+		if (theta > 0 && theta < 3)
+		{
+			sum += theta;
+			count++;
+			Point pt1, pt2;
+			double a = cos(theta), b = sin(theta);
+			double x0 = a * rho, y0 = b * rho;
+			// P1 -> P2
+			pt1.x = cvRound(x0 + 1000 * (-b));
+			pt1.y = cvRound(y0 + 1000 * (a));
+			pt2.x = cvRound(x0 - 1000 * (-b));
+			pt2.y = cvRound(y0 - 1000 * (a));
+			line(lineImage, pt1, pt2, Scalar(0, 0, 255), 1, CV_AA);
+			cout << "theta: " << theta;
+			cout << "  angle: " << degreeTrans(theta) - 90<< endl;
+		}
 	}
-	float average = sum/lines.size();
+	float average = sum/count;
 	if (lines.size() == 0)
 	{
 		average = 0;
 	}
-//	imshow("line", lineImage);
+
+	imshow("line", lineImage);
+
 	float angle = degreeTrans(average) - 90;
 	setAngle(angle);
 //	Mat rotate;
@@ -340,7 +374,6 @@ void RedMarkArea::lineDetect()
 //	imshow("rotate", rotate);
 }
 
-//度数转换
 float RedMarkArea::degreeTrans(float theta)
 {
 	double res = theta / CV_PI * 180;
@@ -362,20 +395,12 @@ float RedMarkArea::getAngle()
 	return this->ANGLE;
 }
 
-void RedMarkArea::getBGR()
+void RedMarkArea::setRedRect(Rect rect)
 {
-	CvScalar t1,t2;
-	for (int i = 0; i < HEIGHT; i++)
-	{
-		for (int j = 0; j < WIDTH; j++)
-		{
-//			t1=cvGet2D(srcImage, i, j);
-			//
-		}
-	}
+	this->redRect = rect;
 }
 
-bool RedMarkArea::getIsFindRedArea()
+Rect RedMarkArea::getRedRect()
 {
-	return this->isFindRedArea;
+	return redRect;
 }
