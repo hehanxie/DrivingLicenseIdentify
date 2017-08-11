@@ -32,7 +32,7 @@ RedMarkArea::RedMarkArea(Mat src)
 	colorMatch();
 	setRedSize();
 	isFindRedArea = isRedArea(getRedRect());
-	if (isFindRedArea)
+	if (1)
 	{
 		lineDetect();
 	}
@@ -51,6 +51,7 @@ void RedMarkArea::colorMatch()
 
 	int minS = 75; // 75
 	int maxS = 255;
+
 	int minV = 75; // 75
 	int maxV = 255;
 
@@ -64,9 +65,8 @@ void RedMarkArea::colorMatch()
 	merge(hsvSplit, srcHSV);
 
 	// 通过hsv空间，定位红色区域
-	Mat thresholdImage;
-	inRange(srcHSV, Scalar(minRedH, minS, minV), Scalar(maxRedH, maxS, maxV), thresholdImage);
-	imshow("HSV", thresholdImage);
+	inRange(srcHSV, Scalar(minRedH, minS, minV), Scalar(maxRedH, maxS, maxV), srcHSV);
+//	imshow("HSV", srcHSV);
 
 	// 通过RGB定位红色区域
 	Mat bgrImage = srcImage.clone();
@@ -79,9 +79,7 @@ void RedMarkArea::colorMatch()
 			int r = (uchar) bgrImage.at<Vec3b>(i, j)[2];
 			if (j < WIDTH/2 && r - g >= 40 && r - b >= 40)
 			{
-				bgrImage.at<Vec3b>(i, j)[0] = 255;
-				bgrImage.at<Vec3b>(i, j)[1] = 255;
-				bgrImage.at<Vec3b>(i, j)[2] = 255;
+				bgrImage.at<Vec3b>(i, j) = 255;
 			}
 			else
 			{
@@ -89,34 +87,34 @@ void RedMarkArea::colorMatch()
 			}
 		}
 	}
-	imshow("BGR", bgrImage);
+//	imshow("RGB", bgrImage);
 	cvtColor(bgrImage, bgrImage, CV_BGR2GRAY);
 	// 合并定位结果
-	addWeighted(bgrImage, 0.5, thresholdImage, 0.5, 0.0, thresholdImage);
-
+	Mat redLocationImage;
+	addWeighted(bgrImage, 0.5, srcHSV, 0.5, 0.0, redLocationImage);
+	imshow("combine", redLocationImage);
 
 	Mat dst;
-	thresholdImage.convertTo(dst, CV_8UC1);
-	adaptiveThreshold(dst, thresholdImage, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 7, 3);
-	imshow("adaptive", thresholdImage);
+	redLocationImage.convertTo(dst, CV_8UC1);
+	adaptiveThreshold(dst, redLocationImage, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 7, 3);
+	imshow("adaptive", redLocationImage);
 
 	// 开操作 (去除一些噪点)
 	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
-	morphologyEx(thresholdImage, thresholdImage, MORPH_OPEN, element);
+	morphologyEx(redLocationImage, redLocationImage, MORPH_OPEN, element);
 
 	// 闭操作 (连接一些连通域)
-	morphologyEx(thresholdImage, thresholdImage, MORPH_CLOSE, element);
+//	morphologyEx(redLocationImage, redLocationImage, MORPH_CLOSE, element);
 
 	// get red image
-	this->redImage = thresholdImage.clone();
+	this->redImage = redLocationImage.clone();
 //	imshow("red", redImage);
 
 	// 显示经过处理后的图像
-	getHorizontalProjection(thresholdImage);
-//	imshow("horizontal", getHorizontalProjection(thresholdImage));
-
-	getVerticalProjection(thresholdImage);
-//	imshow("vertical", getVerticalProjection(thresholdImage));
+	getHorizontalProjection(redLocationImage);
+//	imshow("y", getHorizontalProjection(redLocationImage));
+	getVerticalProjection(redLocationImage);
+//	imshow("x", getVerticalProjection(redLocationImage));
 }
 
 bool RedMarkArea::isRedArea(Rect mr)
@@ -126,6 +124,10 @@ bool RedMarkArea::isRedArea(Rect mr)
 	int height = mr.height;
 	int width = mr.width;
 	float scale = 1;
+	if (height == 0 || width == 0)
+	{
+		return false;
+	}
 	if (width > height)
 	{
 		scale = width / height;
@@ -262,6 +264,7 @@ Mat RedMarkArea::getHorizontalProjection (Mat image)
 void RedMarkArea::setRedSize()
 {
 	int N = srcImage.rows > srcImage.cols ? srcImage.cols : srcImage.rows * 0.075;
+	cout << "threshold dot: " << N << endl;
 	// x position
 	for (int i = 0; i < WIDTH/2; i++)
 	{
@@ -314,6 +317,7 @@ void RedMarkArea::setRedSize()
 	cout << "red rect: " << rect << endl;
 
 	rectangle(showImage, rect, Scalar(255, 0, 0));
+	imshow("red mark", showImage);
 }
 
 void RedMarkArea::lineDetect()
@@ -325,9 +329,9 @@ void RedMarkArea::lineDetect()
 	Mat blurImage;
 	blur(redImage, blurImage, Size(3, 3));
 //	imshow("blur", blurImage);
-
-	Mat dst, cannyImage;
 	float minThreshold = 70;
+	Mat dst, cannyImage;
+
 	Canny(blurImage, dst, minThreshold, 3 * minThreshold);
 	threshold(dst, dst, 0, 255, CV_THRESH_BINARY);
 //	imshow("canny", dst);
@@ -336,18 +340,27 @@ void RedMarkArea::lineDetect()
 	// draw line and corner and calculate angle
 	vector<Vec2f> lines;
 	int lineThreshold = 100;
+	if (WIDTH > HEIGHT)
+	{
+		lineThreshold = HEIGHT * 0.13;
+	}
+	else
+	{
+		lineThreshold = WIDTH * 0.13;
+	}
 	HoughLines(dst, lines, 1, CV_PI / 180, lineThreshold, 0, 0);
 	float sum = 0;
 	int count = 0;
 	for (size_t i = 0; i < lines.size(); i++)
 	{
 		float rho = lines[i][0], theta = lines[i][1];
-		if (theta > 0 && theta < 3)
+		double a = cos(theta), b = sin(theta);
+		if (a < 0.5 && a > -0.5)
 		{
 			sum += theta;
 			count++;
 			Point pt1, pt2;
-			double a = cos(theta), b = sin(theta);
+
 			double x0 = a * rho, y0 = b * rho;
 			// P1 -> P2
 			pt1.x = cvRound(x0 + 1000 * (-b));
@@ -355,11 +368,20 @@ void RedMarkArea::lineDetect()
 			pt2.x = cvRound(x0 - 1000 * (-b));
 			pt2.y = cvRound(y0 - 1000 * (a));
 			line(lineImage, pt1, pt2, Scalar(0, 0, 255), 1, CV_AA);
-			cout << "theta: " << theta;
-			cout << "  angle: " << degreeTrans(theta) - 90<< endl;
+
+//			cout << "cos: " << a << "\tsin: " << b;
+//			cout << "\tangle: " << degreeTrans(theta) - 90 << endl;
 		}
 	}
-	float average = sum/count;
+	float average;
+	if (count == 0)
+	{
+		average = 1;
+	}
+	else
+	{
+		average= sum/count;
+	}
 	if (lines.size() == 0)
 	{
 		average = 0;

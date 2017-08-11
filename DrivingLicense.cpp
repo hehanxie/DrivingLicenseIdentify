@@ -12,10 +12,10 @@ DrivingLicense::DrivingLicense(Mat src)
 	WIDTH = srcImage.cols;
 
 	redMarkArea = new RedMarkArea(src);
-	if (!redMarkArea->isFindRedArea)
-	{
-		return ;
-	}
+//	if (!redMarkArea->isFindRedArea)
+//	{
+//		return ;
+//	}
 	// get rotated angle
 	ANGLE = redMarkArea->getAngle();
 	rotateImage(src, this->srcImage, ANGLE);
@@ -27,6 +27,7 @@ DrivingLicense::DrivingLicense(Mat src)
 	correctRect(redArea, ANGLE);
 	// draw red area to show
 	rectangle(showImage, redArea, Scalar(0, 255, 0));
+//	imshow("red area", showImage);
 
 	// put all area into keyMat vector
 	getKeyInformation(keyMat);
@@ -194,7 +195,7 @@ void DrivingLicense::rotateImage(Mat src, Mat &img_rotate, float angle)
 void DrivingLicense::correctRect(Rect &rect, float angle)
 {
 	float radian = angle * CV_PI / 180;
-	cout << "y offset: " << sinf(radian) * 0.7 * HEIGHT << endl;
+	cout << "y offset: " << sinf(radian) * 0.5 * HEIGHT << endl;
 //	cout << "cos: " << cosf(radian) << endl;
 	rect.y += 0.7 * sinf(radian) * HEIGHT;
 }

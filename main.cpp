@@ -9,15 +9,15 @@ int main()
 {
 	// red area problem: 1.1
 	// 1.3 --- 703
-	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/1.4.jpg");// 1.1 ~ 1.4
+	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/1.2.jpg");// 1.1 ~ 1.4
 	if (srcImage.empty())
 	{
 		cout << "error";
 		return -1;
 	}
 
-	resize(srcImage, srcImage, Size(srcImage.cols * 0.2, srcImage.rows * 0.2));
-	cout << "width: " << srcImage.cols << " height: " << srcImage.rows << endl;
+//	resize(srcImage, srcImage, Size(srcImage.cols * 0.2, srcImage.rows * 0.2));
+	cout << "source image size: " << srcImage.cols << " x " << srcImage.rows << endl;
 //	imshow("src", srcImage);
 
 

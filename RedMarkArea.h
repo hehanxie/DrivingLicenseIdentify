@@ -59,10 +59,10 @@ public:
 	// 判断红色区域矩阵面积是否合理
 	bool isRedArea(Rect mr);
 
-	// 水平投影
+	// 水平投影(Y)
 	Mat getHorizontalProjection (Mat image);
 
-	// 垂直投影
+	// 垂直投影(X)
 	Mat getVerticalProjection(Mat image);
 
 	// 计算红色区域位置

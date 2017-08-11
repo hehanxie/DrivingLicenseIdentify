@@ -47,7 +47,7 @@ protected:
 	const float UPPER_HEIGHT_RATIO = 0.55;
 
 	const float UP_WIDH_RATIO = 4;
-	const float UP_HEIGHT_RATIO = 0.55;  // 0.85
+	const float UP_HEIGHT_RATIO = 0.50;  // 0.85
 
 	const float RIGHT_WIDTH_RATIO = 2;
 
