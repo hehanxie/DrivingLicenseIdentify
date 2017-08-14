@@ -43,7 +43,7 @@ protected:
 	static const int DEFAULT_MORPH_SIZE_HEIGHT = 7;  // 7
 
 	// 系数比例
-	const float TOP_HEIGHT_RATIO = 0.80;
+	const float TOP_HEIGHT_RATIO = 1.0;
 	const float UPPER_HEIGHT_RATIO = 0.55;
 
 	const float UP_WIDH_RATIO = 4;
@@ -73,6 +73,7 @@ public:
 	Mat areaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
 	// save all image into vector before dividing
 	void getKeyInformation(vector<Mat> &v);
+	void wordDivide(Mat image);
 };
 
 

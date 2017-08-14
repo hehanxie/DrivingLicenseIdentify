@@ -92,12 +92,12 @@ void RedMarkArea::colorMatch()
 	// 合并定位结果
 	Mat redLocationImage;
 	addWeighted(bgrImage, 0.5, srcHSV, 0.5, 0.0, redLocationImage);
-	imshow("combine", redLocationImage);
+//	imshow("combine", redLocationImage);
 
 	Mat dst;
 	redLocationImage.convertTo(dst, CV_8UC1);
 	adaptiveThreshold(dst, redLocationImage, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 7, 3);
-	imshow("adaptive", redLocationImage);
+//	imshow("adaptive", redLocationImage);
 
 	// 开操作 (去除一些噪点)
 	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
@@ -151,22 +151,15 @@ bool RedMarkArea::isRedArea(Rect mr)
 
 Mat RedMarkArea::getVerticalProjection(Mat image)
 {
-	// 黑点最大数目和最大行
-	int maxCol = 0;
-	int maxNum = 0;
-	// 黑点最小数目和最小行
-	int minCol = 0;
-	int minNum = HEIGHT;
-
 	//图像的高和宽
-	int height = HEIGHT;
-	int width = WIDTH;
+	int height = image.rows;
+	int width = image.cols;
 	// 保存当前行的黑点数目
 	int tmp = 0;
 	// 保存每一行黑点数目的数组
 	int *blackArray = new int[width];
 
-	//循环访问图像数据，查找每一行的255点的数目
+	//循环访问图像数据，查找每一行的黑点的数目
 	for (int col = 0; col < width; col++)
 	{
 		tmp = 0;
@@ -178,16 +171,6 @@ Mat RedMarkArea::getVerticalProjection(Mat image)
 			}
 		}
 		blackArray[col] = tmp;
-		if (tmp > maxNum)
-		{
-			maxNum = tmp;
-			maxCol = col;
-		}
-		if (tmp < minNum)
-		{
-			minNum = tmp;
-			minCol = col;
-		}
 //		if (tmp != 0)
 //		{
 //			cout << col << " x: " << tmp << endl;
@@ -198,7 +181,7 @@ Mat RedMarkArea::getVerticalProjection(Mat image)
 
 	for (int col = 0; col < width; ++col)
 	{
-		line(projImg, Point(col, blackArray[col]), Point(col, height - 1), Scalar::all(0));
+		line(projImg, Point(col, height - blackArray[col]), Point(col, height - 1), Scalar::all(0));
 	}
 
 	verticalArray = blackArray;
@@ -207,41 +190,29 @@ Mat RedMarkArea::getVerticalProjection(Mat image)
 
 Mat RedMarkArea::getHorizontalProjection (Mat image)
 {
-	// 黑点最大数目和最大行
-	int maxLine = 0;
-	int maxNum = 0;
-	// 黑点最小数目和最小行
-	int minLine = 0;
-	int minNum = WIDTH;
+	//图像的高和宽
+	int height = image.rows;
+	int width = image.cols;
 	// 保存当前行的黑点数目
 	int tmp = 0;
 	// 保存每一行黑点数目的数组
-	int *blackArray = new int[HEIGHT];
+	int *blackArray = new int[height];
 
 
-	//循环访问图像数据，查找每一行的白点的数目
-	for (int i = 0; i < HEIGHT; i++)
+	//循环访问图像数据，查找每一行的黑点的数目
+	for (int i = 0; i < height; i++)
 	{
 		tmp = 0;
-		for (int j = 0; j < WIDTH/2; j++)
+		// 红色区域位于图像左半边
+		for (int j = 0; j < width/2; j++)
 		{
-			// 白点
+			// 黑点
 			if (image.at<uchar>(i, j) == 0)
 			{
 				tmp++;
 			}
 		}
 		blackArray[i] = tmp;
-		if (tmp > maxNum)
-		{
-			maxNum = tmp;
-			maxLine = i;
-		}
-		if (tmp < minNum)
-		{
-			minNum = tmp;
-			minLine = i;
-		}
 //		if (tmp != 0)
 //		{
 //			cout << i << " y: " << tmp << endl;
@@ -249,12 +220,12 @@ Mat RedMarkArea::getHorizontalProjection (Mat image)
 	}
 
 	//创建并绘制水平投影图像
-	Mat projImg(HEIGHT, WIDTH, CV_8U, Scalar(255));
+	Mat projImg(height, width, CV_8U, Scalar(0));
 
-	for (int i = 0; i < HEIGHT; i++)
+	for (int i = 0; i < height; i++)
 	{
 		//  黑点个数
-		line(projImg, Point(blackArray[i], i), Point(WIDTH - 1, i), Scalar::all(0));
+		line(projImg, Point(blackArray[i], i), Point(width - 1, i), Scalar::all(255));
 	}
 
 	horizontalArray = blackArray;
@@ -317,7 +288,8 @@ void RedMarkArea::setRedSize()
 	cout << "red rect: " << rect << endl;
 
 	rectangle(showImage, rect, Scalar(255, 0, 0));
-	imshow("red mark", showImage);
+
+//	imshow("red mark", showImage);
 }
 
 void RedMarkArea::lineDetect()
@@ -387,7 +359,7 @@ void RedMarkArea::lineDetect()
 		average = 0;
 	}
 
-	imshow("line", lineImage);
+//	imshow("line", lineImage);
 
 	float angle = degreeTrans(average) - 90;
 	setAngle(angle);

@@ -9,7 +9,7 @@ int main()
 {
 	// red area problem: 1.1
 	// 1.3 --- 703
-	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/1.2.jpg");// 1.1 ~ 1.4
+	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/1.1.jpg");// 1.1 ~ 1.4
 	if (srcImage.empty())
 	{
 		cout << "error";

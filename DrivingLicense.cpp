@@ -32,42 +32,51 @@ DrivingLicense::DrivingLicense(Mat src)
 	// put all area into keyMat vector
 	getKeyInformation(keyMat);
 //	// divide each part
-//	informationProcessing(keyMat);
+	informationProcessing(keyMat);
 
-	imshow("draw all area", showImage);
+//	imshow("draw all area", showImage);
 }
 
 void DrivingLicense::informationProcessing(vector<Mat> v)
 {
+	string PATH = "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/data/";
 	// get each part key into map
 
 	// right area
-	Mat birthdayArea   = areaDivide(v[0], 0.3,  0,    0.7, 0.3);
-	Mat firstIssueArea = areaDivide(v[0], 0.45, 0.33, 0.5, 0.3);
-	Mat classArea      = areaDivide(v[0], 0.30, 0.67, 0.7, 0.3);
-	imshow("birthday", birthdayArea);
-	imshow("first issue", firstIssueArea);
-	imshow("class", classArea);
+//	Mat birthday   = areaDivide(v[0], 0.3,  0,    0.7, 0.3);
+//	Mat firstIssue = areaDivide(v[0], 0.45, 0.33, 0.5, 0.3);
+//	Mat class      = areaDivide(v[0], 0.30, 0.67, 0.7, 0.3);
+//	imshow("birthday", birthday);
+//	imshow("first issue", firstIssue);
+//	imshow("class", class);
+//
+//	// down area
+//	Mat validTime = areaDivide(v[1], 0.28, 0, 0.72, 1);
+//	imshow("valid time", validTime);
+//
+//	// up area
+//	Mat address = areaDivide(v[2], 0.1, 0, 0.9, 1);
+//	imshow("address", address);
+//
+//	// upper area
+	Mat name = areaDivide(v[3], 0.08, 0, 0.35, 1);
+//	imwrite(PATH + "name.png", name);
+//	imshow("name", name);
 
-	// down area
-	Mat validTimeArea = areaDivide(v[1], 0.28, 0, 0.72, 1);
-	imshow("valid time", validTimeArea);
+//	Mat sex  = areaDivide(v[3], 0.56, 0, 0.10, 1);
+//	imwrite(PATH + "sex.png", sex);
+//	imshow("sex", sex);
 
-	// up area
-	Mat addressArea = areaDivide(v[2], 0.1, 0, 0.9, 1);
-	imshow("address", addressArea);
-
-	// upper area
-	Mat nameArea   		= areaDivide(v[3], 0.08, 0, 0.35, 1);
-	Mat sexArea 		= areaDivide(v[3], 0.56, 0, 0.10, 1);
-	Mat nationalityArea = areaDivide(v[3], 0.80, 0, 0.20, 1);
-	imshow("name", nameArea);
-	imshow("sex", sexArea);
-	imshow("nationality", nationalityArea);
+// 	Mat nationality = areaDivide(v[3], 0.77, 0, 0.20, 1);
+//	imwrite(PATH + "nationality.png", nationality);
+//	imshow("nationality", nationality);
 
 //	// top area
-	Mat driverID = areaDivide(v[4], 0.41, 0, 0.45, 1);
-	imshow("driver id", driverID);
+//	Mat driverID = areaDivide(v[4], 0.41, 0, 0.45, 1);
+//	imwrite(PATH + "driverID.png", driverID);
+//	imshow("driver id", driverID);
+
+	wordDivide(name);
 }
 
 Mat DrivingLicense::getRightSideArea(Rect redArea, float ratio)
@@ -205,9 +214,9 @@ Mat DrivingLicense::areaDivide(Mat roi, float widthOffsetRatio, float heightOffs
 	// image deal and
 	Mat dst;
 	cvtColor(roi, dst, CV_BGR2GRAY);
-	threshold(dst, dst, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
-	Mat element = getStructuringElement(MORPH_RECT, Size(2, 2));
-	morphologyEx(dst, roi, MORPH_OPEN, element);
+	threshold(dst, roi, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
+	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
+	morphologyEx(roi, roi, MORPH_OPEN, element);
 
 //	imshow("valid", roi);
 
@@ -222,7 +231,7 @@ Mat DrivingLicense::areaDivide(Mat roi, float widthOffsetRatio, float heightOffs
 	p2.y = p1.y + height * heightRatio;
 
 	keywordArea = roi(Rect(p1, p2));
-//	imshow("keyword area", keywordArea);
+	cout << Rect(p1, p2) << endl;
 	return keywordArea;
 }
 
@@ -242,3 +251,29 @@ void DrivingLicense::getKeyInformation(vector<Mat> &v)
 	v.push_back(topSideArea);
 }
 
+void DrivingLicense::wordDivide(Mat image)
+{
+	int height = image.rows;
+	imshow("image", image);
+	Mat drawImage;
+	cvtColor(image, drawImage, CV_GRAY2BGR);
+	image = image < 100;
+	vector<vector<Point>> contours;
+	findContours(image, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+//	drawContours(drawImage, contours, -1, Scalar(0, 0, 255), 1);
+	RotatedRect rect;
+	for (int i = 0; i < contours.size(); i++)
+	{
+		rect = minAreaRect(contours[i]);
+		if (rect.size.width * rect.size.height >= height * height * 0.1)
+		{
+			Point2f P[4];
+			rect.points(P);
+			for (int j = 0; j <= 3; j++)
+			{
+				line(drawImage, P[j], P[(j + 1) % 4], Scalar(0, 0, 255), 2);
+			}
+		}
+	}
+	imshow("draw contours", drawImage);
+}
