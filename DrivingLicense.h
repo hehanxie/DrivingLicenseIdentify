@@ -66,14 +66,22 @@ public:
 	Mat getUpperSideArea(Rect upSideArea, float ratio);
 	Mat getTopSideArea(Rect upperSideArea, float ratio);
 
-	// rotete image
+	// 旋转图像
 	void rotateImage(Mat src, Mat &img_rotate, float angle);
 	void correctRect(Rect &rect, float angle);
 	// 通过定位红色区域，确定信息位置。比例按照与红色区域的长宽比例进行偏移，裁剪
 	Mat areaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
-	// save all image into vector before dividing
+	// 获取所有关键区域信息
 	void getKeyInformation(vector<Mat> &v);
+	// 字符切割
 	void wordDivide(Mat image);
+
+	//  矩形重叠系数
+	double RectOverLapCoefficient(Rect rect1, Rect rect2);
+	// 判断两个矩形是否重叠
+	bool isRectOverLap(Rect rect1, Rect rect2);
+	// 矩形合并
+	Rect RectMerge(Rect rect1, Rect rect2);
 };
 
 

@@ -55,11 +55,13 @@ void DrivingLicense::informationProcessing(vector<Mat> v)
 //	imshow("valid time", validTime);
 //
 //	// up area
-//	Mat address = areaDivide(v[2], 0.1, 0, 0.9, 1);
+	Mat address1 = areaDivide(v[2], 0.1, 0, 0.9, 0.5);
+//	Mat address2 = areaDivide(v[2], 0.05, 0.5, 0.95, 0.5);
+
 //	imshow("address", address);
 //
 //	// upper area
-	Mat name = areaDivide(v[3], 0.08, 0, 0.35, 1);
+//	Mat name = areaDivide(v[3], 0.08, 0, 0.35, 1);
 //	imwrite(PATH + "name.png", name);
 //	imshow("name", name);
 
@@ -76,7 +78,7 @@ void DrivingLicense::informationProcessing(vector<Mat> v)
 //	imwrite(PATH + "driverID.png", driverID);
 //	imshow("driver id", driverID);
 
-	wordDivide(name);
+	wordDivide(address1);
 }
 
 Mat DrivingLicense::getRightSideArea(Rect redArea, float ratio)
@@ -215,7 +217,7 @@ Mat DrivingLicense::areaDivide(Mat roi, float widthOffsetRatio, float heightOffs
 	Mat dst;
 	cvtColor(roi, dst, CV_BGR2GRAY);
 	threshold(dst, roi, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
-	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
+	Mat element = getStructuringElement(MORPH_RECT, Size(2, 2));
 	morphologyEx(roi, roi, MORPH_OPEN, element);
 
 //	imshow("valid", roi);
@@ -260,20 +262,112 @@ void DrivingLicense::wordDivide(Mat image)
 	image = image < 100;
 	vector<vector<Point>> contours;
 	findContours(image, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-//	drawContours(drawImage, contours, -1, Scalar(0, 0, 255), 1);
-	RotatedRect rect;
-	for (int i = 0; i < contours.size(); i++)
+	cout << "contours: " << contours.size() << endl;
+	Mat t = drawImage.clone();
+	drawContours(t, contours, -1, Scalar(0, 0, 255), 1);
+	imshow("pre draw", t);
+//	RotatedRect rect;
+//	for (int i = 0; i < contours.size(); i++)
+//	{
+//		rect = minAreaRect(contours[i]);
+//		if (rect.size.width * rect.size.height >= height * height * 0.1)
+//		{
+//			Point2f P[4];
+//			rect.points(P);
+//			for (int j = 0; j <= 3; j++)
+//			{
+//				line(drawImage, P[j], P[(j + 1) % 4], Scalar(0, 0, 255), 2);
+//			}
+//		}
+//	}
+
+	Rect rect1, rect2;
+	double rate;
+	for (int i = 1; i < contours.size(); i++)
 	{
-		rect = minAreaRect(contours[i]);
-		if (rect.size.width * rect.size.height >= height * height * 0.1)
+		rect1 = boundingRect(contours[i-1]);
+		rect2 = boundingRect(contours[i]);
+		if (rect1.width * rect1.height >= height * height * 0.1 &&
+			rect2.width * rect2.height >= height * height * 0.1)
 		{
-			Point2f P[4];
-			rect.points(P);
-			for (int j = 0; j <= 3; j++)
+			rate = RectOverLapCoefficient(rect1, rect2);
+			cout << "rate: " << rate << endl;
+			if (rate >= 0.2)
 			{
-				line(drawImage, P[j], P[(j + 1) % 4], Scalar(0, 0, 255), 2);
+//				contours.push_back(RectMerge(rect1, rect2));
+//				cout << "merge: " << i << endl;
+				rectangle(drawImage, RectMerge(rect1, rect2), Scalar(0, 0, 255));
+			}
+			else
+			{
+				rectangle(drawImage, rect1, Scalar(0, 0, 255));
+				rectangle(drawImage, rect2, Scalar(0, 0, 255));
 			}
 		}
 	}
+
 	imshow("draw contours", drawImage);
+}
+
+double DrivingLicense::RectOverLapCoefficient(Rect rect1, Rect rect2)
+{
+	CV_Assert(rect1.area() != 0 && rect2.area() != 0);
+	double rate = 0.0;
+	int flag = isRectOverLap(rect1, rect2);
+	if (flag == false)
+	{
+		rate = 0.0;
+		return 0;
+	}
+	Rect rectMerge;
+	rectMerge = RectMerge(rect1, rect2);
+	Mat dst(Size(rectMerge.width + rectMerge.x, rectMerge.height + rectMerge.y), CV_8UC1, Scalar(0));
+	int maxArea = rect1.area() > rect2.area() ? rect1.area() : rect2.area();
+	if (maxArea == rect1.area())
+	{
+		dst(rect2) = Scalar::all(0);
+		dst(rect1) = Scalar::all(127);
+		int count = countNonZero(dst(rect2));
+		rate = (double)count / (double)rect2.area();
+	}
+	else
+	{
+		dst(rect1) = cv::Scalar::all(0);
+		dst(rect2) = cv::Scalar::all(127);
+		int count = countNonZero(dst(rect1));
+		rate = (double)count / (double)rect1.area();
+	}
+	return rate;
+}
+
+bool DrivingLicense::isRectOverLap(Rect rect1, Rect rect2)
+{
+	//先算包含情况
+	int x1 = rect1.x;
+	int x2 = rect2.x;
+	int y1 = rect1.y;
+	int y2 = rect2.y;
+	int width1 = rect1.width;
+	int width2 = rect2.width;
+	int height1 = rect1.height;
+	int height2 = rect2.height;
+	if (x2 > x1 + width1 || x2 + width2 < x1 || y2 + height2 < y1 || y2 > y1 + height1)
+	{
+		return false;
+	}
+	if (x1 > x2 + width2 || x1 + width1 < x2 || y1 + height1 < y2 || y1 > y2 + height2)
+	{
+		return false;
+	}
+	return true;
+}
+
+Rect DrivingLicense::RectMerge(Rect rect1, Rect rect2)
+{
+	Rect rectM;
+	rectM.x = min(rect1.x, rect2.x);
+	rectM.y = min(rect1.y, rect2.y);
+	rectM.width = max(rect1.x + rect1.width, rect2.x + rect2.width) - rectM.x;
+	rectM.height = max(rect1.y + rect1.height, rect2.y + rect2.height) - rectM.y;
+	return rectM;
 }
