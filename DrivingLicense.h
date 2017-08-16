@@ -35,8 +35,7 @@ protected:
 	Mat rightSideArea;
 	Mat downSideArea;
 
-	vector<Mat> keyMat;
-	map<string, Mat> keyInformation;
+	vector<vector<Mat>> resultWord;
 
 	// 图像处理参数
 	static const int DEFAULT_MORPH_SIZE_WIDTH = 15;  // 11
@@ -57,7 +56,6 @@ protected:
 
 public:
 	DrivingLicense(Mat src);
-	void informationProcessing(vector<Mat> v);
 
 	// get each part of area as Mat
 	Mat getRightSideArea(Rect redArea, float ratio);
@@ -72,9 +70,11 @@ public:
 	// 通过定位红色区域，确定信息位置。比例按照与红色区域的长宽比例进行偏移，裁剪
 	Mat areaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
 	// 获取所有关键区域信息
-	void getKeyInformation(vector<Mat> &v);
-	// 字符切割
-	void wordDivide(Mat image);
+	void getKeyInformation(vector<vector<Mat>> &v);
+	// 字符切割，并存入容器中
+	vector<Mat> wordDivide(Mat image);
+	// 文字处理，使文字更加清晰
+	void characterProcessing(vector<Mat> &v);
 
 	//  矩形重叠系数
 	double RectOverLapCoefficient(Rect rect1, Rect rect2);

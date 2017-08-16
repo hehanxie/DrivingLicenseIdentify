@@ -30,56 +30,12 @@ DrivingLicense::DrivingLicense(Mat src)
 //	imshow("red area", showImage);
 
 	// put all area into keyMat vector
-	getKeyInformation(keyMat);
-//	// divide each part
-	informationProcessing(keyMat);
+	getKeyInformation(resultWord);
 
 //	imshow("draw all area", showImage);
 }
 
-void DrivingLicense::informationProcessing(vector<Mat> v)
-{
-	string PATH = "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/data/";
-	// get each part key into map
 
-	// right area
-//	Mat birthday   = areaDivide(v[0], 0.3,  0,    0.7, 0.3);
-//	Mat firstIssue = areaDivide(v[0], 0.45, 0.33, 0.5, 0.3);
-//	Mat class      = areaDivide(v[0], 0.30, 0.67, 0.7, 0.3);
-//	imshow("birthday", birthday);
-//	imshow("first issue", firstIssue);
-//	imshow("class", class);
-//
-//	// down area
-//	Mat validTime = areaDivide(v[1], 0.28, 0, 0.72, 1);
-//	imshow("valid time", validTime);
-//
-//	// up area
-	Mat address1 = areaDivide(v[2], 0.1, 0, 0.9, 0.5);
-//	Mat address2 = areaDivide(v[2], 0.05, 0.5, 0.95, 0.5);
-
-//	imshow("address", address);
-//
-//	// upper area
-//	Mat name = areaDivide(v[3], 0.08, 0, 0.35, 1);
-//	imwrite(PATH + "name.png", name);
-//	imshow("name", name);
-
-//	Mat sex  = areaDivide(v[3], 0.56, 0, 0.10, 1);
-//	imwrite(PATH + "sex.png", sex);
-//	imshow("sex", sex);
-
-// 	Mat nationality = areaDivide(v[3], 0.77, 0, 0.20, 1);
-//	imwrite(PATH + "nationality.png", nationality);
-//	imshow("nationality", nationality);
-
-//	// top area
-//	Mat driverID = areaDivide(v[4], 0.41, 0, 0.45, 1);
-//	imwrite(PATH + "driverID.png", driverID);
-//	imshow("driver id", driverID);
-
-	wordDivide(address1);
-}
 
 Mat DrivingLicense::getRightSideArea(Rect redArea, float ratio)
 {
@@ -213,13 +169,6 @@ void DrivingLicense::correctRect(Rect &rect, float angle)
 
 Mat DrivingLicense::areaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio)
 {
-	// image deal and
-	Mat dst;
-	cvtColor(roi, dst, CV_BGR2GRAY);
-	threshold(dst, roi, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
-	Mat element = getStructuringElement(MORPH_RECT, Size(2, 2));
-	morphologyEx(roi, roi, MORPH_OPEN, element);
-
 //	imshow("valid", roi);
 
 	Mat keywordArea;
@@ -237,76 +186,121 @@ Mat DrivingLicense::areaDivide(Mat roi, float widthOffsetRatio, float heightOffs
 	return keywordArea;
 }
 
-void DrivingLicense::getKeyInformation(vector<Mat> &v)
+void DrivingLicense::getKeyInformation(vector<vector<Mat>> &v)
 {
+//	string PATH = "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/data/";
+//	imwrite(PATH + "name.png", name);
+
 	// get each part of key, and set as roi
 	rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
-	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
-	upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
-	upperSideArea = getUpperSideArea(upSideRect, UPPER_HEIGHT_RATIO);
-	topSideArea = getTopSideArea(upperSideRect, TOP_HEIGHT_RATIO);
+	Mat birthday   = areaDivide(rightSideArea, 0.3,  0,    0.7, 0.3);
+	Mat firstIssue = areaDivide(rightSideArea, 0.45, 0.33, 0.5, 0.3);
+	Mat classType  = areaDivide(rightSideArea, 0.40, 0.67, 0.5, 0.25);
+	v.push_back(wordDivide(birthday));
+	/*
+	v.push_back(wordDivide(firstIssue));
+	v.push_back(wordDivide(classType));
 
-	v.push_back(rightSideArea);
-	v.push_back(downSideArea);
-	v.push_back(upSideArea);
-	v.push_back(upperSideArea);
-	v.push_back(topSideArea);
+	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
+	Mat validTime = areaDivide(downSideArea, 0.28, 0, 0.72, 1);
+	v.push_back(wordDivide(validTime));
+
+	upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
+	Mat address1 = areaDivide(upSideArea, 0.1, 0, 0.9, 0.5);
+	Mat address2 = areaDivide(upSideArea, 0.05, 0.5, 0.95, 0.5);
+	v.push_back(wordDivide(address1));
+	v.push_back(wordDivide(address2));
+
+	upperSideArea = getUpperSideArea(upSideRect, UPPER_HEIGHT_RATIO);
+	Mat name = areaDivide(upperSideArea, 0.08, 0, 0.35, 1);
+	Mat sex  = areaDivide(upperSideArea, 0.56, 0, 0.10, 1);
+	Mat nationality = areaDivide(upperSideArea, 0.77, 0, 0.20, 1);
+	v.push_back(wordDivide(name));
+	v.push_back(wordDivide(sex));
+	v.push_back(wordDivide(nationality));
+
+	topSideArea = getTopSideArea(upperSideRect, TOP_HEIGHT_RATIO);
+	Mat driverID = areaDivide(topSideArea, 0.41, 0, 0.45, 0.9);
+	v.push_back(wordDivide(driverID));
+	 */
+
+//	for (int i = 0; i < v.size(); i++)
+//	{
+//		characterProcessing(v[i]);
+//	}
 }
 
-void DrivingLicense::wordDivide(Mat image)
+// 字符画出轮廓后顺序存在问题
+vector<Mat> DrivingLicense::wordDivide(Mat image)
 {
+	vector<Mat> result;
 	int height = image.rows;
-	imshow("image", image);
+//	imshow("image", image);
+
+	Mat dst;
+	cvtColor(image, dst, CV_BGR2GRAY);
+	threshold(dst, dst, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
+	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
+	morphologyEx(dst, dst, MORPH_OPEN, element);
+
+
 	Mat drawImage;
-	cvtColor(image, drawImage, CV_GRAY2BGR);
-	image = image < 100;
+	cvtColor(dst, drawImage, CV_GRAY2BGR);
+
 	vector<vector<Point>> contours;
-	findContours(image, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+	dst = dst < 100;
+	findContours(dst, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 	cout << "contours: " << contours.size() << endl;
-	Mat t = drawImage.clone();
-	drawContours(t, contours, -1, Scalar(0, 0, 255), 1);
-	imshow("pre draw", t);
-//	RotatedRect rect;
-//	for (int i = 0; i < contours.size(); i++)
-//	{
-//		rect = minAreaRect(contours[i]);
-//		if (rect.size.width * rect.size.height >= height * height * 0.1)
-//		{
-//			Point2f P[4];
-//			rect.points(P);
-//			for (int j = 0; j <= 3; j++)
-//			{
-//				line(drawImage, P[j], P[(j + 1) % 4], Scalar(0, 0, 255), 2);
-//			}
-//		}
-//	}
+//	Mat t = drawImage.clone();
 
 	Rect rect1, rect2;
 	double rate;
-	for (int i = 1; i < contours.size(); i++)
+	int rSquare = height * height * 0.05;
+	int size = contours.size();
+	int square = 0;
+	for (int i = 0; i < size; i++)
 	{
-		rect1 = boundingRect(contours[i-1]);
-		rect2 = boundingRect(contours[i]);
-		if (rect1.width * rect1.height >= height * height * 0.1 &&
-			rect2.width * rect2.height >= height * height * 0.1)
+		rect1 = boundingRect(contours[i]);
+		if (i == 0)
+		{
+			rect2 = boundingRect(contours[i]);
+		}
+		else
+		{
+			rect2 = boundingRect(contours[i-1]);
+		}
+
+//		rectangle(t, rect1, Scalar(0, 0, 255));
+
+		square = rect1.width * rect1.height;
+		if (square >= rSquare)
 		{
 			rate = RectOverLapCoefficient(rect1, rect2);
-			cout << "rate: " << rate << endl;
+//			cout << "rate: " << rate << endl;
 			if (rate >= 0.2)
 			{
-//				contours.push_back(RectMerge(rect1, rect2));
-//				cout << "merge: " << i << endl;
-				rectangle(drawImage, RectMerge(rect1, rect2), Scalar(0, 0, 255));
+				Rect mergeRect = RectMerge(rect1, rect2);
+				rectangle(drawImage, mergeRect, Scalar(0, 0, 255));
+
+				result.push_back(image(mergeRect));
+				string str = to_string(i);
+				imshow(str, drawImage);
 			}
 			else
 			{
 				rectangle(drawImage, rect1, Scalar(0, 0, 255));
-				rectangle(drawImage, rect2, Scalar(0, 0, 255));
+
+				result.push_back(image(rect1));
+				string str = to_string(i);
+				imshow(str, drawImage);
 			}
 		}
 	}
 
-	imshow("draw contours", drawImage);
+//	imshow("pre draw", t);
+	imshow("divide characters", drawImage);
+
+	return result;
 }
 
 double DrivingLicense::RectOverLapCoefficient(Rect rect1, Rect rect2)
@@ -370,4 +364,17 @@ Rect DrivingLicense::RectMerge(Rect rect1, Rect rect2)
 	rectM.width = max(rect1.x + rect1.width, rect2.x + rect2.width) - rectM.x;
 	rectM.height = max(rect1.y + rect1.height, rect2.y + rect2.height) - rectM.y;
 	return rectM;
+}
+
+void DrivingLicense::characterProcessing(vector<Mat> &v)
+{
+	cout << "size: " << v.size() << endl;
+	for (int i = 0; i < v.size(); i++)
+	{
+		Mat c = v[i];
+		cvtColor(c, c, CV_BGR2GRAY);
+		threshold(c, c, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
+		string str = to_string(i);
+		imshow(str, c);
+	}
 }
