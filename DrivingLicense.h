@@ -53,6 +53,9 @@ protected:
 	const float DOWN_WIDTH_RATIO = 3;
 	const float DOWN_HEIGHT_RATIO = 0.25;
 
+	const string PATH = "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/data/";
+	const string PREFIX[10] = {"birthday_", "firstIssue_", "classType_", "validTime_", "address1_",
+								"address2_", "name_", "sex_", "nationality_", "driverID_"};
 
 public:
 	DrivingLicense(Mat src);
@@ -73,8 +76,8 @@ public:
 	void getKeyInformation(vector<vector<Mat>> &v);
 	// 字符切割，并存入容器中
 	vector<Mat> wordDivide(Mat image);
-	// 文字处理，使文字更加清晰
-	void characterProcessing(vector<Mat> &v);
+	// 灰度化后的文字处理，使文字更加清晰
+	void characterProcessing(vector<Mat> &v, string prefix);
 
 	//  矩形重叠系数
 	double RectOverLapCoefficient(Rect rect1, Rect rect2);

@@ -188,18 +188,16 @@ Mat DrivingLicense::areaDivide(Mat roi, float widthOffsetRatio, float heightOffs
 
 void DrivingLicense::getKeyInformation(vector<vector<Mat>> &v)
 {
-//	string PATH = "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/data/";
-//	imwrite(PATH + "name.png", name);
-
 	// get each part of key, and set as roi
 	rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
 	Mat birthday   = areaDivide(rightSideArea, 0.3,  0,    0.7, 0.3);
 	Mat firstIssue = areaDivide(rightSideArea, 0.45, 0.33, 0.5, 0.3);
 	Mat classType  = areaDivide(rightSideArea, 0.40, 0.67, 0.5, 0.25);
+
 	v.push_back(wordDivide(birthday));
-	/*
 	v.push_back(wordDivide(firstIssue));
 	v.push_back(wordDivide(classType));
+
 
 	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
 	Mat validTime = areaDivide(downSideArea, 0.28, 0, 0.72, 1);
@@ -215,24 +213,25 @@ void DrivingLicense::getKeyInformation(vector<vector<Mat>> &v)
 	Mat name = areaDivide(upperSideArea, 0.08, 0, 0.35, 1);
 	Mat sex  = areaDivide(upperSideArea, 0.56, 0, 0.10, 1);
 	Mat nationality = areaDivide(upperSideArea, 0.77, 0, 0.20, 1);
-	v.push_back(wordDivide(name));
-	v.push_back(wordDivide(sex));
-	v.push_back(wordDivide(nationality));
+//	v.push_back(wordDivide(name));
+//	v.push_back(wordDivide(sex));
+//	v.push_back(wordDivide(nationality));
 
 	topSideArea = getTopSideArea(upperSideRect, TOP_HEIGHT_RATIO);
 	Mat driverID = areaDivide(topSideArea, 0.41, 0, 0.45, 0.9);
 	v.push_back(wordDivide(driverID));
-	 */
 
-//	for (int i = 0; i < v.size(); i++)
-//	{
-//		characterProcessing(v[i]);
-//	}
+
+	for (int i = 0; i < v.size(); i++)
+	{
+		characterProcessing(v[i], PREFIX[i]);
+	}
 }
 
-// 字符画出轮廓后顺序存在问题
 vector<Mat> DrivingLicense::wordDivide(Mat image)
 {
+	// 画轮廓矩形重叠切割——矩形顺序存在问题
+	/*
 	vector<Mat> result;
 	int height = image.rows;
 //	imshow("image", image);
@@ -301,7 +300,79 @@ vector<Mat> DrivingLicense::wordDivide(Mat image)
 	imshow("divide characters", drawImage);
 
 	return result;
+	*/
+
+	// 垂直投影切割
+	vector<Mat> result;
+	cvtColor(image, image, CV_BGR2GRAY);
+	Mat src = image.clone();
+	threshold(image, image, 100, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
+	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
+//	morphologyEx(image, image, MORPH_OPEN, element);
+	morphologyEx(image, image, MORPH_CLOSE, element);
+//	morphologyEx(image, image, MORPH_OPEN, element);
+
+//	imshow("image", image);
+	//图像的高和宽
+	int height = image.rows;
+	int width = image.cols;
+	// 保存当前行的黑点数目
+	int tmp = 0;
+	// 保存每一行黑点数目的数组
+	int *blackArray = new int[width];
+
+	//循环访问图像数据，查找每一行的黑点的数目
+	for (int col = 0; col < width; col++)
+	{
+		tmp = 0;
+		for (int row = 0; row < height; row++)
+		{
+			if (image.at<uchar>(row, col) == 0)
+			{
+				tmp++;
+			}
+		}
+		blackArray[col] = tmp;
+//		cout << col << " x: " << tmp << endl;
+
+	}
+	//创建并绘制垂直投影图像
+	Mat projImg(height, width, CV_8U, cv::Scalar(255));
+
+	for (int col = 0; col < width; ++col)
+	{
+		line(projImg, Point(col, height - blackArray[col]), Point(col, height - 1), Scalar::all(0));
+	}
+//	imshow("birth vertical", projImg);
+
+	int startIndex = 0;
+	int endIndex = 0;
+	// 是否进入字符区域
+	bool inBlock = false;
+	for (int col = 0; col < width; col++)
+	{
+		// 进入字符区
+		if (!inBlock && blackArray[col] != 0)
+		{
+			startIndex = col;
+			inBlock = true;
+		}
+		// 进入空白区
+		else if (blackArray[col] == 0 && inBlock)
+		{
+			inBlock = false;
+			endIndex = col;
+			Mat roiImg = src(Range(0, height), Range(startIndex, endIndex));
+			result.push_back(roiImg);
+
+			string str = to_string(col);
+//			imshow(str, roiImg);
+		}
+	}
+	return result;
 }
+
+
 
 double DrivingLicense::RectOverLapCoefficient(Rect rect1, Rect rect2)
 {
@@ -366,15 +437,27 @@ Rect DrivingLicense::RectMerge(Rect rect1, Rect rect2)
 	return rectM;
 }
 
-void DrivingLicense::characterProcessing(vector<Mat> &v)
+void DrivingLicense::characterProcessing(vector<Mat> &v, string prefix)
 {
-	cout << "size: " << v.size() << endl;
+	cout << prefix << "size: " << v.size() << endl;
 	for (int i = 0; i < v.size(); i++)
 	{
 		Mat c = v[i];
-		cvtColor(c, c, CV_BGR2GRAY);
-		threshold(c, c, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
+		threshold(c, c, 100, 255, CV_THRESH_BINARY);
 		string str = to_string(i);
-		imshow(str, c);
+		imwrite(PATH + prefix + str + ".png", c);
 	}
+
+	/*
+	 * birthday: 9
+	 * firstIssue: 9
+	 * classType: 2
+	 * validTime: 16
+	 * address1: 18
+	 * address2: 5
+	 * name: 5
+	 * sex: 1
+	 * nationality: 4
+	 * driverID: 14
+	 */
 }

@@ -32,15 +32,8 @@ RedMarkArea::RedMarkArea(Mat src)
 	colorMatch();
 	setRedSize();
 	isFindRedArea = isRedArea(getRedRect());
-	if (1)
-	{
-		lineDetect();
-	}
-	else
-	{
-		cout << "identify error" << endl;
-//		exit(1);
-	}
+	CV_Assert(isFindRedArea);
+	lineDetect();
 }
 
 void RedMarkArea::colorMatch()
