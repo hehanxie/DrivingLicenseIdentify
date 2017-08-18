@@ -75,7 +75,7 @@ public:
 	// 获取所有关键区域信息
 	void getKeyInformation(vector<vector<Mat>> &v);
 	// 字符切割，并存入容器中
-	vector<Mat> wordDivide(Mat image);
+	vector<Mat> wordDivide(Mat image, string preStr);
 	// 灰度化后的文字处理，使文字更加清晰
 	void characterProcessing(vector<Mat> &v, string prefix);
 

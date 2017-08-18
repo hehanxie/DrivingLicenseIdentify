@@ -182,7 +182,7 @@ Mat DrivingLicense::areaDivide(Mat roi, float widthOffsetRatio, float heightOffs
 	p2.y = p1.y + height * heightRatio;
 
 	keywordArea = roi(Rect(p1, p2));
-	cout << Rect(p1, p2) << endl;
+//	cout << Rect(p1, p2) << endl;
 	return keywordArea;
 }
 
@@ -194,20 +194,20 @@ void DrivingLicense::getKeyInformation(vector<vector<Mat>> &v)
 	Mat firstIssue = areaDivide(rightSideArea, 0.45, 0.33, 0.5, 0.3);
 	Mat classType  = areaDivide(rightSideArea, 0.40, 0.67, 0.5, 0.25);
 
-	v.push_back(wordDivide(birthday));
-	v.push_back(wordDivide(firstIssue));
-	v.push_back(wordDivide(classType));
+	v.push_back(wordDivide(birthday, "birthday"));
+	v.push_back(wordDivide(firstIssue, "firstIssue"));
+	v.push_back(wordDivide(classType, "classType"));
 
 
 	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
 	Mat validTime = areaDivide(downSideArea, 0.28, 0, 0.72, 1);
-	v.push_back(wordDivide(validTime));
+//	v.push_back(wordDivide(validTime));
 
 	upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
 	Mat address1 = areaDivide(upSideArea, 0.1, 0, 0.9, 0.5);
 	Mat address2 = areaDivide(upSideArea, 0.05, 0.5, 0.95, 0.5);
-	v.push_back(wordDivide(address1));
-	v.push_back(wordDivide(address2));
+//	v.push_back(wordDivide(address1));
+//	v.push_back(wordDivide(address2));
 
 	upperSideArea = getUpperSideArea(upSideRect, UPPER_HEIGHT_RATIO);
 	Mat name = areaDivide(upperSideArea, 0.08, 0, 0.35, 1);
@@ -219,16 +219,16 @@ void DrivingLicense::getKeyInformation(vector<vector<Mat>> &v)
 
 	topSideArea = getTopSideArea(upperSideRect, TOP_HEIGHT_RATIO);
 	Mat driverID = areaDivide(topSideArea, 0.41, 0, 0.45, 0.9);
-	v.push_back(wordDivide(driverID));
+//	v.push_back(wordDivide(driverID));
 
 
-	for (int i = 0; i < v.size(); i++)
-	{
-		characterProcessing(v[i], PREFIX[i]);
-	}
+//	for (int i = 0; i < v.size(); i++)
+//	{
+//		characterProcessing(v[i], PREFIX[i]);
+//	}
 }
 
-vector<Mat> DrivingLicense::wordDivide(Mat image)
+vector<Mat> DrivingLicense::wordDivide(Mat image, string preStr)
 {
 	// 画轮廓矩形重叠切割——矩形顺序存在问题
 	/*
@@ -306,13 +306,45 @@ vector<Mat> DrivingLicense::wordDivide(Mat image)
 	vector<Mat> result;
 	cvtColor(image, image, CV_BGR2GRAY);
 	Mat src = image.clone();
-	threshold(image, image, 100, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
-	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
+	adaptiveThreshold(image, image, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 25, 10);
+	// 水平膨胀，使黑点连成线
+	erode(image,image,Mat(1,2,CV_8U,cvScalar(1)),Point(0,0),3);
+
+	Mat dst;
+	cvtColor(image, dst, CV_GRAY2BGR);
+
+	// HOUGH line detect
+	imshow(preStr + " canny", image);
+	vector<Vec2f> lines;
+	int lineThreshold = image.cols * 0.7;
+	HoughLines(image, lines, 1, CV_PI/180, lineThreshold, 0, 0 );
+	while(lines.size() > 3)
+	{
+		lineThreshold++;
+		HoughLines(image, lines, 1, CV_PI/90, lineThreshold, 0, 0 );
+	}
+	for( size_t i = 0; i < lines.size(); i++ )
+	{
+		float rho = lines[i][0], theta = lines[i][1];
+		Point pt1, pt2;
+		double a = cos(theta), b = sin(theta);
+		double x0 = a * rho, y0 = b * rho;
+		pt1.x = cvRound(x0 + 1000 * (-b));
+		pt1.y = cvRound(y0 + 1000 * (a));
+		pt2.x = cvRound(x0 - 1000 * (-b));
+		pt2.y = cvRound(y0 - 1000 * (a));
+		line(dst, pt1, pt2, Scalar(0, 0, 255), 1, CV_AA);
+	}
+
+//	threshold(image, image, 100, 255, CV_THRESH_TRIANGLE + CV_THRESH_BINARY);
+//	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
 //	morphologyEx(image, image, MORPH_OPEN, element);
-	morphologyEx(image, image, MORPH_CLOSE, element);
+//	morphologyEx(image, image, MORPH_CLOSE, element);
 //	morphologyEx(image, image, MORPH_OPEN, element);
 
-//	imshow("image", image);
+	imshow(preStr, dst);
+
+	/*
 	//图像的高和宽
 	int height = image.rows;
 	int width = image.cols;
@@ -369,6 +401,7 @@ vector<Mat> DrivingLicense::wordDivide(Mat image)
 //			imshow(str, roiImg);
 		}
 	}
+	 */
 	return result;
 }
 
@@ -445,7 +478,7 @@ void DrivingLicense::characterProcessing(vector<Mat> &v, string prefix)
 		Mat c = v[i];
 		threshold(c, c, 100, 255, CV_THRESH_BINARY);
 		string str = to_string(i);
-		imwrite(PATH + prefix + str + ".png", c);
+//		imwrite(PATH + prefix + str + ".png", c);
 	}
 
 	/*
