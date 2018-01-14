@@ -32,7 +32,7 @@ DrivingLicense::DrivingLicense(Mat src)
 	// put all area into keyMat vector
 	getKeyInformation(resultWord);
 
-//	imshow("draw all area", showImage);
+	imshow("draw all area", showImage);
 }
 
 
@@ -404,8 +404,6 @@ vector<Mat> DrivingLicense::wordDivide(Mat image, string preStr)
 	 */
 	return result;
 }
-
-
 
 double DrivingLicense::RectOverLapCoefficient(Rect rect1, Rect rect2)
 {
