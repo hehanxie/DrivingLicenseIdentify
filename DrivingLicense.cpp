@@ -27,7 +27,7 @@ DrivingLicense::DrivingLicense(Mat src)
 	correctRect(redArea, ANGLE);
 	// draw red area to show
 	rectangle(showImage, redArea, Scalar(0, 255, 0));
-//	imshow("red area", showImage);
+	imshow("red area", showImage);
 
 	// put all area into keyMat vector
 	getKeyInformation(resultWord);
@@ -145,6 +145,11 @@ Mat DrivingLicense::getTopSideArea(Rect upperSideArea, float ratio)
 
 void DrivingLicense::rotateImage(Mat src, Mat &img_rotate, float angle)
 {
+	if (angle == 0)
+	{
+		cout << "image is regular" << endl;
+		return ;
+	}
 	//旋转中心为图像中心
 	Point2f center;
 	center.x = float(src.cols / 2.0);
@@ -203,7 +208,8 @@ void DrivingLicense::getKeyInformation(vector<vector<Mat>> &v)
 	Mat validTime = areaDivide(downSideArea, 0.28, 0, 0.72, 1);
 //	v.push_back(wordDivide(validTime));
 
-	upSideArea = getUpSideArea(redArea, UP_WIDH_RATIO, UP_HEIGHT_RATIO);
+	// width = 4, height = 0.50
+	upSideArea = getUpSideArea(redArea, 4, 0.5);
 	Mat address1 = areaDivide(upSideArea, 0.1, 0, 0.9, 0.5);
 	Mat address2 = areaDivide(upSideArea, 0.05, 0.5, 0.95, 0.5);
 //	v.push_back(wordDivide(address1));
@@ -314,7 +320,7 @@ vector<Mat> DrivingLicense::wordDivide(Mat image, string preStr)
 	cvtColor(image, dst, CV_GRAY2BGR);
 
 	// HOUGH line detect
-	imshow(preStr + " canny", image);
+//	imshow(preStr + " canny", image);
 	vector<Vec2f> lines;
 	int lineThreshold = image.cols * 0.7;
 	HoughLines(image, lines, 1, CV_PI/180, lineThreshold, 0, 0 );
@@ -342,7 +348,7 @@ vector<Mat> DrivingLicense::wordDivide(Mat image, string preStr)
 //	morphologyEx(image, image, MORPH_CLOSE, element);
 //	morphologyEx(image, image, MORPH_OPEN, element);
 
-	imshow(preStr, dst);
+//	imshow(preStr, dst);
 
 	/*
 	//图像的高和宽

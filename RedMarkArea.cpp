@@ -32,7 +32,7 @@ RedMarkArea::RedMarkArea(Mat src)
 	colorMatch();
 	setRedSize();
 	isFindRedArea = isRedArea(getRedRect());
-	CV_Assert(isFindRedArea);
+//	CV_Assert(isFindRedArea);
 	lineDetect();
 }
 
@@ -58,19 +58,22 @@ void RedMarkArea::colorMatch()
 	merge(hsvSplit, srcHSV);
 
 	// 通过hsv空间，定位红色区域
-	inRange(srcHSV, Scalar(minRedH, minS, minV), Scalar(maxRedH, maxS, maxV), srcHSV);
-//	imshow("HSV", srcHSV);
+//	inRange(srcHSV, Scalar(minRedH, minS, minV), Scalar(maxRedH, maxS, maxV), srcHSV);
+	inRange(srcHSV, Scalar(0, 100, 100), Scalar(10, 255, 255), srcHSV);
+	imshow("HSV locate", srcHSV);
 
 	// 通过RGB定位红色区域
 	Mat bgrImage = srcImage.clone();
-	for(int i=0; i < HEIGHT; i++)
+	for(int i = 0; i < HEIGHT; i++)
 	{
 		for (int j = 0; j < WIDTH; j++)
 		{
 			int b = (uchar) bgrImage.at<Vec3b>(i, j)[0];
 			int g = (uchar) bgrImage.at<Vec3b>(i, j)[1];
 			int r = (uchar) bgrImage.at<Vec3b>(i, j)[2];
-			if (j < WIDTH/2 && r - g >= 40 && r - b >= 40)
+//			if (j < WIDTH/2 && r - g >= 40 && r - b >= 40)
+			// add constrain with R > 100
+			if (j < WIDTH / 2 && r - g >= 40 && r - b >= 40 && r > 100)
 			{
 				bgrImage.at<Vec3b>(i, j) = 255;
 			}
@@ -80,12 +83,12 @@ void RedMarkArea::colorMatch()
 			}
 		}
 	}
-//	imshow("RGB", bgrImage);
+	imshow("RGB locate", bgrImage);
 	cvtColor(bgrImage, bgrImage, CV_BGR2GRAY);
 	// 合并定位结果
 	Mat redLocationImage;
 	addWeighted(bgrImage, 0.5, srcHSV, 0.5, 0.0, redLocationImage);
-//	imshow("combine", redLocationImage);
+	imshow("combine", redLocationImage);
 
 	Mat dst;
 	redLocationImage.convertTo(dst, CV_8UC1);
@@ -101,7 +104,7 @@ void RedMarkArea::colorMatch()
 
 	// get red image
 	this->redImage = redLocationImage.clone();
-//	imshow("red", redImage);
+	imshow("red", redImage);
 
 	// 显示经过处理后的图像
 	getHorizontalProjection(redLocationImage);
@@ -164,7 +167,7 @@ Mat RedMarkArea::getVerticalProjection(Mat image)
 			}
 		}
 		blackArray[col] = tmp;
-//		if (tmp != 0)
+//		if (tmp > 70)
 //		{
 //			cout << col << " x: " << tmp << endl;
 //		}
@@ -206,7 +209,7 @@ Mat RedMarkArea::getHorizontalProjection (Mat image)
 			}
 		}
 		blackArray[i] = tmp;
-//		if (tmp != 0)
+//		if (tmp > 70)
 //		{
 //			cout << i << " y: " << tmp << endl;
 //		}
@@ -227,6 +230,7 @@ Mat RedMarkArea::getHorizontalProjection (Mat image)
 
 void RedMarkArea::setRedSize()
 {
+	// some bug
 	int N = srcImage.rows > srcImage.cols ? srcImage.cols : srcImage.rows * 0.075;
 	cout << "threshold dot: " << N << endl;
 	// x position
@@ -282,7 +286,7 @@ void RedMarkArea::setRedSize()
 
 	rectangle(showImage, rect, Scalar(255, 0, 0));
 
-//	imshow("red mark", showImage);
+	imshow("red mark", showImage);
 }
 
 void RedMarkArea::lineDetect()
