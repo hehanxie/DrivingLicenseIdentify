@@ -16,42 +16,42 @@ class DrivingLicense
 {
 protected:
 	// 源图像，宽高
-	Mat srcImage;
-	int WIDTH;
-	int HEIGHT;
+	Mat src_image_;
+	int WIDTH_;
+	int HEIGHT_;
 	// 用于显示的图像
-	Mat showImage;
+	Mat show_image_;
 
 	// 红色水印区域
-	RedMarkArea *redMarkArea;
-	Rect redArea;
-	float ANGLE;
+	RedMarkArea *red_mark_area_;
+	Rect red_area_;
+	float ANGLE_;
 
-	Mat topSideArea;
-	Mat upperSideArea;
-	Rect upperSideRect;
-	Mat upSideArea;
-	Rect upSideRect;
-	Mat rightSideArea;
-	Mat downSideArea;
+	Mat top_area_;
+	Mat upper_area_;
+	Rect upper_area_rect_;
+	Mat up_area_;
+	Rect up_area_rect_;
+	Mat right_area_;
+	Mat down_area_;
 
-	vector<vector<Mat>> resultWord;
+	vector<vector<Mat>> result_word_;
 
 	// 图像处理参数
-	static const int DEFAULT_MORPH_SIZE_WIDTH = 15;  // 11
-	static const int DEFAULT_MORPH_SIZE_HEIGHT = 7;  // 7
+	static const int kDefaultMorphSizeWidth = 15;  // 11
+	static const int kDefaultMorphSizeHeight = 7;  // 7
 
 	// 系数比例
-	const float TOP_HEIGHT_RATIO = 1.0;
-	const float UPPER_HEIGHT_RATIO = 0.55;
+	const float kTopHeightRatio = 1.0;
+	const float kUpperHeightRatio = 0.55;
 
-	const float UP_WIDH_RATIO = 4;
-	const float UP_HEIGHT_RATIO = 0.50;  // 0.85
+	const float kUpWidthRatio = 4;
+	const float kUpHeightRatio = 0.50;  // 0.85
 
-	const float RIGHT_WIDTH_RATIO = 2;
+	const float kRightWidthRatio = 2;
 
-	const float DOWN_WIDTH_RATIO = 3;
-	const float DOWN_HEIGHT_RATIO = 0.25;
+	const float kDownWidthRatio = 3;
+	const float kDownHeightRatio = 0.25;
 
 	const string PATH = "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/data/";
 	const string PREFIX[10] = {"birthday_", "firstIssue_", "classType_", "validTime_", "address1_",
@@ -61,28 +61,28 @@ public:
 	DrivingLicense(Mat src);
 
 	// get each part of area as Mat
-	Mat getRightSideArea(Rect redArea, float ratio);
-	Mat getDownSideArea(Rect redArea, float widthRatio, float heightRatio);
-	Mat getUpSideArea(Rect redArea, float widthRatio, float heightRatio);
-	Mat getUpperSideArea(Rect upSideArea, float ratio);
-	Mat getTopSideArea(Rect upperSideArea, float ratio);
+	Mat GetRightArea(Rect redArea, float ratio);
+	Mat GetDownArea(Rect redArea, float widthRatio, float heightRatio);
+	Mat GetUpArea(Rect redArea, float widthRatio, float heightRatio);
+	Mat GetUpperArea(Rect upSideArea, float ratio);
+	Mat GetTopArea(Rect upperSideArea, float ratio);
 
 	// 旋转图像
-	void rotateImage(Mat src, Mat &img_rotate, float angle);
-	void correctRect(Rect &rect, float angle);
+	void RotateImage(Mat src, Mat &img_rotate, float angle);
+	void CorrectRect(Rect &rect, float angle);
 	// 通过定位红色区域，确定信息位置。比例按照与红色区域的长宽比例进行偏移，裁剪
-	Mat areaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
+	Mat AreaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
 	// 获取所有关键区域信息
-	void getKeyInformation(vector<vector<Mat>> &v);
+	void GetKeyInformation(vector<vector<Mat>> &v);
 	// 字符切割，并存入容器中
-	vector<Mat> wordDivide(Mat image, string preStr);
+	vector<Mat> WordDivide(Mat image, string preStr);
 	// 灰度化后的文字处理，使文字更加清晰
-	void characterProcessing(vector<Mat> &v, string prefix);
+	void CharacterProcessing(vector<Mat> &v, string prefix);
 
 	//  矩形重叠系数
 	double RectOverLapCoefficient(Rect rect1, Rect rect2);
 	// 判断两个矩形是否重叠
-	bool isRectOverLap(Rect rect1, Rect rect2);
+	bool IsRectOverLap(Rect rect1, Rect rect2);
 	// 矩形合并
 	Rect RectMerge(Rect rect1, Rect rect2);
 };

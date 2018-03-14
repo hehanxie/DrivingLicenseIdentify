@@ -7,8 +7,8 @@ using namespace cv;
 
 int main()
 {
-	// something problem with test image 1.4, 1.6
-	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/testImg/1.4.jpg");
+	// something problem with test image 1.6, 1.7
+	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/testImg/1.2.jpg");
 	if (srcImage.empty())
 	{
 		cout << "error";
@@ -16,14 +16,13 @@ int main()
 	}
 
 	cout << "default image size: " << srcImage.cols << " x " << srcImage.rows << endl;
-//    resize(srcImage, srcImage, Size(srcImage.cols * 0.2, srcImage.rows * 0.2));
+//    resize(src_image_, src_image_, Size(src_image_.cols * 0.2, src_image_.rows * 0.2));
 	while (srcImage.cols >= 1500 || srcImage.rows >= 1000)
 	{
 		resize(srcImage, srcImage, Size(srcImage.cols * 0.9, srcImage.rows * 0.9));
 	}
 	cout << "source image size: " << srcImage.cols << " x " << srcImage.rows << endl;
-//	imshow("src", srcImage);
-
+//	imshow("src", src_image_);
 
 	DrivingLicense *driverLicense = new DrivingLicense(srcImage);
 	waitKey(0);

@@ -7,37 +7,37 @@
 
 DrivingLicense::DrivingLicense(Mat src)
 {
-	this->srcImage = src.clone();
-	HEIGHT = srcImage.rows;
-	WIDTH = srcImage.cols;
+	this->src_image_ = src.clone();
+	HEIGHT_ = src_image_.rows;
+	WIDTH_ = src_image_.cols;
 
-	redMarkArea = new RedMarkArea(src);
-//	if (!redMarkArea->isFindRedArea)
+	red_mark_area_ = new RedMarkArea(src);
+//	if (!red_mark_area_->is_find_red_area_)
 //	{
 //		return ;
 //	}
 	// get rotated angle
-	ANGLE = redMarkArea->getAngle();
-	rotateImage(src, this->srcImage, ANGLE);
-	showImage = this->srcImage.clone();
+	ANGLE_ = red_mark_area_->GetAngle();
+	RotateImage(src, this->src_image_, ANGLE_);
+	show_image_ = this->src_image_.clone();
 
 	// get red mark area
-	redArea = redMarkArea->getRedRect();
+	red_area_ = red_mark_area_->GetRedRect();
 	// correct angle
-	correctRect(redArea, ANGLE);
+	CorrectRect(red_area_, ANGLE_);
 	// draw red area to show
-	rectangle(showImage, redArea, Scalar(0, 255, 0));
-	imshow("red area", showImage);
+	rectangle(show_image_, red_area_, Scalar(0, 255, 0), 5);
+	imshow("red area", show_image_);
 
 	// put all area into keyMat vector
-	getKeyInformation(resultWord);
+	GetKeyInformation(result_word_);
 
-	imshow("draw all area", showImage);
+	imshow("draw all area", show_image_);
 }
 
 
 
-Mat DrivingLicense::getRightSideArea(Rect redArea, float ratio)
+Mat DrivingLicense::GetRightArea(Rect redArea, float ratio)
 {
 	int redWidth = redArea.width;
 	int redHeight = redArea.height;
@@ -53,14 +53,14 @@ Mat DrivingLicense::getRightSideArea(Rect redArea, float ratio)
 	Rect rect = Rect(p1, p2);
 	// set roi image
 	Mat roi;
-	roi = srcImage(rect);
+	roi = src_image_(rect);
 	// draw area
-	rectangle(showImage, rect, Scalar(0, 255, 0));
-//	imshow("right area", showImage);
+	rectangle(show_image_, rect, Scalar(0, 255, 0));
+//	imshow("right area", show_image_);
 	return roi;
 }
 
-Mat DrivingLicense::getDownSideArea(Rect redArea, float widthRatio, float heightRatio)
+Mat DrivingLicense::GetDownArea(Rect redArea, float widthRatio, float heightRatio)
 {
 	int redWidth = redArea.width;
 	int redHeight = redArea.height;
@@ -74,14 +74,14 @@ Mat DrivingLicense::getDownSideArea(Rect redArea, float widthRatio, float height
 
 	Rect rect = Rect(p1, p2);
 	Mat roi;
-	roi = srcImage(rect);
+	roi = src_image_(rect);
 
-	rectangle(showImage, rect, Scalar(255, 0, 255));
-//	imshow("down area", showImage);
+	rectangle(show_image_, rect, Scalar(255, 0, 255));
+//	imshow("down area", show_image_);
 	return roi;
 }
 
-Mat DrivingLicense::getUpSideArea(Rect redArea, float widthRatio, float heightRatio)
+Mat DrivingLicense::GetUpArea(Rect redArea, float widthRatio, float heightRatio)
 {
 	int redWidth = redArea.width;
 	int redHeight = redArea.height;
@@ -94,15 +94,15 @@ Mat DrivingLicense::getUpSideArea(Rect redArea, float widthRatio, float heightRa
 	p2.y = p1.y - redHeight * heightRatio;
 
 	Rect rect = Rect(p1, p2);
-	this->upSideRect = rect;
+	this->up_area_rect_ = rect;
 	Mat roi;
-	roi = srcImage(rect);
-	rectangle(showImage, rect, Scalar(255, 0, 0));
-//	imshow("up area", showImage);
+	roi = src_image_(rect);
+	rectangle(show_image_, rect, Scalar(255, 0, 0));
+//	imshow("up area", show_image_);
 	return roi;
 }
 
-Mat DrivingLicense::getUpperSideArea(Rect upSideArea, float ratio)
+Mat DrivingLicense::GetUpperArea(Rect upSideArea, float ratio)
 {
 	int width = upSideArea.width;
 	int height = upSideArea.height;
@@ -115,15 +115,15 @@ Mat DrivingLicense::getUpperSideArea(Rect upSideArea, float ratio)
 	p2.y = p1.y - height * ratio;
 
 	Rect rect = Rect(p1, p2);
-	this->upperSideRect = rect;
+	this->upper_area_rect_ = rect;
 	Mat roi;
-	roi = srcImage(rect);
-	rectangle(showImage, rect, Scalar(0, 255, 0));
-//	imshow("upper area", showImage);
+	roi = src_image_(rect);
+	rectangle(show_image_, rect, Scalar(0, 255, 0));
+//	imshow("upper area", show_image_);
 	return roi;
 }
 
-Mat DrivingLicense::getTopSideArea(Rect upperSideArea, float ratio)
+Mat DrivingLicense::GetTopArea(Rect upperSideArea, float ratio)
 {
 	int width = upperSideArea.width;
 	int height = upperSideArea.height;
@@ -137,13 +137,13 @@ Mat DrivingLicense::getTopSideArea(Rect upperSideArea, float ratio)
 
 	Rect rect = Rect(p1, p2);
 	Mat roi;
-	roi = srcImage(rect);
-	rectangle(showImage, rect, Scalar(0, 0, 255));
-//	imshow("top area", showImage);
+	roi = src_image_(rect);
+	rectangle(show_image_, rect, Scalar(0, 0, 255));
+//	imshow("top area", show_image_);
 	return roi;
 }
 
-void DrivingLicense::rotateImage(Mat src, Mat &img_rotate, float angle)
+void DrivingLicense::RotateImage(Mat src, Mat &img_rotate, float angle)
 {
 	if (angle == 0)
 	{
@@ -164,15 +164,16 @@ void DrivingLicense::rotateImage(Mat src, Mat &img_rotate, float angle)
 	// Move image
 }
 
-void DrivingLicense::correctRect(Rect &rect, float angle)
+void DrivingLicense::CorrectRect(Rect &rect, float angle)
 {
 	float radian = angle * CV_PI / 180;
-	cout << "y offset: " << sinf(radian) * 0.5 * HEIGHT << endl;
+	cout << "y offset: " << sinf(radian) * 0.5 * HEIGHT_ << endl;
 //	cout << "cos: " << cosf(radian) << endl;
-	rect.y += 0.7 * sinf(radian) * HEIGHT;
+	rect.y += 0.7 * sinf(radian) * HEIGHT_;
 }
 
-Mat DrivingLicense::areaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio)
+Mat DrivingLicense::AreaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio,
+							   float heightRatio)
 {
 //	imshow("valid", roi);
 
@@ -191,50 +192,50 @@ Mat DrivingLicense::areaDivide(Mat roi, float widthOffsetRatio, float heightOffs
 	return keywordArea;
 }
 
-void DrivingLicense::getKeyInformation(vector<vector<Mat>> &v)
+void DrivingLicense::GetKeyInformation(vector<vector<Mat>> &v)
 {
 	// get each part of key, and set as roi
-	rightSideArea = getRightSideArea(redArea, RIGHT_WIDTH_RATIO);
-	Mat birthday   = areaDivide(rightSideArea, 0.3,  0,    0.7, 0.3);
-	Mat firstIssue = areaDivide(rightSideArea, 0.45, 0.33, 0.5, 0.3);
-	Mat classType  = areaDivide(rightSideArea, 0.40, 0.67, 0.5, 0.25);
+	right_area_ = GetRightArea(red_area_, kRightWidthRatio);
+	Mat birthday   = AreaDivide(right_area_, 0.3, 0, 0.7, 0.3);
+	Mat firstIssue = AreaDivide(right_area_, 0.45, 0.33, 0.5, 0.3);
+	Mat classType  = AreaDivide(right_area_, 0.40, 0.67, 0.5, 0.25);
 
-	v.push_back(wordDivide(birthday, "birthday"));
-	v.push_back(wordDivide(firstIssue, "firstIssue"));
-	v.push_back(wordDivide(classType, "classType"));
+//	v.push_back(WordDivide(birthday, "birthday"));
+//	v.push_back(WordDivide(firstIssue, "firstIssue"));
+//	v.push_back(WordDivide(classType, "classType"));
 
 
-	downSideArea = getDownSideArea(redArea, DOWN_WIDTH_RATIO, DOWN_HEIGHT_RATIO);
-	Mat validTime = areaDivide(downSideArea, 0.28, 0, 0.72, 1);
-//	v.push_back(wordDivide(validTime));
+	down_area_ = GetDownArea(red_area_, kDownWidthRatio, kDownHeightRatio);
+	Mat validTime = AreaDivide(down_area_, 0.28, 0, 0.72, 1);
+//	v.push_back(WordDivide(validTime));
 
 	// width = 4, height = 0.50
-	upSideArea = getUpSideArea(redArea, 4, 0.5);
-	Mat address1 = areaDivide(upSideArea, 0.1, 0, 0.9, 0.5);
-	Mat address2 = areaDivide(upSideArea, 0.05, 0.5, 0.95, 0.5);
-//	v.push_back(wordDivide(address1));
-//	v.push_back(wordDivide(address2));
+	up_area_ = GetUpArea(red_area_, 4, 0.5);
+	Mat address1 = AreaDivide(up_area_, 0.1, 0, 0.9, 0.5);
+	Mat address2 = AreaDivide(up_area_, 0.05, 0.5, 0.95, 0.5);
+//	v.push_back(WordDivide(address1));
+//	v.push_back(WordDivide(address2));
 
-	upperSideArea = getUpperSideArea(upSideRect, UPPER_HEIGHT_RATIO);
-	Mat name = areaDivide(upperSideArea, 0.08, 0, 0.35, 1);
-	Mat sex  = areaDivide(upperSideArea, 0.56, 0, 0.10, 1);
-	Mat nationality = areaDivide(upperSideArea, 0.77, 0, 0.20, 1);
-//	v.push_back(wordDivide(name));
-//	v.push_back(wordDivide(sex));
-//	v.push_back(wordDivide(nationality));
+	upper_area_ = GetUpperArea(up_area_rect_, kUpperHeightRatio);
+	Mat name = AreaDivide(upper_area_, 0.08, 0, 0.35, 1);
+	Mat sex  = AreaDivide(upper_area_, 0.56, 0, 0.10, 1);
+	Mat nationality = AreaDivide(upper_area_, 0.77, 0, 0.20, 1);
+//	v.push_back(WordDivide(name));
+//	v.push_back(WordDivide(sex));
+//	v.push_back(WordDivide(nationality));
 
-	topSideArea = getTopSideArea(upperSideRect, TOP_HEIGHT_RATIO);
-	Mat driverID = areaDivide(topSideArea, 0.41, 0, 0.45, 0.9);
-//	v.push_back(wordDivide(driverID));
+	top_area_ = GetTopArea(upper_area_rect_, kTopHeightRatio);
+	Mat driverID = AreaDivide(top_area_, 0.41, 0, 0.45, 0.9);
+	v.push_back(WordDivide(driverID, "driver_id"));
 
 
 //	for (int i = 0; i < v.size(); i++)
 //	{
-//		characterProcessing(v[i], PREFIX[i]);
+//		CharacterProcessing(v[i], PREFIX[i]);
 //	}
 }
 
-vector<Mat> DrivingLicense::wordDivide(Mat image, string preStr)
+vector<Mat> DrivingLicense::WordDivide(Mat image, string preStr)
 {
 	// 画轮廓矩形重叠切割——矩形顺序存在问题
 	/*
@@ -415,7 +416,7 @@ double DrivingLicense::RectOverLapCoefficient(Rect rect1, Rect rect2)
 {
 	CV_Assert(rect1.area() != 0 && rect2.area() != 0);
 	double rate = 0.0;
-	int flag = isRectOverLap(rect1, rect2);
+	int flag = IsRectOverLap(rect1, rect2);
 	if (flag == false)
 	{
 		rate = 0.0;
@@ -442,7 +443,7 @@ double DrivingLicense::RectOverLapCoefficient(Rect rect1, Rect rect2)
 	return rate;
 }
 
-bool DrivingLicense::isRectOverLap(Rect rect1, Rect rect2)
+bool DrivingLicense::IsRectOverLap(Rect rect1, Rect rect2)
 {
 	//先算包含情况
 	int x1 = rect1.x;
@@ -474,7 +475,7 @@ Rect DrivingLicense::RectMerge(Rect rect1, Rect rect2)
 	return rectM;
 }
 
-void DrivingLicense::characterProcessing(vector<Mat> &v, string prefix)
+void DrivingLicense::CharacterProcessing(vector<Mat> &v, string prefix)
 {
 	cout << prefix << "size: " << v.size() << endl;
 	for (int i = 0; i < v.size(); i++)
