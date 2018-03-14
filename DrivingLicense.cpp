@@ -7,31 +7,25 @@
 
 DrivingLicense::DrivingLicense(Mat src)
 {
-	this->src_image_ = src.clone();
+	red_mark_area_ = new RedMarkArea(src);
+	this->src_image_ = red_mark_area_->GetCorrectSrcImage();
+//	this->src_image_ = src.clone();
 	HEIGHT_ = src_image_.rows;
 	WIDTH_ = src_image_.cols;
 
-	red_mark_area_ = new RedMarkArea(src);
-//	if (!red_mark_area_->is_find_red_area_)
-//	{
-//		return ;
-//	}
-	// get rotated angle
-	ANGLE_ = red_mark_area_->GetAngle();
-	RotateImage(src, this->src_image_, ANGLE_);
+//	red_mark_area_ = new RedMarkArea(src);
+
 	show_image_ = this->src_image_.clone();
 
 	// get red mark area
-	red_area_ = red_mark_area_->GetRedRect();
-	// correct angle
-	CorrectRect(red_area_, ANGLE_);
+	red_area_rect = red_mark_area_->GetRedRect();
+
 	// draw red area to show
-	rectangle(show_image_, red_area_, Scalar(0, 255, 0), 5);
+	rectangle(show_image_, red_area_rect, Scalar(0, 255, 0), 3);
 	imshow("red area", show_image_);
 
 	// put all area into keyMat vector
 	GetKeyInformation(result_word_);
-
 	imshow("draw all area", show_image_);
 }
 
@@ -55,7 +49,7 @@ Mat DrivingLicense::GetRightArea(Rect redArea, float ratio)
 	Mat roi;
 	roi = src_image_(rect);
 	// draw area
-	rectangle(show_image_, rect, Scalar(0, 255, 0));
+//	rectangle(show_image_, rect, Scalar(0, 255, 0));
 //	imshow("right area", show_image_);
 	return roi;
 }
@@ -76,7 +70,7 @@ Mat DrivingLicense::GetDownArea(Rect redArea, float widthRatio, float heightRati
 	Mat roi;
 	roi = src_image_(rect);
 
-	rectangle(show_image_, rect, Scalar(255, 0, 255));
+//	rectangle(show_image_, rect, Scalar(255, 0, 255));
 //	imshow("down area", show_image_);
 	return roi;
 }
@@ -97,7 +91,8 @@ Mat DrivingLicense::GetUpArea(Rect redArea, float widthRatio, float heightRatio)
 	this->up_area_rect_ = rect;
 	Mat roi;
 	roi = src_image_(rect);
-	rectangle(show_image_, rect, Scalar(255, 0, 0));
+
+//	rectangle(show_image_, rect, Scalar(255, 0, 0));
 //	imshow("up area", show_image_);
 	return roi;
 }
@@ -118,7 +113,7 @@ Mat DrivingLicense::GetUpperArea(Rect upSideArea, float ratio)
 	this->upper_area_rect_ = rect;
 	Mat roi;
 	roi = src_image_(rect);
-	rectangle(show_image_, rect, Scalar(0, 255, 0));
+//	rectangle(show_image_, rect, Scalar(0, 255, 0));
 //	imshow("upper area", show_image_);
 	return roi;
 }
@@ -138,31 +133,11 @@ Mat DrivingLicense::GetTopArea(Rect upperSideArea, float ratio)
 	Rect rect = Rect(p1, p2);
 	Mat roi;
 	roi = src_image_(rect);
-	rectangle(show_image_, rect, Scalar(0, 0, 255));
+	rectangle(show_image_, rect, Scalar(0, 0, 255), 2);
 //	imshow("top area", show_image_);
 	return roi;
 }
 
-void DrivingLicense::RotateImage(Mat src, Mat &img_rotate, float angle)
-{
-	if (angle == 0)
-	{
-		cout << "image is regular" << endl;
-		return ;
-	}
-	//旋转中心为图像中心
-	Point2f center;
-	center.x = float(src.cols / 2.0);
-	center.y = float(src.rows / 2.0);
-//	int length = 0;
-//	length = sqrt(src.cols * src.cols + src.rows * src.rows);
-	//计算二维旋转的仿射变换矩阵
-	Mat M = getRotationMatrix2D(center, angle, 1);
-	// negative num means rotate clockwise
-	warpAffine(src, img_rotate, M, Size(src.cols, src.rows), 1, 0, Scalar(255, 255, 255));//仿射变换，背景色填充为白色
-//	imshow("rotate", img_rotate);
-	// Move image
-}
 
 void DrivingLicense::CorrectRect(Rect &rect, float angle)
 {
@@ -195,7 +170,7 @@ Mat DrivingLicense::AreaDivide(Mat roi, float widthOffsetRatio, float heightOffs
 void DrivingLicense::GetKeyInformation(vector<vector<Mat>> &v)
 {
 	// get each part of key, and set as roi
-	right_area_ = GetRightArea(red_area_, kRightWidthRatio);
+	right_area_ = GetRightArea(red_area_rect, kRightWidthRatio);
 	Mat birthday   = AreaDivide(right_area_, 0.3, 0, 0.7, 0.3);
 	Mat firstIssue = AreaDivide(right_area_, 0.45, 0.33, 0.5, 0.3);
 	Mat classType  = AreaDivide(right_area_, 0.40, 0.67, 0.5, 0.25);
@@ -205,12 +180,12 @@ void DrivingLicense::GetKeyInformation(vector<vector<Mat>> &v)
 //	v.push_back(WordDivide(classType, "classType"));
 
 
-	down_area_ = GetDownArea(red_area_, kDownWidthRatio, kDownHeightRatio);
+	down_area_ = GetDownArea(red_area_rect, kDownWidthRatio, kDownHeightRatio);
 	Mat validTime = AreaDivide(down_area_, 0.28, 0, 0.72, 1);
 //	v.push_back(WordDivide(validTime));
 
 	// width = 4, height = 0.50
-	up_area_ = GetUpArea(red_area_, 4, 0.5);
+	up_area_ = GetUpArea(red_area_rect, 4, 0.5);
 	Mat address1 = AreaDivide(up_area_, 0.1, 0, 0.9, 0.5);
 	Mat address2 = AreaDivide(up_area_, 0.05, 0.5, 0.95, 0.5);
 //	v.push_back(WordDivide(address1));

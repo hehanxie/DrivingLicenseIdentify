@@ -24,7 +24,7 @@ protected:
 
 	// 红色水印区域
 	RedMarkArea *red_mark_area_;
-	Rect red_area_;
+	Rect red_area_rect;
 	float ANGLE_;
 
 	Mat top_area_;
@@ -53,7 +53,7 @@ protected:
 	const float kDownWidthRatio = 3;
 	const float kDownHeightRatio = 0.25;
 
-	const string PATH = "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/testImg/data/";
+	const string PATH = "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/exampleImage/data/";
 	const string PREFIX[10] = {"birthday_", "firstIssue_", "classType_", "validTime_", "address1_",
 								"address2_", "name_", "sex_", "nationality_", "driverID_"};
 
@@ -67,9 +67,6 @@ public:
 	Mat GetUpperArea(Rect upSideArea, float ratio);
 	Mat GetTopArea(Rect upperSideArea, float ratio);
 
-	// 旋转图像
-	void RotateImage(Mat src, Mat &img_rotate, float angle);
-	void CorrectRect(Rect &rect, float angle);
 	// 通过定位红色区域，确定信息位置。比例按照与红色区域的长宽比例进行偏移，裁剪
 	Mat AreaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
 	// 获取所有关键区域信息

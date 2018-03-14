@@ -76,8 +76,9 @@ public:
 	void SetRedRect(Rect rect);
 	Rect GetRedRect();
 	void SetAngle(float angle);
-	float GetAngle();
+	Mat GetCorrectSrcImage();
 
+	void RotateImage(Mat src, Mat &img_rotate, float angle);
 };
 
 

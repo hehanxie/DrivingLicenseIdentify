@@ -29,10 +29,25 @@ RedMarkArea::RedMarkArea(Mat src)
 	vertical_array_ = new int[WIDTH_];
 
 	ColorMatch();
-	SetRedSize();
-	is_find_red_area_ = IsRedArea(GetRedRect());
-	CV_Assert(is_find_red_area_);
 	LineDetect();
+
+	// correct image angle
+	RotateImage(this->src_image_, this->src_image_, ANGLE_);
+	show_image_ = this->src_image_;
+//	imshow("rotate image", this->src_image_);
+
+	ColorMatch();
+	// to locate red area rectangle position
+	SetRedSize();
+//	imshow("after rotate", show_image_);
+
+	is_find_red_area_ = IsRedArea(GetRedRect());
+	if (!is_find_red_area_)
+	{
+		return ;
+	}
+	CV_Assert(is_find_red_area_);
+//	LineDetect();
 }
 
 void RedMarkArea::ColorMatch()
@@ -50,18 +65,11 @@ void RedMarkArea::ColorMatch()
 	// 将BGR 转换为 HSV
 	Mat srcHSV;
 	cvtColor(show_image_, srcHSV, CV_BGR2HSV);
-//	// 直方图均衡化
-//	vector<Mat> hsvSplit;
-//	split(srcHSV, hsvSplit);
-//	imshow("before equalize", srcHSV);
-//	equalizeHist(hsvSplit[2], hsvSplit[2]);
-//	merge(hsvSplit, srcHSV);
-//	imshow("equalize", srcHSV);
 
 	// 通过hsv空间，定位红色区域
 //	inRange(srcHSV, Scalar(minRedH, minS, minV), Scalar(maxRedH, maxS, maxV), srcHSV);
 	inRange(srcHSV, Scalar(0, 100, 100), Scalar(10, 255, 255), srcHSV);
-	imshow("HSV result", srcHSV);
+//	imshow("HSV result", srcHSV);
 
 	// 通过RGB定位红色区域
 	Mat bgrImage = src_image_.clone();
@@ -73,7 +81,7 @@ void RedMarkArea::ColorMatch()
 			int g = (uchar) bgrImage.at<Vec3b>(i, j)[1];
 			int r = (uchar) bgrImage.at<Vec3b>(i, j)[2];
 //			if (j < WIDTH_/2 && r - g >= 40 && r - b >= 40)
-			// add constrain with R > 100
+			// add constrain with R value > 100
 			if (j < WIDTH_ / 2 && r - g >= 40 && r - b >= 40 && r > 100)
 			{
 				bgrImage.at<Vec3b>(i, j) = 255;
@@ -84,17 +92,17 @@ void RedMarkArea::ColorMatch()
 			}
 		}
 	}
-	imshow("RGB result", bgrImage);
+//	imshow("RGB result", bgrImage);
 	cvtColor(bgrImage, bgrImage, CV_BGR2GRAY);
 	// 合并定位结果
 	Mat redLocationImage;
 	addWeighted(bgrImage, 0.5, srcHSV, 0.5, 0.0, redLocationImage);
-	imshow("combine", redLocationImage);
+//	imshow("combine", redLocationImage);
 
 	Mat dst;
 	redLocationImage.convertTo(dst, CV_8UC1);
 	adaptiveThreshold(dst, redLocationImage, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 7, 3);
-	imshow("adaptive", redLocationImage);
+//	imshow("adaptive", redLocationImage);
 
 	// 开操作 (去除一些噪点)
 	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
@@ -107,19 +115,20 @@ void RedMarkArea::ColorMatch()
 	this->red_image_ = redLocationImage.clone();
 //	imshow("red", red_image_);
 
-	// 显示经过处理后的图像
+// 显示经过处理后的图像
 	GetHorizontalProjection(redLocationImage);
 //	imshow("y", GetHorizontalProjection(redLocationImage));
 	GetVerticalProjection(redLocationImage);
 //	imshow("x", GetVerticalProjection(redLocationImage));
 }
 
+
 bool RedMarkArea::IsRedArea(Rect mr)
 {
 //	cout << "width: " << width;
 //	cout << " height: " << height << endl;
-	int height = mr.height;
-	int width = mr.width;
+	float height = mr.height;
+	float width = mr.width;
 	float scale = 1;
 	if (height == 0 || width == 0)
 	{
@@ -134,6 +143,7 @@ bool RedMarkArea::IsRedArea(Rect mr)
 		scale = height / width;
 	}
 
+	cout << "size ratio is:" << scale << endl;
 	int area = width * height;
 	int imageArea = HEIGHT_ * WIDTH_;
 	int rMinArea = imageArea * kMinRedAreaRatio;
@@ -231,6 +241,7 @@ Mat RedMarkArea::GetHorizontalProjection(Mat image)
 
 void RedMarkArea::SetRedSize()
 {
+
 	// some bug
 	int N = src_image_.rows > src_image_.cols ? src_image_.cols : src_image_.rows * 0.075;
 	cout << "threshold dot: " << N << endl;
@@ -283,11 +294,11 @@ void RedMarkArea::SetRedSize()
 //		rect.width = rect.height;
 //	}
 	SetRedRect(rect);
-	cout << "red rect: " << rect << endl;
+	cout << "red rectangle positon: " << rect << endl;
 
-	rectangle(show_image_, rect, Scalar(255, 0, 0), 3);
+	rectangle(show_image_, rect, Scalar(255, 0, 0), 1);
 
-	imshow("red mark", show_image_);
+//	imshow("red mark", show_image_);
 }
 
 void RedMarkArea::LineDetect()
@@ -357,7 +368,7 @@ void RedMarkArea::LineDetect()
 		average = 0;
 	}
 
-//	imshow("line", lineImage);
+	imshow("line", lineImage);
 
 	float angle = DegreeTrans(average) - 90;
 	SetAngle(angle);
@@ -372,6 +383,27 @@ float RedMarkArea::DegreeTrans(float theta)
 	return res;
 }
 
+void RedMarkArea::RotateImage(Mat src, Mat &img_rotate, float angle)
+{
+	if (angle == 0)
+	{
+		cout << "image is regular" << endl;
+		return ;
+	}
+	//旋转中心为图像中心
+	Point2f center;
+	center.x = float(src.cols / 2.0);
+	center.y = float(src.rows / 2.0);
+//	int length = 0;
+//	length = sqrt(src.cols * src.cols + src.rows * src.rows);
+	//计算二维旋转的仿射变换矩阵
+	Mat M = getRotationMatrix2D(center, angle, 1);
+	// negative num means rotate clockwise
+	warpAffine(src, img_rotate, M, Size(src.cols, src.rows), 1, 0, Scalar(255, 255, 255));//仿射变换，背景色填充为白色
+//	imshow("rotate", img_rotate);
+	// Move image
+}
+
 void RedMarkArea::SetAngle(float angle)
 {
 	if (abs(angle) > 10)
@@ -382,9 +414,9 @@ void RedMarkArea::SetAngle(float angle)
 	cout << "angle = " << angle << endl;
 }
 
-float RedMarkArea::GetAngle()
+Mat RedMarkArea::GetCorrectSrcImage()
 {
-	return this->ANGLE_;
+	return this->src_image_;
 }
 
 void RedMarkArea::SetRedRect(Rect rect)
