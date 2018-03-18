@@ -368,7 +368,7 @@ void RedMarkArea::LineDetect()
 		average = 0;
 	}
 
-	imshow("line", lineImage);
+//	imshow("line", lineImage);
 
 	float angle = DegreeTrans(average) - 90;
 	SetAngle(angle);
@@ -412,6 +412,11 @@ void RedMarkArea::SetAngle(float angle)
 	}
 	this->ANGLE_ = angle;
 	cout << "angle = " << angle << endl;
+}
+
+float RedMarkArea::GetAngle()
+{
+	return this->ANGLE_;
 }
 
 Mat RedMarkArea::GetCorrectSrcImage()
