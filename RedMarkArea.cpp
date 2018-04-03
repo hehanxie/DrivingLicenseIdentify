@@ -29,14 +29,13 @@ RedMarkArea::RedMarkArea(Mat src)
 	vertical_array_ = new int[WIDTH_];
 
 	ColorMatch();
-	LineDetect();
-
-	// correct image angle
-	RotateImage(this->src_image_, this->src_image_, ANGLE_);
-	show_image_ = this->src_image_;
-//	imshow("rotate image", this->src_image_);
-
-	ColorMatch();
+//	LineDetect();
+//
+//	// correct image angle
+//	RotateImage(this->src_image_, this->src_image_, ANGLE_);
+//	show_image_ = this->src_image_;
+//
+//	ColorMatch();
 	// to locate red area rectangle position
 	SetRedSize();
 //	imshow("after rotate", show_image_);
@@ -92,8 +91,8 @@ void RedMarkArea::ColorMatch()
 			}
 		}
 	}
-//	imshow("RGB result", bgrImage);
 	cvtColor(bgrImage, bgrImage, CV_BGR2GRAY);
+	imshow("RGB result", bgrImage);
 	// 合并定位结果
 	Mat redLocationImage;
 	addWeighted(bgrImage, 0.5, srcHSV, 0.5, 0.0, redLocationImage);

@@ -26,6 +26,7 @@ DrivingLicense::DrivingLicense(Mat src)
 
 	// put all area into keyMat vector
 //	GetKeyInformationArea(result_word_);
+//	cvtColor(show_image_, show_image_, CV_BGR2GRAY);
 //	imshow("draw all area", show_image_);
 }
 

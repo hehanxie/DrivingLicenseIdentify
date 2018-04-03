@@ -7,8 +7,8 @@ using namespace cv;
 
 int main()
 {
-	// 4,6,7
-	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DrivingLicense/exampleImage/9.2.jpg");
+	// 4,6,7， 12
+	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DrivingLicense/exampleImage/1.jpg");
 	if (srcImage.empty())
 	{
 		cout << "error";
