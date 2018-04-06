@@ -36,7 +36,7 @@ protected:
 	Mat down_area_;
 
 	vector<vector<Mat>> result_word_;
-	vector<Mat> id_word_;
+	vector<Mat> idDividedResult;
 
 	// 图像处理参数
 	static const int kDefaultMorphSizeWidth = 15;  // 11
@@ -72,12 +72,12 @@ public:
 	// 通过定位红色区域，确定信息位置。比例按照与红色区域的长宽比例进行偏移，裁剪
 	Mat AreaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
 	// 获取所有关键区域信息
-	void GetKeyInformationArea(vector<vector<Mat>> &v);
+	void GetKeyInformationArea(vector<Mat> &v);
 	Mat IdAreaDivide(Mat image, string preStr);
 	// 字符切割，并存入容器中
 	vector<Mat> WordDivide(Mat image, string preStr);
 	// 灰度化后的文字处理，使文字更加清晰
-	void CharacterProcessing(vector<Mat> &v, string prefix);
+	void OutputFile(vector<Mat> &v, string prefix);
 
 	//  矩形重叠系数
 	double RectOverLapCoefficient(Rect rect1, Rect rect2);

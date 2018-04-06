@@ -22,15 +22,16 @@ DrivingLicense::DrivingLicense(Mat src)
 
 	// draw red area to show
 	rectangle(show_image_, red_area_rect, Scalar(0, 255, 0), 2);
-	imshow("red area", show_image_);
+//	imshow("red area", show_image_);
 
 	// put all area into keyMat vector
-//	GetKeyInformationArea(result_word_);
+	GetKeyInformationArea(idDividedResult);
 //	cvtColor(show_image_, show_image_, CV_BGR2GRAY);
-//	imshow("draw all area", show_image_);
+	imshow("draw all area", show_image_);
+	OutputFile(idDividedResult, "id_");
 }
 
-void DrivingLicense::GetKeyInformationArea(vector<vector<Mat>> &v)
+void DrivingLicense::GetKeyInformationArea(vector<Mat> &v)
 {
 
 	// get each part of key, and set as roi
@@ -69,7 +70,8 @@ void DrivingLicense::GetKeyInformationArea(vector<vector<Mat>> &v)
 	cout << "top area correct" << endl;
 //	Mat driverID = AreaDivide(top_area_, 0.41, 0, 0.45, 0.9);
 	Mat driverID = AreaDivide(top_area_, 0, 0, 0.9, 0.9);
-	v.push_back(WordDivide(IdAreaDivide(driverID, "driver_id"), "driver_id"));
+	Mat idArea = IdAreaDivide(driverID, "driver_id");
+	v = WordDivide(idArea, "driver_id");
 
 
 
@@ -84,7 +86,7 @@ void DrivingLicense::GetKeyInformationArea(vector<vector<Mat>> &v)
 
 //	for (int i = 0; i < v.size(); i++)
 //	{
-//		CharacterProcessing(v[i], PREFIX[i]);
+//		OutputFile(v[i], PREFIX[i]);
 //	}
 }
 
@@ -190,7 +192,7 @@ Mat DrivingLicense::GetTopArea(Rect upperSideArea, float ratio)
 	Rect rect = Rect(p1, p2);
 	Mat roi;
 	roi = src_image_(rect);
-	rectangle(show_image_, rect, Scalar(0, 0, 255), 2);
+	rectangle(show_image_, rect, Scalar(0, 0, 0), 2);
 //	imshow("top area", show_image_);
 	return roi;
 }
@@ -286,9 +288,13 @@ Mat DrivingLicense:: IdAreaDivide(Mat image, string preStr)
 
 	}
 //	imshow("contours", contours_image); //轮廓
-//	bitwise_not(adaptive_image, adaptive_image);//颜色反转
+
 	imshow("src_id_image", adaptive_image);
 	red_mark_area_->RotateImage(src_image, src_image, red_mark_area_->GetAngle()*-1);
+	if (word_area_rect.y < 0)
+	{
+		word_area_rect.y = 0;
+	}
 	Mat idAreaRoi = src_image(word_area_rect);
 //	imshow("id area roi", idAreaRoi);
 	return idAreaRoi;
@@ -378,7 +384,7 @@ vector<Mat> DrivingLicense::WordDivide(Mat image, string preStr)
 	cvtColor(image, image, CV_BGR2GRAY, CV_8UC1);
 	// 数字区域 = 255，其他 = 0
 	adaptiveThreshold(image, image, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 25, 10);
-	imshow("word adaptive threshold", image);
+//	imshow("word adaptive threshold", image);
 
 	//图像的高和宽
 	int height = image.rows;
@@ -388,7 +394,7 @@ vector<Mat> DrivingLicense::WordDivide(Mat image, string preStr)
 	// 保存每一行黑点数目的数组
 	int *blackArray = new int[width];
 
-	//循环访问图像数据，查找每一行的黑点的数目
+	//循环访问图像数据，查找每一列的黑点的数目
 	for (int col = 0; col < width; col++)
 	{
 		tmp = 0;
@@ -410,7 +416,7 @@ vector<Mat> DrivingLicense::WordDivide(Mat image, string preStr)
 	{
 		line(projImg, Point(col, height - blackArray[col]), Point(col, height - 1), Scalar::all(0));
 	}
-//	imshow("vertical", projImg);
+	imshow("vertical", projImg);
 
 	int startIndex = 0;
 	int endIndex = 0;
@@ -428,31 +434,57 @@ vector<Mat> DrivingLicense::WordDivide(Mat image, string preStr)
 		// 进入空白区
 		else if (blackArray[col] == 0 && inWordArea)
 		{
+			int whiteStartCol = col;
+			int whiteEndCol = col + 1;
+			for (int j = whiteStartCol; j < width; j++)
+			{
+				if (blackArray[j] != 0)
+				{
+					whiteEndCol = j;
+					break;
+				}
+			}
 			inWordArea = false;
-			endIndex = col;
+			if (whiteEndCol - whiteStartCol > width / 18)
+			{
+				endIndex = col;
+			}
+			else
+			{
+				endIndex = (whiteStartCol + whiteEndCol) / 2;
+			}
+			Point p1, p2;
+			p1.x = endIndex;
+			p1.y = 0;
+			p2.x = endIndex;
+			p2.y = height;
+			line(image, p1, p2, Scalar(255), 1);
 			Mat roiImg = image(Range(0, height), Range(startIndex, endIndex));
 			result_word.push_back(roiImg);
 
-			imshow(to_string(count), roiImg);
+//			imshow(to_string(count), roiImg);
 			count++;
 		}
+		// last character
 		else if (col == width - 1 && inWordArea)
 		{
 			Mat roiImg = image(Range(0, height), Range(endIndex, width - 1));
 			result_word.push_back(roiImg);
-			imshow(to_string(count), roiImg);
+
+//			imshow(to_string(count), roiImg);
 		}
 	}
+	imshow("show divided id area", image);
 	return result_word;
 }
 
-void DrivingLicense::CharacterProcessing(vector<Mat> &v, string prefix)
+void DrivingLicense::OutputFile(vector<Mat> &v, string prefix)
 {
 	cout << prefix << "size: " << v.size() << endl;
 	for (int i = 0; i < v.size(); i++)
 	{
 		Mat c = v[i];
-		string str = to_string(i);
+		string str = to_string(i+1);
 //		imwrite(PATH + prefix + str + ".png", c);
 	}
 
@@ -469,6 +501,10 @@ void DrivingLicense::CharacterProcessing(vector<Mat> &v, string prefix)
 	 * driverID: 14
 	 */
 }
+
+
+
+
 
 bool DrivingLicense::IsRectOverLap(Rect rect1, Rect rect2)
 {

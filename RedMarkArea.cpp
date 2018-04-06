@@ -29,13 +29,13 @@ RedMarkArea::RedMarkArea(Mat src)
 	vertical_array_ = new int[WIDTH_];
 
 	ColorMatch();
-//	LineDetect();
+	LineDetect();
+
+	// correct image angle
+	RotateImage(this->src_image_, this->src_image_, ANGLE_);
+	show_image_ = this->src_image_;
 //
-//	// correct image angle
-//	RotateImage(this->src_image_, this->src_image_, ANGLE_);
-//	show_image_ = this->src_image_;
-//
-//	ColorMatch();
+	ColorMatch();
 	// to locate red area rectangle position
 	SetRedSize();
 //	imshow("after rotate", show_image_);
@@ -92,10 +92,10 @@ void RedMarkArea::ColorMatch()
 		}
 	}
 	cvtColor(bgrImage, bgrImage, CV_BGR2GRAY);
-	imshow("RGB result", bgrImage);
+//	imshow("RGB result", bgrImage);
 	// 合并定位结果
-	Mat redLocationImage;
-	addWeighted(bgrImage, 0.5, srcHSV, 0.5, 0.0, redLocationImage);
+	Mat redLocationImage = bgrImage;
+//	addWeighted(bgrImage, 0.5, srcHSV, 0.5, 0.0, redLocationImage);
 //	imshow("combine", redLocationImage);
 
 	Mat dst;
@@ -106,9 +106,6 @@ void RedMarkArea::ColorMatch()
 	// 开操作 (去除一些噪点)
 	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
 	morphologyEx(redLocationImage, redLocationImage, MORPH_OPEN, element);
-
-	// 闭操作 (连接一些连通域)
-//	morphologyEx(redLocationImage, redLocationImage, MORPH_CLOSE, element);
 
 	// get red image
 	this->red_image_ = redLocationImage.clone();
@@ -347,7 +344,7 @@ void RedMarkArea::LineDetect()
 			pt1.y = cvRound(y0 + 1000 * (a));
 			pt2.x = cvRound(x0 - 1000 * (-b));
 			pt2.y = cvRound(y0 - 1000 * (a));
-			line(lineImage, pt1, pt2, Scalar(0, 0, 255), 1, CV_AA);
+			line(lineImage, pt1, pt2, Scalar(0, 0, 0), 1, CV_AA);
 
 //			cout << "cos: " << a << "\tsin: " << b;
 //			cout << "\tangle: " << DegreeTrans(theta) - 90 << endl;
@@ -371,9 +368,6 @@ void RedMarkArea::LineDetect()
 
 	float angle = DegreeTrans(average) - 90;
 	SetAngle(angle);
-//	Mat rotate;
-//	RotateImage(src_image_, rotate, angle);
-//	imshow("rotate", rotate);
 }
 
 float RedMarkArea::DegreeTrans(float theta)
