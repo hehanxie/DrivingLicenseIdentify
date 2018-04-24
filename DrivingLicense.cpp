@@ -28,7 +28,7 @@ DrivingLicense::DrivingLicense(Mat src)
 	GetKeyInformationArea(idDividedResult);
 //	cvtColor(show_image_, show_image_, CV_BGR2GRAY);
 	imshow("draw all area", show_image_);
-	OutputFile(idDividedResult, "id_");
+//	OutputFile(idDividedResult, "");
 }
 
 void DrivingLicense::GetKeyInformationArea(vector<Mat> &v)
@@ -386,6 +386,9 @@ vector<Mat> DrivingLicense::WordDivide(Mat image, string preStr)
 	adaptiveThreshold(image, image, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 25, 10);
 //	imshow("word adaptive threshold", image);
 
+	// output into image
+	imwrite(PATH + "id.jpg", image);
+
 	//图像的高和宽
 	int height = image.rows;
 	int width = image.cols;
@@ -485,7 +488,7 @@ void DrivingLicense::OutputFile(vector<Mat> &v, string prefix)
 	{
 		Mat c = v[i];
 		string str = to_string(i+1);
-//		imwrite(PATH + prefix + str + ".png", c);
+		imwrite(PATH + prefix + str + ".jpg", c);
 	}
 
 	/*

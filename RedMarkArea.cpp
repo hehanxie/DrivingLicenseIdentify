@@ -162,7 +162,7 @@ Mat RedMarkArea::GetVerticalProjection(Mat image)
 	// 保存每一行黑点数目的数组
 	int *blackArray = new int[width];
 
-	//循环访问图像数据，查找每一行的黑点的数目
+	//循环访问图像数据，计算每一列的黑点的数目
 	for (int col = 0; col < width; col++)
 	{
 		tmp = 0;
