@@ -28,7 +28,7 @@ DrivingLicense::DrivingLicense(Mat src)
 	GetKeyInformationArea(idDividedResult);
 //	cvtColor(showImage, showImage, CV_BGR2GRAY);
 //	imshow("draw all area", showImage);
-//	OutputFile(idDividedResult, "");
+	OutputFile(idDividedResult, "");
 }
 
 void DrivingLicense::GetKeyInformationArea(vector<Mat> &v)
