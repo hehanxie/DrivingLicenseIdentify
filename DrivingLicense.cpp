@@ -7,27 +7,27 @@
 
 DrivingLicense::DrivingLicense(Mat src)
 {
-	red_mark_area_ = new RedMarkArea(src);
-	cout << "red area correct" << endl;
-	this->src_image_ = red_mark_area_->GetCorrectSrcImage();
-//	this->src_image_ = src.clone();
-	HEIGHT_ = src_image_.rows;
-	WIDTH_ = src_image_.cols;
+	redMarkArea = new RedMarkArea(src);
+	cout << "red area correct" << endl << endl;
+	this->srcImage = redMarkArea->GetCorrectSrcImage();
+//	this->srcImage = src.clone();
+	HEIGHT = srcImage.rows;
+	WIDTH = srcImage.cols;
 
-//	red_mark_area_ = new RedMarkArea(src);
-	show_image_ = this->src_image_.clone();
+//	redMarkArea = new RedMarkArea(src);
+	showImage = this->srcImage.clone();
 
 	// get red mark area
-	red_area_rect = red_mark_area_->GetRedRect();
+	redAreaRect = redMarkArea->GetRedRect();
 
 	// draw red area to show
-	rectangle(show_image_, red_area_rect, Scalar(0, 255, 0), 2);
-//	imshow("red area", show_image_);
+	rectangle(showImage, redAreaRect, Scalar(0, 255, 0), 2);
+//	imshow("red area", showImage);
 
 	// put all area into keyMat vector
 	GetKeyInformationArea(idDividedResult);
-//	cvtColor(show_image_, show_image_, CV_BGR2GRAY);
-	imshow("draw all area", show_image_);
+//	cvtColor(showImage, showImage, CV_BGR2GRAY);
+//	imshow("draw all area", showImage);
 //	OutputFile(idDividedResult, "");
 }
 
@@ -35,43 +35,45 @@ void DrivingLicense::GetKeyInformationArea(vector<Mat> &v)
 {
 
 	// get each part of key, and set as roi
-//	right_area_ = GetRightArea(red_area_rect, kRightWidthRatio);
-//	Mat birthday   = AreaDivide(right_area_, 0.3, 0, 0.7, 0.3);
-//	Mat firstIssue = AreaDivide(right_area_, 0.45, 0.33, 0.5, 0.3);
-//	Mat classType  = AreaDivide(right_area_, 0.40, 0.67, 0.5, 0.25);
+//	rightArea = GetRightArea(redAreaRect, kRightWidthRatio);
+//	Mat birthday   = AreaDivide(rightArea, 0.3, 0, 0.7, 0.3);
+//	Mat firstIssue = AreaDivide(rightArea, 0.45, 0.33, 0.5, 0.3);
+//	Mat classType  = AreaDivide(rightArea, 0.40, 0.67, 0.5, 0.25);
 
-//	v.push_back(WordDivide(birthday, "birthday"));
-//	v.push_back(WordDivide(firstIssue, "firstIssue"));
-//	v.push_back(WordDivide(classType, "classType"));
+//	v.push_back(CharacterSegmentation(birthday, "birthday"));
+//	v.push_back(CharacterSegmentation(firstIssue, "firstIssue"));
+//	v.push_back(CharacterSegmentation(classType, "classType"));
 
 
-//	down_area_ = GetDownArea(red_area_rect, kDownWidthRatio, kDownHeightRatio);
-//	Mat validTime = AreaDivide(down_area_, 0.28, 0, 0.72, 1);
-//	v.push_back(WordDivide(validTime));
+//	downArea = GetDownArea(redAreaRect, kDownWidthRatio, kDownHeightRatio);
+//	Mat validTime = AreaDivide(downArea, 0.28, 0, 0.72, 1);
+//	v.push_back(CharacterSegmentation(validTime));
 
 	// width = 4, height = 0.50
-	up_area_ = GetUpArea(red_area_rect, 4, 0.5);
-	cout << "up area correct" << endl;
-//	Mat address1 = AreaDivide(up_area_, 0.1, 0, 0.9, 0.5);
-//	Mat address2 = AreaDivide(up_area_, 0.05, 0.5, 0.95, 0.5);
-//	v.push_back(WordDivide(address1));
-//	v.push_back(WordDivide(address2));
+	upArea = GetUpArea(redAreaRect, 4, 0.5);
+	cout << "get up area" << endl;
+//	Mat address1 = AreaDivide(upArea, 0.1, 0, 0.9, 0.5);
+//	Mat address2 = AreaDivide(upArea, 0.05, 0.5, 0.95, 0.5);
+//	v.push_back(CharacterSegmentation(address1));
+//	v.push_back(CharacterSegmentation(address2));
 
-	upper_area_ = GetUpperArea(up_area_rect_, kUpperHeightRatio);
-	cout << "upper area correct" << endl;
-//	Mat name = AreaDivide(upper_area_, 0.08, 0, 0.35, 1);
-//	Mat sex  = AreaDivide(upper_area_, 0.56, 0, 0.10, 1);
-//	Mat nationality = AreaDivide(upper_area_, 0.77, 0, 0.20, 1);
-//	v.push_back(WordDivide(name));
-//	v.push_back(WordDivide(sex));
-//	v.push_back(WordDivide(nationality));
+	upperArea = GetUpperArea(upAreaRect, kUpperHeightRatio);
+	cout << "get upper area" << endl;
+//	Mat name = AreaDivide(upperArea, 0.08, 0, 0.35, 1);
+//	Mat sex  = AreaDivide(upperArea, 0.56, 0, 0.10, 1);
+//	Mat nationality = AreaDivide(upperArea, 0.77, 0, 0.20, 1);
+//	v.push_back(CharacterSegmentation(name));
+//	v.push_back(CharacterSegmentation(sex));
+//	v.push_back(CharacterSegmentation(nationality));
 
-	top_area_ = GetTopArea(upper_area_rect_, kTopHeightRatio);
-	cout << "top area correct" << endl;
-//	Mat driverID = AreaDivide(top_area_, 0.41, 0, 0.45, 0.9);
-	Mat driverID = AreaDivide(top_area_, 0, 0, 0.9, 0.9);
-	Mat idArea = IdAreaDivide(driverID, "driver_id");
-	v = WordDivide(idArea, "driver_id");
+	topArea = GetTopArea(upperAreaRect, kTopHeightRatio);
+	cout << "get top area" << endl;
+	Mat driverID = AreaDivide(topArea, 0, 0, 0.9, 0.9);
+//	Mat driverID = AreaDivide(topArea, 0.38, 0, 0.6, 0.9);
+	cout << "id area size is: " << driverID.size() << endl;
+	Mat characterArea = GetCharacterArea(driverID, "driver_id");
+	// character segmentation and save result into vector v
+	v = CharacterSegmentation(characterArea, "driver_id");
 
 
 
@@ -80,14 +82,12 @@ void DrivingLicense::GetKeyInformationArea(vector<Mat> &v)
 	float height_offset_ratio_of_red = 0.83;
 	float width_ratio_of_red = 4;
 	float height_ratio_of_red = 0.275;
-	Mat driverIdArea = IdAreaDivide(GetIdArea(red_area_rect, height_offset_ratio_of_red, width_ratio_of_red, height_ratio_of_red), "driver_id");
-	v.push_back(WordDivide(driverIdArea, "driver_id"));
+	Mat driverIdArea = GetCharacterArea(GetIdArea(redAreaRect,
+	 height_offset_ratio_of_red, width_ratio_of_red, height_ratio_of_red), "driver_id");
+
+	v.push_back(CharacterSegmentation(driverIdArea, "driver_id"));
 	*/
 
-//	for (int i = 0; i < v.size(); i++)
-//	{
-//		OutputFile(v[i], PREFIX[i]);
-//	}
 }
 
 Mat DrivingLicense::GetRightArea(Rect redArea, float ratio)
@@ -106,10 +106,10 @@ Mat DrivingLicense::GetRightArea(Rect redArea, float ratio)
 	Rect rect = Rect(p1, p2);
 	// set roi image
 	Mat roi;
-	roi = src_image_(rect);
+	roi = srcImage(rect);
 	// draw area
-//	rectangle(show_image_, rect, Scalar(0, 255, 0));
-//	imshow("right area", show_image_);
+//	rectangle(showImage, rect, Scalar(0, 255, 0));
+//	imshow("right area", showImage);
 	return roi;
 }
 
@@ -127,10 +127,10 @@ Mat DrivingLicense::GetDownArea(Rect redArea, float widthRatio, float heightRati
 
 	Rect rect = Rect(p1, p2);
 	Mat roi;
-	roi = src_image_(rect);
+	roi = srcImage(rect);
 
-//	rectangle(show_image_, rect, Scalar(255, 0, 255));
-//	imshow("down area", show_image_);
+//	rectangle(showImage, rect, Scalar(255, 0, 255));
+//	imshow("down area", showImage);
 	return roi;
 }
 
@@ -143,16 +143,16 @@ Mat DrivingLicense::GetUpArea(Rect redArea, float widthRatio, float heightRatio)
 	p1.y = redArea.y;
 
 	Point p2;
-	p2.x = (int)(p1.x + redWidth * widthRatio) % src_image_.cols;
+	p2.x = (int)(p1.x + redWidth * widthRatio) % srcImage.cols;
 	p2.y = p1.y - redHeight * heightRatio;
 
 	Rect rect = Rect(p1, p2);
-	this->up_area_rect_ = rect;
+	this->upAreaRect = rect;
 	Mat roi;
-	roi = src_image_(rect);
+	roi = srcImage(rect);
 
-//	rectangle(show_image_, rect, Scalar(255, 0, 0));
-//	imshow("up area", show_image_);
+//	rectangle(showImage, rect, Scalar(255, 0, 0));
+//	imshow("up area", showImage);
 	return roi;
 }
 
@@ -169,11 +169,11 @@ Mat DrivingLicense::GetUpperArea(Rect upSideArea, float ratio)
 	p2.y = p1.y - height * ratio;
 
 	Rect rect = Rect(p1, p2);
-	this->upper_area_rect_ = rect;
+	this->upperAreaRect = rect;
 	Mat roi;
-	roi = src_image_(rect);
-//	rectangle(show_image_, rect, Scalar(0, 255, 0));
-//	imshow("upper area", show_image_);
+	roi = srcImage(rect);
+//	rectangle(showImage, rect, Scalar(0, 255, 0));
+//	imshow("upper area", showImage);
 	return roi;
 }
 
@@ -191,9 +191,9 @@ Mat DrivingLicense::GetTopArea(Rect upperSideArea, float ratio)
 
 	Rect rect = Rect(p1, p2);
 	Mat roi;
-	roi = src_image_(rect);
-	rectangle(show_image_, rect, Scalar(0, 0, 0), 2);
-//	imshow("top area", show_image_);
+	roi = srcImage(rect);
+	rectangle(showImage, rect, Scalar(0, 0, 0), 1);
+//	imshow("top area", showImage);
 	return roi;
 }
 
@@ -211,12 +211,12 @@ Mat DrivingLicense::GetIdArea(Rect redArea, float heightOffsetRatio, float width
 	p2.y = p1.y - redHeight * heightRatio;
 
 	Rect rect = Rect(p1, p2);
-	this->up_area_rect_ = rect;
+	this->upAreaRect = rect;
 	Mat roi;
-	roi = src_image_(rect);
+	roi = srcImage(rect);
 
-	rectangle(show_image_, rect, Scalar(255, 0, 0), 2);
-//	imshow("up area", show_image_);
+	rectangle(showImage, rect, Scalar(255, 0, 0), 2);
+//	imshow("up area", showImage);
 	return roi;
 }
 
@@ -240,19 +240,22 @@ Mat DrivingLicense::AreaDivide(Mat roi, float widthOffsetRatio, float heightOffs
 	return keywordArea;
 }
 
-Mat DrivingLicense:: IdAreaDivide(Mat image, string preStr)
+Mat DrivingLicense:: GetCharacterArea(Mat image, string preStr)
 {
-	Mat src_image = image.clone();
+	Mat idAreaImage = image.clone();
 	// 将得到的字符区域二值化
 	vector<Mat> result;
 	cvtColor(image, image, CV_BGR2GRAY, CV_8UC1);
-	adaptiveThreshold(image, image, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 25, 10);
+	adaptiveThreshold(image, image, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 25, 15);
 	Mat adaptive_image = image.clone();
 
-	// 通过形态学闭操作，将数字区域连通
-	Mat element = getStructuringElement(MORPH_RECT, Size(15, 3));
+	// 通过形态学闭操作，将数字区域连通, 15,3
+	int matrixX = image.cols / kMatrixRatioX;
+	int matrixY = image.rows / kMatrixRatioY;
+	cout << "morphology martrix: " << matrixX << "," << matrixY << endl;
+	Mat element = getStructuringElement(MORPH_RECT, Size(matrixX, matrixY));
 	morphologyEx(image, image, MORPH_CLOSE, element);
-//	imshow(preStr, image);
+//	imshow("morphology close", image);
 
 	// 寻找轮廓，划分区域
 	vector<vector<Point> > contours;
@@ -262,7 +265,7 @@ Mat DrivingLicense:: IdAreaDivide(Mat image, string preStr)
 	Mat contours_image = Mat::zeros(image.size(), CV_8UC1);
 	Mat Contours = Mat::zeros(image.size(), CV_8UC1);  //绘制
 
-	Rect word_area_rect;
+	Rect characterAreaRect;
 	for (int i = 0; i < contours.size(); i++)
 	{
 		//绘制轮廓
@@ -272,11 +275,11 @@ Mat DrivingLicense:: IdAreaDivide(Mat image, string preStr)
 		Point2f P[4];
 		rect.points(P);
 //		cout << rect.size.area() << endl;
+		// 通过连通区域面积筛选出字符区域, 0.2
 		if (rect.size.area() > image.rows * image.cols * 0.2)
 		{
-			cout << "id area size: " << rect.size << endl;
-			word_area_rect = rect.boundingRect();
-			rectangle(adaptive_image, word_area_rect, Scalar(255), 1);
+			characterAreaRect = rect.boundingRect();
+			rectangle(adaptive_image, characterAreaRect, Scalar(255), 1);
 			break;
 		}
 
@@ -287,22 +290,46 @@ Mat DrivingLicense:: IdAreaDivide(Mat image, string preStr)
 //		}
 
 	}
-//	imshow("contours", contours_image); //轮廓
+	// 显示所有轮廓
+//	imshow("contours", contours_image);
 
-	imshow("src_id_image", adaptive_image);
-	red_mark_area_->RotateImage(src_image, src_image, red_mark_area_->GetAngle()*-1);
-	if (word_area_rect.y < 0)
+//	imshow("raw id area image", adaptive_image);
+	float angle = redMarkArea->GetAngle();
+//	if (abs(angle > 1))
+//	{
+//		angle = angle * -1;
+//	}
+//	redMarkArea->RotateImage(idAreaImage, idAreaImage, angle);
+
+	// 上边界
+	if (characterAreaRect.y < 0)
 	{
-		word_area_rect.y = 0;
+		characterAreaRect.y = 0;
 	}
-	Mat idAreaRoi = src_image(word_area_rect);
+	if (characterAreaRect.x < 0)
+	{
+		characterAreaRect.x = 0;
+	}
+	// 下边界
+	if (characterAreaRect.x + characterAreaRect.width > idAreaImage.cols)
+	{
+		characterAreaRect.width = idAreaImage.cols - characterAreaRect.x;
+	}
+	if (characterAreaRect.y + characterAreaRect.height > idAreaImage.rows)
+	{
+		characterAreaRect.height = idAreaImage.rows - characterAreaRect.y;
+	}
+	cout << "character area size: " << characterAreaRect << endl;
+
+	Mat idAreaRoi = idAreaImage(characterAreaRect);
 //	imshow("id area roi", idAreaRoi);
+//	Mat t;
 	return idAreaRoi;
 }
 
-vector<Mat> DrivingLicense::WordDivide(Mat image, string preStr)
+vector<Mat> DrivingLicense::CharacterSegmentation(Mat image, string preStr)
 {
-	vector<Mat> result_word;
+	vector<Mat> resultWord;
 	// 画轮廓矩形重叠切割——矩形顺序存在问题
 	/*
 	vector<Mat> result;
@@ -380,18 +407,26 @@ vector<Mat> DrivingLicense::WordDivide(Mat image, string preStr)
 //	imshow("find countours", image)
 
 
-	// 对数字区域进行二值化
-	cvtColor(image, image, CV_BGR2GRAY, CV_8UC1);
-	// 数字区域 = 255，其他 = 0
-	adaptiveThreshold(image, image, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 25, 10);
-//	imshow("word adaptive threshold", image);
-
-	// output into image
-	imwrite(PATH + "id.jpg", image);
-
 	//图像的高和宽
 	int height = image.rows;
 	int width = image.cols;
+	// 对数字区域进行二值化
+	cvtColor(image, image, CV_BGR2GRAY, CV_8UC1);
+	// 数字区域 = 255，其他 = 0
+	int binaryMatrixX = width / 20;
+	if (binaryMatrixX % 2 == 0)
+	{
+		binaryMatrixX = binaryMatrixX + 1;
+	}
+	int binaryMatrixY = height / 7;
+	cout << "binary matrix is: " << binaryMatrixX << "," << binaryMatrixY << endl;
+	adaptiveThreshold(image, image, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, binaryMatrixX, binaryMatrixY);
+	imshow("word adaptive threshold", image);
+
+	// output into image
+//	imwrite(PATH + "id8.jpg", image);
+
+
 	// 保存当前行的黑点数目
 	int tmp = 0;
 	// 保存每一行黑点数目的数组
@@ -419,29 +454,30 @@ vector<Mat> DrivingLicense::WordDivide(Mat image, string preStr)
 	{
 		line(projImg, Point(col, height - blackArray[col]), Point(col, height - 1), Scalar::all(0));
 	}
-	imshow("vertical", projImg);
+//	imshow("character vertical projection", projImg);
 
 	int startIndex = 0;
 	int endIndex = 0;
 	// 是否进入字符区域
 	bool inWordArea = false;
 	int count = 1;
+	int blackThreshold = height * 0.2;
 	for (int col = 0; col < width; col++)
 	{
 		// 进入字符区
-		if (!inWordArea && blackArray[col] != 0)
+		if (!inWordArea && blackArray[col] > blackThreshold)
 		{
 			startIndex = col;
 			inWordArea = true;
 		}
 		// 进入空白区
-		else if (blackArray[col] == 0 && inWordArea)
+		else if (blackArray[col] <= blackThreshold && inWordArea)
 		{
 			int whiteStartCol = col;
 			int whiteEndCol = col + 1;
 			for (int j = whiteStartCol; j < width; j++)
 			{
-				if (blackArray[j] != 0)
+				if (blackArray[j] > blackThreshold)
 				{
 					whiteEndCol = j;
 					break;
@@ -463,22 +499,22 @@ vector<Mat> DrivingLicense::WordDivide(Mat image, string preStr)
 			p2.y = height;
 			line(image, p1, p2, Scalar(255), 1);
 			Mat roiImg = image(Range(0, height), Range(startIndex, endIndex));
-			result_word.push_back(roiImg);
+			resultWord.push_back(roiImg);
 
 //			imshow(to_string(count), roiImg);
 			count++;
 		}
 		// last character
-		else if (col == width - 1 && inWordArea)
+		else if (count == 18 && inWordArea)
 		{
 			Mat roiImg = image(Range(0, height), Range(endIndex, width - 1));
-			result_word.push_back(roiImg);
-
+			resultWord.push_back(roiImg);
+			break;
 //			imshow(to_string(count), roiImg);
 		}
 	}
-	imshow("show divided id area", image);
-	return result_word;
+	imshow("show divided character", image);
+	return resultWord;
 }
 
 void DrivingLicense::OutputFile(vector<Mat> &v, string prefix)
@@ -504,10 +540,6 @@ void DrivingLicense::OutputFile(vector<Mat> &v, string prefix)
 	 * driverID: 14
 	 */
 }
-
-
-
-
 
 bool DrivingLicense::IsRectOverLap(Rect rect1, Rect rect2)
 {

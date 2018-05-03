@@ -16,24 +16,24 @@ class DrivingLicense
 {
 protected:
 	// 源图像，宽高
-	Mat src_image_;
-	int WIDTH_;
-	int HEIGHT_;
+	Mat srcImage;
+	int WIDTH;
+	int HEIGHT;
 	// 用于显示的图像
-	Mat show_image_;
+	Mat showImage;
 
 	// 红色水印区域
-	RedMarkArea *red_mark_area_;
-	Rect red_area_rect;
-	float ANGLE_;
+	RedMarkArea *redMarkArea;
+	Rect redAreaRect;
+	float ANGLE;
 
-	Mat top_area_;
-	Mat upper_area_;
-	Rect upper_area_rect_;
-	Mat up_area_;
-	Rect up_area_rect_;
-	Mat right_area_;
-	Mat down_area_;
+	Mat topArea;
+	Mat upperArea;
+	Rect upperAreaRect;
+	Mat upArea;
+	Rect upAreaRect;
+	Mat rightArea;
+	Mat downArea;
 
 	vector<vector<Mat>> result_word_;
 	vector<Mat> idDividedResult;
@@ -58,6 +58,9 @@ protected:
 	const string PREFIX[10] = {"birthday_", "firstIssue_", "classType_", "validTime_", "address1_",
 								"address2_", "name_", "sex_", "nationality_", "driverID_"};
 
+	const int kMatrixRatioX = 44;
+	const int kMatrixRatioY = 15;
+
 public:
 	DrivingLicense(Mat src);
 
@@ -73,9 +76,9 @@ public:
 	Mat AreaDivide(Mat roi, float widthOffsetRatio, float heightOffsetRatio, float widthRatio, float heightRatio);
 	// 获取所有关键区域信息
 	void GetKeyInformationArea(vector<Mat> &v);
-	Mat IdAreaDivide(Mat image, string preStr);
+	Mat GetCharacterArea(Mat image, string preStr);
 	// 字符切割，并存入容器中
-	vector<Mat> WordDivide(Mat image, string preStr);
+	vector<Mat> CharacterSegmentation(Mat image, string preStr);
 	// 灰度化后的文字处理，使文字更加清晰
 	void OutputFile(vector<Mat> &v, string prefix);
 

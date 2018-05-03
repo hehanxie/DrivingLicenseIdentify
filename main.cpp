@@ -7,8 +7,8 @@ using namespace cv;
 
 int main()
 {
-	// 4,6,7,12
-	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DrivingLicense/exampleImage/1.jpg");
+
+	Mat srcImage = imread("/Users/whstarlit/Documents/Projects/Git/DrivingLicense/exampleImage/8.jpg");
 	if (srcImage.empty())
 	{
 		cout << "error";
@@ -21,13 +21,13 @@ int main()
 		resize(srcImage, srcImage, Size(srcImage.cols * 0.9, srcImage.rows * 0.9));
 	}
 	cout << "source image size: " << srcImage.cols << " x " << srcImage.rows << endl;
-//	imshow("src", src_image_);
+//	imshow("src", srcImage);
 
 	DrivingLicense *driverLicense = new DrivingLicense(srcImage);
 
 	// use command line tool to execute python
-	system("python /Users/whstarlit/Documents/Projects/Git/DrivingLicense/Tesseract.py");
-	waitKey(0);
+//	system("python /Users/whstarlit/Documents/Projects/Git/DrivingLicense/Tesseract.py");
+	//waitKey(0);
 	return 0;
 }
 

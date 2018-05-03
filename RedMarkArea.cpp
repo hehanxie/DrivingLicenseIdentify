@@ -13,40 +13,39 @@ RedMarkArea::RedMarkArea()
 
 RedMarkArea::RedMarkArea(Mat src)
 {
-	this->src_image_ = src.clone();
-	show_image_ = src.clone();
+	this->srcImage = src.clone();
+	showImage = src.clone();
 
-	start_row_ = 0;
-	end_row_ = 0;
-	start_col_ = 0;
-	end_col_ = 0;
+	startRow = 0;
+	endRow = 0;
+	startCol = 0;
+	endCol = 0;
 	ANGLE_ = 0;
-	is_find_red_area_ = false;
-	HEIGHT_ = src_image_.rows;
-	WIDTH_ = src_image_.cols;
+	isFindRedArea = false;
+	HEIGHT = srcImage.rows;
+	WIDTH = srcImage.cols;
 
-	horizontal_array_ = new int[HEIGHT_];
-	vertical_array_ = new int[WIDTH_];
+	horizontalArray = new int[HEIGHT];
+	verticalArray = new int[WIDTH];
 
+	// first color match
 	ColorMatch();
 	LineDetect();
 
 	// correct image angle
-	RotateImage(this->src_image_, this->src_image_, ANGLE_);
-	show_image_ = this->src_image_;
-//
-	ColorMatch();
-	// to locate red area rectangle position
-	SetRedSize();
-//	imshow("after rotate", show_image_);
+	RotateImage(this->srcImage, this->srcImage, ANGLE_);
+	showImage = this->srcImage;
 
-	is_find_red_area_ = IsRedArea(GetRedRect());
-	if (!is_find_red_area_)
+	// after correct angle and color match
+	ColorMatch();
+	SetRedSize();
+
+	isFindRedArea = IsRedArea(GetRedRect());
+	if (!isFindRedArea)
 	{
 		return ;
 	}
-	CV_Assert(is_find_red_area_);
-//	LineDetect();
+	CV_Assert(isFindRedArea);
 }
 
 void RedMarkArea::ColorMatch()
@@ -63,7 +62,7 @@ void RedMarkArea::ColorMatch()
 
 	// 将BGR 转换为 HSV
 	Mat srcHSV;
-	cvtColor(show_image_, srcHSV, CV_BGR2HSV);
+	cvtColor(showImage, srcHSV, CV_BGR2HSV);
 
 	// 通过hsv空间，定位红色区域
 //	inRange(srcHSV, Scalar(minRedH, minS, minV), Scalar(maxRedH, maxS, maxV), srcHSV);
@@ -71,17 +70,17 @@ void RedMarkArea::ColorMatch()
 //	imshow("HSV result", srcHSV);
 
 	// 通过RGB定位红色区域
-	Mat bgrImage = src_image_.clone();
-	for(int i = 0; i < HEIGHT_; i++)
+	Mat bgrImage = srcImage.clone();
+	for(int i = 0; i < HEIGHT; i++)
 	{
-		for (int j = 0; j < WIDTH_; j++)
+		for (int j = 0; j < WIDTH; j++)
 		{
 			int b = (uchar) bgrImage.at<Vec3b>(i, j)[0];
 			int g = (uchar) bgrImage.at<Vec3b>(i, j)[1];
 			int r = (uchar) bgrImage.at<Vec3b>(i, j)[2];
-//			if (j < WIDTH_/2 && r - g >= 40 && r - b >= 40)
+//			if (j < WIDTH/2 && r - g >= 40 && r - b >= 40)
 			// add constrain with R value > 100
-			if (j < WIDTH_ / 2 && r - g >= 40 && r - b >= 40 && r > 100)
+			if (j < WIDTH / 2 && r - g >= 40 && r - b >= 40 && r > 100)
 			{
 				bgrImage.at<Vec3b>(i, j) = 255;
 			}
@@ -108,14 +107,10 @@ void RedMarkArea::ColorMatch()
 	morphologyEx(redLocationImage, redLocationImage, MORPH_OPEN, element);
 
 	// get red image
-	this->red_image_ = redLocationImage.clone();
-//	imshow("red", red_image_);
+	this->redImage = redLocationImage.clone();
+//	imshow("red", redImage);
 
-// 显示经过处理后的图像
-	GetHorizontalProjection(redLocationImage);
-//	imshow("y", GetHorizontalProjection(redLocationImage));
-	GetVerticalProjection(redLocationImage);
-//	imshow("x", GetVerticalProjection(redLocationImage));
+
 }
 
 
@@ -139,9 +134,9 @@ bool RedMarkArea::IsRedArea(Rect mr)
 		scale = height / width;
 	}
 
-	cout << "size ratio is:" << scale << endl;
+	cout << "red area size ratio is:" << scale << endl;
 	int area = width * height;
-	int imageArea = HEIGHT_ * WIDTH_;
+	int imageArea = HEIGHT * WIDTH;
 	int rMinArea = imageArea * kMinRedAreaRatio;
 	int rMaxArea = imageArea * kMaxRedAreaRatio;
 
@@ -174,7 +169,8 @@ Mat RedMarkArea::GetVerticalProjection(Mat image)
 			}
 		}
 		blackArray[col] = tmp;
-//		if (tmp > 70)
+//		int minBlack = srcImage.rows * kBlackRatio;
+//		if (tmp > minBlack)
 //		{
 //			cout << col << " x: " << tmp << endl;
 //		}
@@ -187,7 +183,7 @@ Mat RedMarkArea::GetVerticalProjection(Mat image)
 		line(projImg, Point(col, height - blackArray[col]), Point(col, height - 1), Scalar::all(0));
 	}
 
-	vertical_array_ = blackArray;
+	verticalArray = blackArray;
 	return projImg;
 }
 
@@ -216,7 +212,8 @@ Mat RedMarkArea::GetHorizontalProjection(Mat image)
 			}
 		}
 		blackArray[i] = tmp;
-//		if (tmp > 70)
+//		int minBlack = srcImage.rows * kBlackRatio;
+//		if (tmp > minBlack)
 //		{
 //			cout << i << " y: " << tmp << endl;
 //		}
@@ -231,54 +228,62 @@ Mat RedMarkArea::GetHorizontalProjection(Mat image)
 		line(projImg, Point(blackArray[i], i), Point(width - 1, i), Scalar::all(255));
 	}
 
-	horizontal_array_ = blackArray;
+	horizontalArray = blackArray;
 	return  projImg;
 }
 
 void RedMarkArea::SetRedSize()
 {
-
-	// some bug
-	int N = src_image_.rows > src_image_.cols ? src_image_.cols : src_image_.rows * 0.075;
-	cout << "threshold dot: " << N << endl;
+	// 显示经过处理后的图像
+	GetHorizontalProjection(this->redImage);
+//	imshow("y", GetHorizontalProjection(this->redImage));
+	GetVerticalProjection(this->redImage);
+//	imshow("x", GetVerticalProjection(this->redImage));
+	//
+	int N = srcImage.rows > srcImage.cols ? srcImage.cols : srcImage.rows * kBlackRatio;
+	cout << "red size threshold of black number: " << N << endl;
 	// x position
-	for (int i = 0; i < WIDTH_/2; i++)
+	for (int i = 0; i < WIDTH/2; i++)
 	{
-		if (abs(vertical_array_[i + 1] - vertical_array_[i]) >= 10 && vertical_array_[i] > N)
+//		if (abs(verticalArray[i + 1] - verticalArray[i]) >= 10 && verticalArray[i] > N)
+		if (verticalArray[i] > N)
 		{
-			start_col_ = i + 1;
+			startCol = i + 1;
 			break;
 		}
 	}
-	for (int i = WIDTH_/2; i > 1; i--)
+	for (int i = WIDTH/2; i > 1; i--)
 	{
-		if (abs(vertical_array_[i] - vertical_array_[i - 1]) >= 10 && vertical_array_[i] > N)
+//		if (abs(verticalArray[i] - verticalArray[i - 1]) >= 10 && verticalArray[i] > N)
+		if (verticalArray[i] > N)
 		{
-			end_col_ = i - 1;
+			endCol = i - 1;
 			break;
 		}
 	}
 
 	// y position
-	for (int i = HEIGHT_/2; i < HEIGHT_ - 1; i++)
+	for (int i = HEIGHT/3; i < HEIGHT - 1; i++)
 	{
-		if (abs(horizontal_array_[i + 1] - horizontal_array_[i]) >= 10 && horizontal_array_[i] > N)
+//		if (abs(horizontalArray[i + 1] - horizontalArray[i]) >= 10 && horizontalArray[i] > N)
+		if (horizontalArray[i] > N)
 		{
-			start_row_ = i + 1;
+			startRow = i + 1;
 			break;
 		}
 	}
-	for (int i = HEIGHT_ - 1; i > 1; i--)
+	for (int i = HEIGHT - 1; i > 1; i--)
 	{
-		if (abs(horizontal_array_[i] - horizontal_array_[i - 1]) >= 10 && horizontal_array_[i] > N)
+//		if (abs(horizontalArray[i] - horizontalArray[i - 1]) >= 10 && horizontalArray[i] > N)
+		if (horizontalArray[i] > N)
 		{
-			end_row_ = i - 1;
+			endRow = i - 1;
 			break;
 		}
 	}
 
-	Point p1 = Point(start_col_, start_row_);
-	Point p2 = Point(end_col_, end_row_);
+	Point p1 = Point(startCol, startRow);
+	Point p2 = Point(endCol, endRow);
 
 	Rect rect = Rect(p1, p2);
 //	if (rect.width > rect.height)
@@ -292,19 +297,19 @@ void RedMarkArea::SetRedSize()
 	SetRedRect(rect);
 	cout << "red rectangle positon: " << rect << endl;
 
-	rectangle(show_image_, rect, Scalar(255, 0, 0), 1);
+	rectangle(showImage, rect, Scalar(255, 0, 0), 1);
 
-//	imshow("red mark", show_image_);
+//	imshow("red mark", showImage);
 }
 
 void RedMarkArea::LineDetect()
 {
-//	imshow("red image", red_image_);
+//	imshow("red image", redImage);
 	Mat lineImage;
-	cvtColor(red_image_, lineImage, CV_GRAY2BGR);
+	cvtColor(redImage, lineImage, CV_GRAY2BGR);
 
 	Mat blurImage;
-	blur(red_image_, blurImage, Size(3, 3));
+	blur(redImage, blurImage, Size(3, 3));
 //	imshow("blur", blurImage);
 	float minThreshold = 70;
 	Mat dst, cannyImage;
@@ -317,13 +322,13 @@ void RedMarkArea::LineDetect()
 	// draw line and corner and calculate angle
 	vector<Vec2f> lines;
 	int lineThreshold = 100;
-	if (WIDTH_ > HEIGHT_)
+	if (WIDTH > HEIGHT)
 	{
-		lineThreshold = HEIGHT_ * 0.13;
+		lineThreshold = HEIGHT * 0.13;
 	}
 	else
 	{
-		lineThreshold = WIDTH_ * 0.13;
+		lineThreshold = WIDTH * 0.13;
 	}
 	HoughLines(dst, lines, 1, CV_PI / 180, lineThreshold, 0, 0);
 	float sum = 0;
@@ -414,15 +419,15 @@ float RedMarkArea::GetAngle()
 
 Mat RedMarkArea::GetCorrectSrcImage()
 {
-	return this->src_image_;
+	return this->srcImage;
 }
 
 void RedMarkArea::SetRedRect(Rect rect)
 {
-	this->red_rect_ = rect;
+	this->redRect = rect;
 }
 
 Rect RedMarkArea::GetRedRect()
 {
-	return red_rect_;
+	return redRect;
 }

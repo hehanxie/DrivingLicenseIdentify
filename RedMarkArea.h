@@ -14,29 +14,29 @@ class RedMarkArea
 {
 protected:
 	// 源图像，宽高
-	Mat src_image_;
-	int HEIGHT_;
-	int WIDTH_;
+	Mat srcImage;
+	int HEIGHT;
+	int WIDTH;
 
 	// 用于显示的图像
-	Mat show_image_;
+	Mat showImage;
 	// 红色区域矩阵
-	Rect red_rect_;
+	Rect redRect;
 	// 红色区域图像
-	Mat red_image_;
+	Mat redImage;
 
 	// 红色区域标识
-	bool is_find_red_area_;
+	bool isFindRedArea;
 
 	// 水平投影数组
-	int *horizontal_array_;
-	int start_row_;
-	int end_row_;
+	int *horizontalArray;
+	int startRow;
+	int endRow;
 
 	// 垂直投影数组
-	int *vertical_array_;
-	int start_col_;
-	int end_col_;
+	int *verticalArray;
+	int startCol;
+	int endCol;
 
 	//图像偏转角度
 	float ANGLE_;
@@ -47,6 +47,7 @@ protected:
 	const float kMaxRedAreaRatio = 0.09;
 	const float kMinScale = 0.8;
 	const float kMaxScale = 1.25;
+	const float kBlackRatio = 0.05;
 
 public:
 	RedMarkArea();
