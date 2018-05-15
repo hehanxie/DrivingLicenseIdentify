@@ -27,7 +27,7 @@ DrivingLicense::DrivingLicense(Mat src)
 	// put all area into keyMat vector
 	GetKeyInformationArea(idDividedResult);
 //	cvtColor(showImage, showImage, CV_BGR2GRAY);
-//	imshow("draw all area", showImage);
+	imshow("draw all area", showImage);
 	OutputFile(idDividedResult, "");
 }
 
@@ -454,7 +454,7 @@ vector<Mat> DrivingLicense::CharacterSegmentation(Mat image, string preStr)
 	{
 		line(projImg, Point(col, height - blackArray[col]), Point(col, height - 1), Scalar::all(0));
 	}
-//	imshow("character vertical projection", projImg);
+	imshow("character vertical projection", projImg);
 
 	int startIndex = 0;
 	int endIndex = 0;

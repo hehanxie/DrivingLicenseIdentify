@@ -369,7 +369,7 @@ void RedMarkArea::LineDetect()
 		average = 0;
 	}
 
-//	imshow("line", lineImage);
+	imshow("line", lineImage);
 
 	float angle = DegreeTrans(average) - 90;
 	SetAngle(angle);
