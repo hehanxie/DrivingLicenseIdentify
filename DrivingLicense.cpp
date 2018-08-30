@@ -8,7 +8,7 @@
 DrivingLicense::DrivingLicense(Mat src)
 {
 	redMarkArea = new RedMarkArea(src);
-	cout << "red area correct" << endl << endl;
+//	cout << "red area correct" << endl << endl;
 	this->srcImage = redMarkArea->GetCorrectSrcImage();
 //	this->srcImage = src.clone();
 	HEIGHT = srcImage.rows;
@@ -51,14 +51,14 @@ void DrivingLicense::GetKeyInformationArea(vector<Mat> &v)
 
 	// width = 4, height = 0.50
 	upArea = GetUpArea(redAreaRect, 4, 0.5);
-	cout << "get up area" << endl;
+//	cout << "get up area" << endl;
 //	Mat address1 = AreaDivide(upArea, 0.1, 0, 0.9, 0.5);
 //	Mat address2 = AreaDivide(upArea, 0.05, 0.5, 0.95, 0.5);
 //	v.push_back(CharacterSegmentation(address1));
 //	v.push_back(CharacterSegmentation(address2));
 
 	upperArea = GetUpperArea(upAreaRect, kUpperHeightRatio);
-	cout << "get upper area" << endl;
+//	cout << "get upper area" << endl;
 //	Mat name = AreaDivide(upperArea, 0.08, 0, 0.35, 1);
 //	Mat sex  = AreaDivide(upperArea, 0.56, 0, 0.10, 1);
 //	Mat nationality = AreaDivide(upperArea, 0.77, 0, 0.20, 1);
@@ -67,10 +67,10 @@ void DrivingLicense::GetKeyInformationArea(vector<Mat> &v)
 //	v.push_back(CharacterSegmentation(nationality));
 
 	topArea = GetTopArea(upperAreaRect, kTopHeightRatio);
-	cout << "get top area" << endl;
+//	cout << "get top area" << endl;
 	Mat driverID = AreaDivide(topArea, 0, 0, 0.9, 0.9);
 //	Mat driverID = AreaDivide(topArea, 0.38, 0, 0.6, 0.9);
-	cout << "id area size is: " << driverID.size() << endl;
+//	cout << "id area size is: " << driverID.size() << endl;
 	Mat characterArea = GetCharacterArea(driverID, "driver_id");
 	// character segmentation and save result into vector v
 	v = CharacterSegmentation(characterArea, "driver_id");
@@ -252,7 +252,7 @@ Mat DrivingLicense:: GetCharacterArea(Mat image, string preStr)
 	// 通过形态学闭操作，将数字区域连通, 15,3
 	int matrixX = image.cols / kMatrixRatioX;
 	int matrixY = image.rows / kMatrixRatioY;
-	cout << "morphology martrix: " << matrixX << "," << matrixY << endl;
+//	cout << "morphology martrix: " << matrixX << "," << matrixY << endl;
 	Mat element = getStructuringElement(MORPH_RECT, Size(matrixX, matrixY));
 	morphologyEx(image, image, MORPH_CLOSE, element);
 //	imshow("morphology close", image);
@@ -319,7 +319,7 @@ Mat DrivingLicense:: GetCharacterArea(Mat image, string preStr)
 	{
 		characterAreaRect.height = idAreaImage.rows - characterAreaRect.y;
 	}
-	cout << "character area size: " << characterAreaRect << endl;
+//	cout << "character area size: " << characterAreaRect << endl;
 
 	Mat idAreaRoi = idAreaImage(characterAreaRect);
 //	imshow("id area roi", idAreaRoi);
@@ -419,7 +419,7 @@ vector<Mat> DrivingLicense::CharacterSegmentation(Mat image, string preStr)
 		binaryMatrixX = binaryMatrixX + 1;
 	}
 	int binaryMatrixY = height / 7;
-	cout << "binary matrix is: " << binaryMatrixX << "," << binaryMatrixY << endl;
+//	cout << "binary matrix is: " << binaryMatrixX << "," << binaryMatrixY << endl;
 	adaptiveThreshold(image, image, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, binaryMatrixX, binaryMatrixY);
 	imshow("word adaptive threshold", image);
 

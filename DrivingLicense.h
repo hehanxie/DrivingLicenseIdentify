@@ -54,7 +54,7 @@ protected:
 	const float kDownWidthRatio = 3;
 	const float kDownHeightRatio = 0.25;
 
-	const string PATH = "/Users/whstarlit/Documents/Projects/Git/DrivingLicense/exampleImage/data/";
+	const string PATH = "/Users/Wihan/Documents/Projects/Git/DrivingLicense/exampleImage/data/";
 	const string PREFIX[10] = {"birthday_", "firstIssue_", "classType_", "validTime_", "address1_",
 								"address2_", "name_", "sex_", "nationality_", "driverID_"};
 

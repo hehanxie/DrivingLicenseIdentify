@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.7)
-project(DriverLicenseIdentify)
+project(DrivingLicenseIdentify)
 
 ##find_package(OpenCV3)
 find_package( OpenCV REQUIRED )
